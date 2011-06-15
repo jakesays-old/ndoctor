@@ -1,1 +1,12 @@
-Here, you can find the whole nDoctor's documentation
+Here, you can find the whole nDoctor's documentation.
+
+All is divided into these subjects:
+
+ * Featured             : Listed on project home page
+ * Phase-Requirements   : Project vision and requirements
+ * Phase-Design         : Project design and key concerns
+ * Phase-Implementation : Developers' guide
+ * Phase-QA             : Testing plans and QA strategies
+ * Phase-Deploy         : How to install and configure the program
+ * Phase-Support        : Plans for user support and advocacy
+ * Deprecated           : Most users should NOT reference this
