@@ -1,5 +1,3 @@
-http://www.thedarkvisitor.com/wp-content/uploads/2008/05/redcross.jpg
-
 = Introduction =
 
-Add your content here.
+Here, you can find the whole nDoctor's documentation
