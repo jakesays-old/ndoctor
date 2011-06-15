@@ -1,14 +1,6 @@
 #summary One-sentence summary of this page.
 #labels Phase-Design
 
-= Introduction =
+= General design =
 
-Add your content here.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+https://docs.google.com/drawings/pub?id=19iMsxDBIwGX0Pa48jpxdX1gqahMZeG0Xduqrthc12qc&w=960&h=720&cht=bvg&nonsense=something_that_ends_with.png
