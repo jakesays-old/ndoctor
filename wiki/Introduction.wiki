@@ -1,8 +1,8 @@
 The documentation of nDoctor is divided into these points:
 
- * *Phase-Design*         : Project design and key concerns
- * *Phase-Requirements*   : Project vision and requirements
- * *Phase-Implementation* : Developers' guide
- * *Phase-QA*             : Testing plans and QA strategies
- * *Phase-Deploy*         : How to install and configure the program
- * *Phase-Support*        : Plans for user support and advocacy
+ * *Design*         : Project design and key concerns
+ * *Requirements*   : Project vision and requirements
+ * *Implementation* : Developers' guide
+ * *QA*             : Testing plans and QA strategies
+ * *Deploy*         : How to install and configure the program
+ * *Support*        : Plans for user support and advocacy
