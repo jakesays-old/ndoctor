@@ -1,6 +1,4 @@
-Here, you can find the whole nDoctor's documentation.
-
-All is divided into these subjects:
+The documentation of nDoctor is divided into these points:
 
  * Phase-Requirements   : Project vision and requirements
  * Phase-Design         : Project design and key concerns
