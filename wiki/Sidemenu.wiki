@@ -1,0 +1,6 @@
+* Design
+* Requirement
+* Implementation
+* QA
+* Deploy
+* Support
