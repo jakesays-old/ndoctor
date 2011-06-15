@@ -1,3 +1,1 @@
-= Introduction =
-
 Here, you can find the whole nDoctor's documentation
