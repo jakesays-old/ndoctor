@@ -1,6 +1,5 @@
  * Design
    * [GeneralDesign General Design]
-   * [SomeTest Some Test]
  * Requirement
  * Implementation
  * QA
