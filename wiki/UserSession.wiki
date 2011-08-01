@@ -21,6 +21,7 @@ It should contain:
  * a menu to print a card with all this information.
  * a system to load plugins.
  * a system to manage the rights of the user.
+ * a list of modules.
 
 = The sub modules =
 Here's the list of the default modules a user session has
