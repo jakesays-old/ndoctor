@@ -3,4 +3,10 @@
 
 = General design =
 
+The application is build as a client-server software. The data processing is done at the server side and the client displays data and send the commands to the server that executes the work.
+
+The server exposes services via WCF and used shared memory. The GUI is built with WPF.
+
+= Schema =
+
 https://docs.google.com/drawings/pub?id=19iMsxDBIwGX0Pa48jpxdX1gqahMZeG0Xduqrthc12qc&w=960&h=720&cht=bvg&nonsense=something_that_ends_with.png
