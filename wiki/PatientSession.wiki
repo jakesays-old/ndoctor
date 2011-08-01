@@ -16,3 +16,9 @@ The modules provided by default by the patient session are:
  # a prescription manager
  # a pathologies manager
  # a list of plugins (each plugin is considered as a manager)
+
+= Features =
+
+The patient session should provide:
+ * a memento system. That's the user can rollback at any time to the state the session was when it was opened.
+ * a close feature that saves all the changes and close the patient session.
