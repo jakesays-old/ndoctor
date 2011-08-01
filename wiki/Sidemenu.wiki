@@ -15,6 +15,7 @@
     * [VendorNews Vendor's news]
     * [PracticeNews Medical practice's news]
    * [Statistics Statistics]
+   * [Administration Administration]
  * Implementation
  * QA
  * Deploy
