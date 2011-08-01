@@ -1,6 +1,6 @@
  * Design
    * [GeneralDesign General Design]
- * Requirement
+ * Requirements
   * [UserSession User's session]
    * [PatientSession Patient's session]
     * [PatientData Patient's data]
