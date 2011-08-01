@@ -3,3 +3,5 @@
 = Introduction =
 
 The basic GUI of nDoctor should resemble to this:
+
+https://docs.google.com/drawings/pub?id=16q9kqDSYWS153EoiLeCXgO8G4xI8b0xxJWUj9t4S2y4&w=960&h=720&nonsense=something_that_ends_with.png
