@@ -21,4 +21,5 @@ The modules provided by default by the patient session are:
 
 The patient session should provide:
  * a memento system. That's the user can rollback at any time to the state the session was when it was opened.
- * a close feature that saves all the changes and close the patient session.
+ * a _close_ feature that saves all the changes and close the patient session.
+ * a global _save_ feature that saves the sate of all the managers. The _save_ feature should be present *only* in the patient session. Therefore the manager *shouldn't* have a visible _save_ button or menu!
