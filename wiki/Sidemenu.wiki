@@ -1,6 +1,7 @@
  * Design
    * [GeneralDesign General Design]
  * Requirements
+  * [Gui Graphic user interface]
   * [UserSession User's session]
    * [PatientSession Patient's session]
     * [PatientData Patient's data]
