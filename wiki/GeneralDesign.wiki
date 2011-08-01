@@ -7,6 +7,15 @@ The application is build as a client-server software. The data processing is don
 
 The server exposes services via WCF and used shared memory. The GUI is built with WPF.
 
+= Concepts =
+
+ * Server side
+  * WCF Services: It just exposes the services to the client.
+  * Components: The components are pieces of business logic. It consumes the entities nHibernates provides to the data transformation that has to be done and gives the result to WCF services throught DTO objects.
+  * nHibernate: Make the link between the server and the database. It hides the database implementation. 
+ * Client side
+  * It just displays the data the way it should be using the MVVM pattern
+
 = Schema =
 
 https://docs.google.com/drawings/pub?id=19iMsxDBIwGX0Pa48jpxdX1gqahMZeG0Xduqrthc12qc&w=960&h=720&cht=bvg&nonsense=something_that_ends_with.png
