@@ -2,12 +2,17 @@
 
 = Introduction =
 
-Add your content here.
+nDoctor is meant to manage patient's data. This data are encapsulated into a patient session. In other words, it should provide an interface to browse between all the modules that manage the patient data.
 
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+The modules provided by default by the patient session are:
+ # a patient's data manager
+ # a BMI manager
+ # a family manager
+ # a medical record manager
+ # a medical pictures manager
+ # a prescription manager
+ # a pathologies manager
+ # a list of plugins (each plugin is considered as a manager)
