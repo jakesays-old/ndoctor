@@ -1,6 +1,20 @@
  * Design
    * [GeneralDesign General Design]
  * Requirement
+  * [UserSession User's session]
+   * [PatientSession Patient's session]
+    * [PatientData Patient's data]
+    * [BMI BMI record]
+    * [Family Family]
+    * [MedicalRecord Medical record]
+    * [Pictures Pictures]
+    * [Prescriptions Prescriptions]
+    * [PathologyRecord Pathologies record]
+   * [Calendar Calendar]
+   * [News News]
+    * [VendorNews Vendor's news]
+    * [PracticeNews Medical practice's news]
+   * [Statistics Statistics]
  * Implementation
  * QA
  * Deploy
