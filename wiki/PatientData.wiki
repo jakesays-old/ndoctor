@@ -1,13 +1,36 @@
-#summary One-sentence summary of this page.
+#summary ébout patient data
 
 = Introduction =
 
-Add your content here.
-
+This manager is meant to manage the direct patient's data.
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pagesmm
+A patient should have:
+ * a thumbnail
+ * a name
+ * a surname
+ * a birth-date
+ * a place of birth
+ * a gender
+ * a profession
+ * contact info
+  * an email
+  * a professional phone
+  * a professional mobile phone
+  * a private phone
+  * a private mobile phone
+ * an address
+ * a reason why he/she came the first time
+ * an inscription date
+ * a date for the last update
+ * how he heard about the medical practice
+ * an insurance
+ * a practice
+ * a list of doctor
+
+= Features =
+
+The features of this manager are fairly simple. It should allow to modify the data and indicate if the data changed since the patient was loaded.
+
+= GUI =
