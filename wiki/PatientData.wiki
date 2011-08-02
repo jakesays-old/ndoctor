@@ -34,3 +34,5 @@ A patient should have:
 The features of this manager are fairly simple. It should allow to modify the data and indicate if the data changed since the patient was loaded.
 
 = GUI =
+
+https://docs.google.com/drawings/pub?id=1vTIxlbEzf5w9763bSwE3wsUvGWpQA1NRb8Z7kWMMcNU&w=480&h=360
