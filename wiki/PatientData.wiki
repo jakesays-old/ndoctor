@@ -33,7 +33,9 @@ A patient should have:
 
 The features of this manager are fairly simple. It should allow to modify the data and indicate if the data changed since the patient was loaded.
 
-The context menu should contain an option to roll back into the state the patient had when user loaded it.
+The context menu should contain two features:
+ # a button to roll back into the state the patient had when user loaded it.
+ # a button to activate edit mode.
 
 = GUI =
 
