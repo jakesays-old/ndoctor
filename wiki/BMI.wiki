@@ -2,12 +2,20 @@
 
 = Introduction =
 
-Add your content here.
+The BMI record is all the data about the height and the weight of a patient at a certain time.
 
+The formula to calculate the bmi is       
+   BMI = weight in kilograms/(height in meters)^2^
 
-= Details =
+= GUI =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pagesff
+It is a frame with tabs.
+
+One tab to:
+ * display a grid with height, weight and date
+ * a chart showing the evolution of the BMI
+ * a chart showing the evolution of the weight
+ * a chart showing the evolution of the height
+
+= Features =
+This manager should be able to integrate reference charts. For insance a chart to show the evolution of BMI during a generic diet.
