@@ -2,12 +2,9 @@
 
 = Introduction =
 
-This manager show all the link that exists between the current patient and other patients
+This manager show all the link that exists between the current patient and other patients.
 
 
-= Details =
+= GUI =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+https://docs.google.com/drawings/pub?id=12lGFXx4xFeZcoGABej0JMZtWuXM7BKQuVDzcrDn0jhc&w=480&h=360&nonsense=something_that_ends_with.png
