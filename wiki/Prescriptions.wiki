@@ -1,0 +1,21 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+A prescription is a drug to take and a remark (how the drug should be taken). This manager allows the user to creates prescriptions, print them and store then into the database.
+
+A prescription document is a batch of prescription. 
+
+
+= GUI=
+
+https://docs.google.com/drawings/pub?id=1dLMAxLa8pWUtkXXmSKXOjfLl8KA5Xzwhx-_W2SfN4Z4&w=640&h=480&nonsense=something_that_ends_with.png
+
+= Features =
+This manager:
+ * Allows to create, delete or update prescriptions.
+ * Allows to group prescriptions into prescription documents.
+ * Allows to manage the creation date of a prescription group.
+ * Allows to print a prescription document
+ * Search prescriptions on date.
+ * Search drug on type or on name.
