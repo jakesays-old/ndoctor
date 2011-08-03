@@ -1,0 +1,15 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+This manager has several charts to have an overview of the data nDoctor manages.
+
+
+= Features =
+
+Here's the list of the charts:
+ * Show percentage of each gender.
+ * Show an age graphic of the patients.
+ * Show the average meetings per month.
+ * Show prescriptions per patient.
+ * Show BMI graphic of patients.
