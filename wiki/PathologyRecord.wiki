@@ -1,0 +1,19 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+This manager keep tracks of the pathologies of the patient.
+
+
+= GUI=
+
+A splitted screen with the first half showing a grid with the pathologies and the durations.
+
+The other half is a TabControl that shows different charts.
+
+= Features =
+this manager
+ * allows to add, remove or update a pathology (disease name, type and duration)
+ * Display a time line showing when the patient is ill
+ * Display a time line showing when the patient is ill by month
+ * Display a chart showing the 10 disease the patient suffer the most often.
