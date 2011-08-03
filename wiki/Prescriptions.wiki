@@ -18,3 +18,7 @@ This manager:
  * Allows to print a prescription document
  * Search prescriptions on date.
  * Search drug on type or on name.
+
+Here's an example of what a printed prescription is:
+
+https://docs.google.com/drawings/pub?id=12PssOQURV_f1PV3_Lnd927HMvh8PzG9KMk0wU-IcKg8&w=640&h=480&nonsense=something_that_ends_with.png
