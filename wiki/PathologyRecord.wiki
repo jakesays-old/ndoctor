@@ -13,7 +13,7 @@ The other half is a Tab Control that shows different charts.
 
 = Features =
 this manager
- * allows to add, remove or update a pathology (disease name, type and duration)
+ * Allows to add, remove or update a pathology (disease name, type and duration)
  * Display a time line showing when the patient is ill
  * Display a time line showing when the patient is ill by month
  * Display a chart showing the 10 disease the patient suffer the most often.
