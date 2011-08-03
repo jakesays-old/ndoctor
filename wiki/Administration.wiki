@@ -1,0 +1,21 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+This manages all the data nDoctor uses indirectly.
+
+
+= Data to administrate =
+ # Reputations
+ # Insurances
+ # Practices
+ # Doctors
+ # Doctor specialisation
+ # Relations
+ # Drugs
+ # Drugs type
+ # Pathology type
+ # Pathologies
+ # Medical record tag
+ # Picture tag
+ # Pathology types
