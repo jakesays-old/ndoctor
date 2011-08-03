@@ -9,7 +9,7 @@ This manager keep tracks of the pathologies of the patient.
 
 A splitted screen with the first half showing a grid with the pathologies and the durations.
 
-The other half is a TabControl that shows different charts.
+The other half is a Tab Control that shows different charts.
 
 = Features =
 this manager
