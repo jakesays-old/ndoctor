@@ -1,7 +1,6 @@
 #summary One-sentence summary of this page.
 
-= Plugins from GUI side=
-
+= GUI side =
+== Design ==
 https://lh5.googleusercontent.com/-DgJqfRTGJps/TkP-vM3R_KI/AAAAAAAAABI/l45gKrXKKGY/Plugin%252520design.jpg
-
-= Plugins from server side=
+== Explanations ==
