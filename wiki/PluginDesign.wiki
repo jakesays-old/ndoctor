@@ -2,6 +2,6 @@
 
 = Plugins from GUI side=
 
-
+https://lh5.googleusercontent.com/-DgJqfRTGJps/TkP-vM3R_KI/AAAAAAAAABI/l45gKrXKKGY/Plugin%252520design.jpg
 
 = Plugins from server side=
