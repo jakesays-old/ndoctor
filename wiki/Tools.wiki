@@ -5,6 +5,6 @@ Here's the list of all tools used to develop nDoctor
 
 
 = Tools =
- * [http://argouml.tigris.org ArgoUml] is used for the UML schemas
+ * [http://staruml.sourceforge.net/en/ StarUml] is used for the UML schemas
  * [http://pencil.evolus.vn/en-US/Home.aspx Pencil] to draw the GUI sketches
  * [http://www.nunit.org nUnit] for the unit tests
