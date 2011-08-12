@@ -1,5 +1,4 @@
-#summary User session requirements.
-
+#labels Phase-Requirements
 = Introduction =
 
 When the application user has logged into the application, it opens a _User session_ that contains the modules the logged user can use.
