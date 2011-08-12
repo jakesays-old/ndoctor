@@ -1,5 +1,4 @@
-#summary One-sentence summary of this page.
-
+#labels Phase-Requirements
 = Introduction =
 
 The BMI record is all the data about the height and the weight of a patient at a certain time.
