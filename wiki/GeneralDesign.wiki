@@ -1,6 +1,4 @@
-#summary One-sentence summary of this page.
 #labels Phase-Design
-
 = General design =
 
 The application is build as a client-server software. The data processing is done at the server side and the client displays data and send the commands to the server that executes the work.
