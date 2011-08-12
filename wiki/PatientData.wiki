@@ -1,5 +1,4 @@
-#summary ébout patient data
-
+#labels Phase-Requirements
 = Introduction =
 
 This manager is meant to manage the direct patient's data.
