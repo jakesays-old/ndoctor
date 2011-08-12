@@ -1,5 +1,4 @@
-#summary One-sentence summary of this page.
-
+#labels Phase-Requirements
 = Introduction =
 
 A medical record is a list of text document. Each document has a type.
