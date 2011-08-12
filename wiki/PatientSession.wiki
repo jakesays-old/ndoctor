@@ -1,5 +1,4 @@
-#summary About patient session
-
+#labels Phase-Requirements
 = Introduction =
 
 nDoctor is meant to manage patient's data. This data are encapsulated into a patient session. In other words, it should provide an interface to browse between all the modules that manage the patient data.
