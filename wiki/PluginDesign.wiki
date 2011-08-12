@@ -1,5 +1,4 @@
-#summary One-sentence summary of this page.
-
+#labels Phase-Design
 = Plugins - Client Side=
 
 The module manager has these two main roles:
