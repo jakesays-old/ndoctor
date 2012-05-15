@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,29 +16,28 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.UserSession.ViewModel
 {
     using System;
     using System.Windows;
     using System.Windows.Input;
 
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.UserSession.Helpers;
     using Probel.NDoctor.Plugins.UserSession.Properties;
     using Probel.NDoctor.Plugins.UserSession.View;
-    using Probel.NDoctor.View.Core.Helpers;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class AddUserViewModel : BaseViewModel
     {
         #region Fields
 
-        private IUserSessionComponent component = ObjectFactory.GetInstance<IUserSessionComponent>();
+        private IUserSessionComponent component = ComponentFactory.UserSessionComponent;
         private string password;
         private string passwordCheck;
         private LightUserDto user = new LightUserDto();
@@ -81,7 +82,7 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
                     if (dr == MessageBoxResult.No) return;
                 }
                 this.User.IsDefault = value;
-                this.OnPropertyChanged(() => IsDefaultUser);
+                this.OnPropertyChanged("IsDefaultUser");
             }
         }
 
@@ -91,7 +92,7 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
             set
             {
                 this.password = value;
-                this.OnPropertyChanged(() => Password);
+                this.OnPropertyChanged("Password");
             }
         }
 
@@ -101,7 +102,7 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
             set
             {
                 this.passwordCheck = value;
-                this.OnPropertyChanged(() => PasswordCheck);
+                this.OnPropertyChanged("PasswordCheck");
             }
         }
 
@@ -111,7 +112,7 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
             set
             {
                 this.user = value;
-                this.OnPropertyChanged(() => User);
+                this.OnPropertyChanged("User");
             }
         }
 
@@ -133,18 +134,14 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
                 {
                     this.component.Create(this.User, this.Password);
                 }
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_UserAdded);
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_UserAdded);
 
-                if (PluginContext.Host.CanNavigateBack)
+                if (this.Host.CanNavigateBack)
                 {
                     Notifyer.OnUserAdded(this);
-                    PluginContext.Host.NavigateBack();
+                    this.Host.NavigateBack();
                 }
-                //else
-                //{
-                //    InnerWindow.Show(Messages.Title_ButtonAddUser, new AddUserControl());
-                //}
-                Notifyer.OnUserAdded(this);
+                else this.Host.Navigate(new AddUserView());
             }
             catch (Exception ex)
             {

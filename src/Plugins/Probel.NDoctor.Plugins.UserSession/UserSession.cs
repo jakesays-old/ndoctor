@@ -19,12 +19,11 @@ namespace Probel.NDoctor.Plugins.UserSession
     using System;
     using System.ComponentModel.Composition;
     using System.Windows.Input;
+    using System.Windows.Media;
 
     using AutoMapper;
 
     using Probel.Helpers.Strings;
-    using Probel.Mvvm.DataBinding;
-    using Probel.NDoctor.Domain.DAL.Components;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.UserSession.Controls;
@@ -35,8 +34,6 @@ namespace Probel.NDoctor.Plugins.UserSession
     using Probel.NDoctor.View.Plugins;
     using Probel.NDoctor.View.Plugins.Helpers;
     using Probel.NDoctor.View.Plugins.MenuData;
-
-    using StructureMap;
 
     /// <summary>
     /// When the application user has logged into the application, it opens a User session that contains the modules the logged user can use. 
@@ -67,8 +64,11 @@ namespace Probel.NDoctor.Plugins.UserSession
         private ICommand addCommand = null;
         private IUserSessionComponent component;
         private ConnectionView connectionPage;
+        private RibbonContextualTabGroupData contextualMenu;
         private ICommand printCommand;
         private ICommand showUpdateUserCommand;
+        private ICommand updateCommand;
+        private UpdateUserView updateUserPage;
 
         #endregion Fields
 
@@ -80,8 +80,8 @@ namespace Probel.NDoctor.Plugins.UserSession
         /// <param name="version">The version.</param>
         /// <param name="host">The host.</param>
         [ImportingConstructor]
-        public UserSession([Import("version")] Version version)
-            : base(version)
+        public UserSession([Import("version")] Version version, [Import("host")] IPluginHost host)
+            : base(version, host)
         {
             this.Validator = new PluginValidator("3.0.0.0", ValidationMode.Minimum);
             this.BuildCommands();
@@ -98,29 +98,23 @@ namespace Probel.NDoctor.Plugins.UserSession
         public override void Initialise()
         {
             this.ConfigureAutoMapper();
-            this.ConfigureStructureMap();
 
-            this.component = ObjectFactory.GetInstance<IUserSessionComponent>();
+            this.component = ComponentFactory.UserSessionComponent;
 
             TranslateExtension.ResourceManager = Messages.ResourceManager;
 
-            PluginContext.Host.Invoke(() => { this.connectionPage = new ConnectionView(); });
-
-            var splitter = PluginContext.Host.FindInHome("add", Groups.Tools);
-            var splitterExist = true;
-            if (splitter == null || splitter.GetType() != typeof(RibbonMenuButtonData))
+            this.Host.Invoke(() =>
             {
-                splitterExist = false;
-                splitter = new RibbonMenuButtonData(Messages.Btn_Add, uri.FormatWith("Add"), null)
-                {
-                    Order = 1,
-                    Name = "add",
-                };
-            }
+                this.connectionPage = new ConnectionView();
+                this.updateUserPage = new UpdateUserView();
+            });
 
-            var addButton = new RibbonMenuItemData(Messages.Title_ButtonAddUser, uri.FormatWith("Add"), this.addCommand) { Order = 3, };
-            (splitter as RibbonMenuButtonData).ControlDataCollection.Add(addButton);
-            if (!splitterExist) PluginContext.Host.AddInHome((splitter as RibbonMenuButtonData), Groups.Tools);
+            var addButton = new RibbonButtonData(Messages.Title_ButtonAddUser, this.addCommand)
+            {
+                SmallImage = new Uri(uri.StringFormat("Add"), UriKind.Relative),
+                Order = 3,
+            };
+            this.Host.AddInHome(addButton, Groups.Tools);
 
             this.InitialiseConnectionPage();
             this.InitialiseUpdateUserPage();
@@ -128,8 +122,9 @@ namespace Probel.NDoctor.Plugins.UserSession
 
         private void BuildCommands()
         {
+            this.updateCommand = new RelayCommand(() => this.UpdateUser());
             this.printCommand = new RelayCommand(() => this.PrintBusinessCard());
-            this.addCommand = new RelayCommand(() => this.NavigateAddUser());
+            this.addCommand = new RelayCommand(() => this.Host.Navigate(new AddUserView()));
             this.showUpdateUserCommand = new RelayCommand(() => this.NavigateToUpdateUser());
         }
 
@@ -137,15 +132,6 @@ namespace Probel.NDoctor.Plugins.UserSession
         {
             Mapper.CreateMap<UserDto, BusinessCardViewModel>();
             Mapper.CreateMap<BusinessCardViewModel, UserDto>();
-        }
-
-        private void ConfigureStructureMap()
-        {
-            ObjectFactory.Configure(x =>
-            {
-                x.For<IUserSessionComponent>().Add<UserSessionComponent>();
-                x.SelectConstructor<UserSessionComponent>(() => new UserSessionComponent());
-            });
         }
 
         private void InitialiseConnectionPage()
@@ -158,44 +144,84 @@ namespace Probel.NDoctor.Plugins.UserSession
 
             if (defaultUser == null)
             {
-                PluginContext.Host.HideMainMenu();
-                PluginContext.Host.Navigate(this.connectionPage);
+                this.Host.HideMainMenu();
+                this.Host.Navigate(this.connectionPage);
             }
             else
             {
-                PluginContext.Host.ConnectedUser = defaultUser;
-                PluginContext.Host.NavigateToStartPage();
+                this.Host.ConnectedUser = defaultUser;
+                this.Host.NavigateToStartPage();
             }
         }
 
         private void InitialiseUpdateUserPage()
         {
-            var menu = new RibbonControlData(Messages.Menu_ManagePersonalData, uri.FormatWith("Users"), showUpdateUserCommand) { Order = 3 };
-            PluginContext.Host.AddToApplicationMenu(menu);
-        }
+            #region Application Menu
+            var menu = new RibbonControlData(Messages.Menu_ManagePersonalData, uri.StringFormat("Users"), showUpdateUserCommand) { Order = 3 };
+            this.Host.AddToApplicationMenu(menu);
+            #endregion
 
-        private void NavigateAddUser()
-        {
-            InnerWindow.Show(Messages.Title_ButtonAddUser, new AddUserControl());
+            #region Context Menu
+
+            var saveButton = new RibbonButtonData(Messages.Menu_Save, uri.StringFormat("Save"), this.updateCommand);
+            var printButton = new RibbonButtonData(Messages.Menu_Print, this.printCommand) { SmallImage = new Uri(uri.StringFormat("Printer"), UriKind.RelativeOrAbsolute) };
+            var cgroup = new RibbonGroupData(Messages.Menu_Actions);
+
+            cgroup.ButtonDataCollection.Add(saveButton);
+            cgroup.ButtonDataCollection.Add(printButton);
+
+            var tab = new RibbonTabData(Messages.Menu_File, cgroup) { ContextualTabGroupHeader = Messages.Title_ContextMenu };
+            this.Host.Add(tab);
+
+            this.contextualMenu = new RibbonContextualTabGroupData(Messages.Title_ContextMenu, tab) { Background = Brushes.OrangeRed, IsVisible = false };
+            this.Host.Add(this.contextualMenu);
+
+            #endregion
         }
 
         private void NavigateToUpdateUser()
         {
-            InnerWindow.Show(Messages.Menu_ManagePersonalData, new UpdateUserControl());
+            var viewModel = this.updateUserPage.DataContext as UpdateUserViewModel;
+            if (viewModel != null) viewModel.Refresh();
+
+            this.Host.Navigate(this.updateUserPage);
+
+            this.contextualMenu.IsVisible = true;
+            this.contextualMenu.TabDataCollection[0].IsSelected = true;
         }
 
         private void PrintBusinessCard()
         {
+            //MessageBox.Show(Messages.Msg_NotYetImplemented, Messages.Title_Info, MessageBoxButton.OK, MessageBoxImage.Information);
             BusinessCard card;
             UserDto user;
             using (this.component.UnitOfWork)
             {
                 card = new BusinessCard();
-                user = this.component.GetUserById(PluginContext.Host.ConnectedUser.Id);
+                user = this.component.GetUserById(this.Host.ConnectedUser.Id);
             }
             card.DataContext = BusinessCardViewModel.CreateFrom(user);
 
             card.Print();
+        }
+
+        private void UpdateUser()
+        {
+            try
+            {
+                var component = ComponentFactory.UserSessionComponent;
+                var viewmodel = this.updateUserPage.DataContext as UpdateUserViewModel;
+
+                using (component.UnitOfWork)
+                {
+                    component.Update(viewmodel.User);
+                }
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_UserUpdated);
+            }
+            catch (Exception ex)
+            {
+                this.HandleError(ex, Messages.Msg_ErrorUpdateUser);
+            }
         }
 
         #endregion Methods

@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
 {
     using System;
@@ -23,23 +28,20 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
 
     using Probel.Helpers.Conversions;
     using Probel.Helpers.WPF;
-    using Probel.Mvvm.DataBinding;
-    using Probel.NDoctor.Domain.DAL.Exceptions;
     using Probel.NDoctor.Domain.DTO.Components;
+    using Probel.NDoctor.Domain.DTO.Exceptions;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.PrescriptionManager.Helpers;
     using Probel.NDoctor.Plugins.PrescriptionManager.Properties;
-    using Probel.NDoctor.View.Core.Helpers;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class AddDrugViewModel : BaseViewModel
     {
         #region Fields
 
         private IPrescriptionComponent component;
+        private bool isPopupOpened;
         private DrugDto selectedDrug;
 
         #endregion Fields
@@ -48,11 +50,12 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
 
         public AddDrugViewModel()
         {
-            if (!Designer.IsDesignMode) this.component = ObjectFactory.GetInstance<IPrescriptionComponent>();
+            if (!Designer.IsDesignMode) this.component = ComponentFactory.PrescriptionComponent;
 
             this.Tags = new ObservableCollection<TagDto>();
             this.SelectedDrug = new DrugDto();
 
+            this.ShowPopupCommand = new RelayCommand(() => this.IsPopupOpened = true);
             this.AddCommand = new RelayCommand(() => this.Add(), () => this.CanAdd());
         }
 
@@ -66,14 +69,33 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             private set;
         }
 
+        public bool IsPopupOpened
+        {
+            get { return this.isPopupOpened; }
+            set
+            {
+                this.isPopupOpened = value;
+
+                if (value) this.Refresh();
+
+                this.OnPropertyChanged("IsPopupOpened");
+            }
+        }
+
         public DrugDto SelectedDrug
         {
             get { return this.selectedDrug; }
             set
             {
                 this.selectedDrug = value;
-                this.OnPropertyChanged(() => SelectedDrug);
+                this.OnPropertyChanged("SelectedDrug");
             }
+        }
+
+        public ICommand ShowPopupCommand
+        {
+            get;
+            private set;
         }
 
         public ObservableCollection<TagDto> Tags
@@ -86,16 +108,6 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
 
         #region Methods
 
-        public void Refresh()
-        {
-            IList<TagDto> result;
-            using (this.component.UnitOfWork)
-            {
-                result = this.component.FindTags(TagCategory.Drug);
-            }
-            this.Tags.Refill(result);
-        }
-
         private void Add()
         {
             try
@@ -105,9 +117,9 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
                     this.component.Create(this.SelectedDrug);
                 }
                 Notifyer.OnItemChanged(this);
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_DataSaved);
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_DataSaved);
                 this.SelectedDrug = new DrugDto();
-                InnerWindow.Close();
+                this.IsPopupOpened = false;
             }
             catch (ExistingItemException ex)
             {
@@ -124,6 +136,16 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             return this.SelectedDrug != null
                 && this.SelectedDrug.Tag != null
                 && !string.IsNullOrWhiteSpace(this.SelectedDrug.Name);
+        }
+
+        private void Refresh()
+        {
+            IList<TagDto> result;
+            using (this.component.UnitOfWork)
+            {
+                result = this.component.FindTags(TagCategory.Drug);
+            }
+            this.Tags.Refill(result);
         }
 
         #endregion Methods

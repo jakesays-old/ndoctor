@@ -20,9 +20,11 @@ namespace Probel.NDoctor.Domain.Test.Component
 
     using NUnit.Framework;
 
+    using Probel.NDoctor.Domain.DAL.Cfg;
     using Probel.NDoctor.Domain.DAL.Components;
     using Probel.NDoctor.Domain.DAL.Entities;
     using Probel.NDoctor.Domain.DAL.Exceptions;
+    using Probel.NDoctor.Domain.DTO.Exceptions;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Domain.Test.Helpers;
 
@@ -70,7 +72,7 @@ namespace Probel.NDoctor.Domain.Test.Component
         /// <returns></returns>
         protected override PatientSessionComponent GetComponentInstance()
         {
-            return new PatientSessionComponent(this.Database.Session);
+            return new PatientSessionComponent(SQLiteDatabase.Scope.OpenSession());
         }
 
         #endregion Methods

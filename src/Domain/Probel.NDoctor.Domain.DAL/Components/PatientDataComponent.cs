@@ -29,6 +29,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
     using Probel.NDoctor.Domain.DAL.Exceptions;
     using Probel.NDoctor.Domain.DAL.Helpers;
     using Probel.NDoctor.Domain.DTO.Components;
+    using Probel.NDoctor.Domain.DTO.Exceptions;
     using Probel.NDoctor.Domain.DTO.Objects;
 
     public class PatientDataComponent : BaseComponent, IPatientDataComponent
@@ -54,14 +55,13 @@ namespace Probel.NDoctor.Domain.DAL.Components
         /// <param name="patient">The patient.</param>
         /// <param name="doctor">The doctor.</param>
         /// <exception cref="EntityNotFoundException">If there's no link between the doctor and the patient</exception>
-        public void AddDoctorTo(LightPatientDto patient, LightDoctorDto doctor)
+        public void AddLink(LightPatientDto patient, LightDoctorDto doctor)
         {
             this.CheckSession();
             var patientEntity = this.Session.Get<Patient>(patient.Id);
             var doctorEntity = this.Session.Get<Doctor>(doctor.Id);
 
-            if (patientEntity == null) throw new EntityNotFoundException(typeof(Patient));
-            if (doctorEntity == null) throw new EntityNotFoundException(typeof(Doctor));
+            if (patientEntity == null || doctorEntity == null) throw new EntityNotFoundException();
 
             patientEntity.Doctors.Add(doctorEntity);
             doctorEntity.Patients.Add(patientEntity);
@@ -177,18 +177,6 @@ namespace Probel.NDoctor.Domain.DAL.Components
         }
 
         /// <summary>
-        /// Gets the doctors linked to the specified patient.
-        /// </summary>
-        /// <param name="patient">The patient.</param>
-        /// <returns>A list of doctors</returns>
-        public IList<LightDoctorDto> FindDoctorOf(LightPatientDto patient)
-        {
-            this.CheckSession();
-            var entity = this.Session.Get<Patient>(patient.Id);
-            return Mapper.Map<IList<Doctor>, IList<LightDoctorDto>>(entity.Doctors);
-        }
-
-        /// <summary>
         /// Finds the doctors that can be linked to the specified doctor.
         /// </summary>
         /// <param name="patient">The patient.</param>
@@ -197,7 +185,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
         /// <returns>
         /// A list of doctor
         /// </returns>
-        public IList<LightDoctorDto> FindNotLinkedDoctorsFor(LightPatientDto patient, string criteria, SearchOn searchOn)
+        public IList<LightDoctorDto> FindDoctorsFor(LightPatientDto patient, string criteria, SearchOn searchOn)
         {
             var patientEntity = this.Session.Get<Patient>(patient.Id);
 
@@ -225,19 +213,31 @@ namespace Probel.NDoctor.Domain.DAL.Components
         }
 
         /// <summary>
+        /// Gets the doctors linked to the specified patient.
+        /// </summary>
+        /// <param name="patient">The patient.</param>
+        /// <returns>A list of doctors</returns>
+        public IList<LightDoctorDto> GetDoctorOf(LightPatientDto patient)
+        {
+            this.CheckSession();
+            var entity = this.Session.Get<Patient>(patient.Id);
+            return Mapper.Map<IList<Doctor>, IList<LightDoctorDto>>(entity.Doctors);
+        }
+
+        /// <summary>
         /// Loads all the data of the patient represented by the specified id.
         /// </summary>
         /// <param name="patient">The id of the patient to load.</param>
         /// <returns>A DTO with the whole data</returns>
         /// <exception cref="Probel.NDoctor.Domain.DAL.Exceptions.EntityNotFoundException">If the id is not linked to a patient</exception>
-        public PatientDto FindPatient(long id)
+        public PatientDto GetPatient(long id)
         {
             this.CheckSession();
             var fullPatient = (from p in this.Session.Query<Patient>()
                                where p.Id == id
                                select p).FirstOrDefault();
 
-            if (fullPatient == null) throw new EntityNotFoundException(typeof(Patient));
+            if (fullPatient == null) throw new EntityNotFoundException();
 
             return Mapper.Map<Patient, PatientDto>(fullPatient);
         }
@@ -248,9 +248,9 @@ namespace Probel.NDoctor.Domain.DAL.Components
         /// <param name="patient">The patient to load.</param>
         /// <returns>A DTO with the whole data</returns>
         /// <exception cref="Probel.NDoctor.Domain.DAL.Exceptions.EntityNotFoundException">If the patient doesn't exist</exception>
-        public PatientDto FindPatient(LightPatientDto patient)
+        public PatientDto GetPatient(LightPatientDto patient)
         {
-            return this.FindPatient(patient.Id);
+            return this.GetPatient(patient.Id);
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
         /// <exception cref="EntityNotFoundException">If there's no link between the doctor and the patient</exception>
         /// <param name="patient">The patient.</param>
         /// <param name="doctor">The doctor.</param>
-        public void RemoveDoctorFor(LightPatientDto patient, LightDoctorDto doctor)
+        public void RemoveLink(LightPatientDto patient, LightDoctorDto doctor)
         {
             var patientEntity = this.Session.Get<Patient>(patient.Id);
             var doctorEntity = this.Session.Get<Doctor>(doctor.Id);
@@ -285,7 +285,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
                                where d.Id == doctor.Id
                                select d).FirstOrDefault();
 
-            if (doctorToDel == null) throw new EntityNotFoundException(typeof(Doctor));
+            if (doctorToDel == null) throw new EntityNotFoundException();
             else return doctorToDel;
         }
 
@@ -295,7 +295,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
                                 where p.Id == patient.Id
                                 select p).FirstOrDefault();
 
-            if (patientToDel == null) throw new EntityNotFoundException(typeof(Patient));
+            if (patientToDel == null) throw new EntityNotFoundException();
             else return patientToDel;
         }
 

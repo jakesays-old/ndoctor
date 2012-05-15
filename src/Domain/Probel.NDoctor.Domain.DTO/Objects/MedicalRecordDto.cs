@@ -18,21 +18,18 @@ namespace Probel.NDoctor.Domain.DTO.Objects
 {
     using System;
 
-    using Probel.Mvvm;
-
     /// <summary>
     /// Represents a medical record item
     /// </summary>
-    [Serializable]
     public class MedicalRecordDto : BaseDto
     {
         #region Fields
 
         private DateTime creationDate;
+        private string html;
         private DateTime lastUpdate;
-        private string name;
-        private string rtf;
-        private TagDto tag = new TagDto(TagCategory.MedicalRecord);
+        private TagDto tag;
+        private string title;
 
         #endregion Fields
 
@@ -44,10 +41,8 @@ namespace Probel.NDoctor.Domain.DTO.Objects
         /// </summary>
         public MedicalRecordDto()
         {
-            this.creationDate
-                = this.lastUpdate
-                = DateTime.Now;
-            this.name = DateTime.Today.ToShortDateString();
+            this.creationDate = DateTime.Now;
+            this.title = DateTime.Now.ToString();
         }
 
         #endregion Constructors
@@ -65,12 +60,28 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             get { return this.creationDate; }
             set
             {
-                if (this.creationDate != value)
+                this.creationDate = value;
+                this.OnPropertyChanged("CreationDate");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the HTML representing the medical record.
+        /// </summary>
+        /// <value>
+        /// The HTML.
+        /// </value>
+        public string Html
+        {
+            get { return this.html; }
+            set
+            {
+                if (this.html != value)
                 {
-                    this.creationDate
-                        = this.lastUpdate
-                        = value;
-                    this.OnPropertyChanged(() => CreationDate);
+                    if (this.html != null) this.State = State.Updated;
+
+                    this.html = value;
+                    this.OnPropertyChanged("Html");
                 }
             }
         }
@@ -86,11 +97,8 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             get { return this.lastUpdate; }
             set
             {
-                if (this.lastUpdate != value)
-                {
-                    this.lastUpdate = value;
-                    this.OnPropertyChanged(() => LastUpdate);
-                }
+                this.lastUpdate = value;
+                this.OnPropertyChanged("LastUpdate");
             }
         }
 
@@ -102,33 +110,11 @@ namespace Probel.NDoctor.Domain.DTO.Objects
         /// </value>
         public string Name
         {
-            get { return this.name; }
+            get { return this.title; }
             set
             {
-                if (value != null && this.name != value)
-                {
-                    this.name = value;
-                    this.OnPropertyChanged(() => Name);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the HTML representing the medical record.
-        /// </summary>
-        /// <value>
-        /// The HTML.
-        /// </value>
-        public string Rtf
-        {
-            get { return this.rtf; }
-            set
-            {
-                if (value != null && this.rtf != value)
-                {
-                    this.rtf = value;
-                    this.OnPropertyChanged(() => Rtf);
-                }
+                this.title = value;
+                this.OnPropertyChanged("Name");
             }
         }
 
@@ -143,11 +129,8 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             get { return this.tag; }
             set
             {
-                if (value != null && tag.Id != value.Id)
-                {
-                    this.tag = value;
-                    this.OnPropertyChanged(() => Tag);
-                }
+                this.tag = value;
+                this.OnPropertyChanged("Tag");
             }
         }
 

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Probel.NDoctor.Plugins.MedicalRecord.Properties {
-    using System;
-    
-    
+namespace Probel.NDoctor.Plugins.MedicalRecord.Properties
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -70,87 +70,6 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bold.
-        /// </summary>
-        internal static string Edition_Bold {
-            get {
-                return ResourceManager.GetString("Edition_Bold", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Bullets.
-        /// </summary>
-        internal static string Edition_Bullets {
-            get {
-                return ResourceManager.GetString("Edition_Bullets", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Center align.
-        /// </summary>
-        internal static string Edition_CenterAlign {
-            get {
-                return ResourceManager.GetString("Edition_CenterAlign", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Italic.
-        /// </summary>
-        internal static string Edition_Italic {
-            get {
-                return ResourceManager.GetString("Edition_Italic", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Justify align.
-        /// </summary>
-        internal static string Edition_JustifyAlign {
-            get {
-                return ResourceManager.GetString("Edition_JustifyAlign", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Left align.
-        /// </summary>
-        internal static string Edition_LeftAlign {
-            get {
-                return ResourceManager.GetString("Edition_LeftAlign", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Numbering.
-        /// </summary>
-        internal static string Edition_Numbering {
-            get {
-                return ResourceManager.GetString("Edition_Numbering", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Right align.
-        /// </summary>
-        internal static string Edition_RightAlign {
-            get {
-                return ResourceManager.GetString("Edition_RightAlign", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Underline.
-        /// </summary>
-        internal static string Edition_Underline {
-            get {
-                return ResourceManager.GetString("Edition_Underline", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Actions.
         /// </summary>
         internal static string Menu_Actions {
@@ -160,38 +79,11 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edition.
-        /// </summary>
-        internal static string Menu_Edition {
-            get {
-                return ResourceManager.GetString("Menu_Edition", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to File.
         /// </summary>
         internal static string Menu_File {
             get {
                 return ResourceManager.GetString("Menu_File", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Font.
-        /// </summary>
-        internal static string Menu_Font {
-            get {
-                return ResourceManager.GetString("Menu_Font", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Paragraph.
-        /// </summary>
-        internal static string Menu_Paragraph {
-            get {
-                return ResourceManager.GetString("Menu_Paragraph", resourceCulture);
             }
         }
         
@@ -223,29 +115,11 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to save this medical record?.
-        /// </summary>
-        internal static string Msg_SaveMedicalRecord {
-            get {
-                return ResourceManager.GetString("Msg_SaveMedicalRecord", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The folder &apos;{0}&apos; was created.
         /// </summary>
         internal static string Msg_TagAdded {
             get {
                 return ResourceManager.GetString("Msg_TagAdded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Question.
-        /// </summary>
-        internal static string Question {
-            get {
-                return ResourceManager.GetString("Question", resourceCulture);
             }
         }
         
@@ -282,15 +156,6 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.Properties {
         internal static string Title_MedicalRecord {
             get {
                 return ResourceManager.GetString("Title_MedicalRecord", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} | Created {1} | Last update: {2}.
-        /// </summary>
-        internal static string Title_MedicalRecordTitle {
-            get {
-                return ResourceManager.GetString("Title_MedicalRecordTitle", resourceCulture);
             }
         }
         

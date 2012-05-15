@@ -16,15 +16,11 @@
 */
 namespace Probel.NDoctor.Domain.DTO.Objects
 {
-    using System;
     using System.Collections.ObjectModel;
-
-    using Probel.Mvvm;
 
     /// <summary>
     /// Represents the illness history of a patient
     /// </summary>
-    [Serializable]
     public class IllnessHistoryDto : BaseDto
     {
         #region Fields
@@ -56,7 +52,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.patient = value;
-                this.OnPropertyChanged(()=>this.Patient);
+                this.OnPropertyChanged("Patient");
             }
         }
 

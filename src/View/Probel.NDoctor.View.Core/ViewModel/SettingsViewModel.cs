@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.View.Core.ViewModel
 {
     using System;
@@ -21,7 +26,6 @@ namespace Probel.NDoctor.View.Core.ViewModel
     using System.Windows.Input;
 
     using Probel.Helpers.Assertion;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Helpers;
     using Probel.NDoctor.View.Core.Helpers;
     using Probel.NDoctor.View.Core.Properties;
@@ -63,7 +67,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
             set
             {
                 this.end = value;
-                this.OnPropertyChanged(() => End);
+                this.OnPropertyChanged("End");
             }
         }
 
@@ -79,7 +83,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
             set
             {
                 Settings.Default.Language = value;
-                this.OnPropertyChanged(() => SelectedLanguage);
+                this.OnPropertyChanged("SelectedLanguage");
             }
         }
 
@@ -93,7 +97,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
             set
             {
                 Settings.Default.SlotDuration = value.Item2;
-                this.OnPropertyChanged(() => SelectedSlot);
+                this.OnPropertyChanged("SelectedSlot");
             }
         }
 
@@ -109,7 +113,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
             set
             {
                 this.start = value;
-                this.OnPropertyChanged(() => Start);
+                this.OnPropertyChanged("Start");
             }
         }
 
@@ -138,12 +142,13 @@ namespace Probel.NDoctor.View.Core.ViewModel
 
         private void Save()
         {
-            Settings.Default.WorkDayStart = this.Start.ToString("HH:mm");
-            Settings.Default.WorkDayEnd = this.End.ToString("HH:mm");
+            var start = this.Start.ToString("HH:mm");
+            var end = this.End.ToString("HH:mm");
+            Settings.Default.WorkDayStart = start;
+            Settings.Default.WorkDayEnd = end;
             Settings.Default.Language = this.SelectedLanguage;
 
             Settings.Default.Save();
-            InnerWindow.Close();
         }
 
         private string Translate(SlotDuration slotDuration)

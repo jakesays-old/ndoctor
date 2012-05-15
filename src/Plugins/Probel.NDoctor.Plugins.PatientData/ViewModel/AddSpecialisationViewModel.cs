@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,12 +16,14 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 {
     using System;
     using System.Windows.Input;
 
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.PatientData.Helpers;
@@ -27,13 +31,12 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
 
-    using StructureMap;
-
     public class AddSpecialisationViewModel : BaseViewModel
     {
         #region Fields
 
         private IPatientDataComponent component;
+        private bool isPopupOpened;
         private TagDto tag;
 
         #endregion Fields
@@ -42,9 +45,10 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 
         public AddSpecialisationViewModel()
         {
-            this.component = ObjectFactory.GetInstance<IPatientDataComponent>();
-            this.Tag = new TagDto(TagCategory.Doctor);
+            this.component = ComponentFactory.PatientDataComponent;
+            this.Tag = new TagDto() { Category = TagCategory.Doctor };
             this.AddCommand = new RelayCommand(() => this.Add(), () => this.CanAdd());
+            this.ShowPopupCommand = new RelayCommand(() => this.IsPopupOpened = true);
         }
 
         #endregion Constructors
@@ -57,13 +61,29 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             private set;
         }
 
+        public bool IsPopupOpened
+        {
+            get { return this.isPopupOpened; }
+            set
+            {
+                this.isPopupOpened = value;
+                this.OnPropertyChanged("IsPopupOpened");
+            }
+        }
+
+        public ICommand ShowPopupCommand
+        {
+            get;
+            private set;
+        }
+
         public TagDto Tag
         {
             get { return this.tag; }
             set
             {
                 this.tag = value;
-                this.OnPropertyChanged(() => Tag);
+                this.OnPropertyChanged("Tag");
             }
         }
 
@@ -77,7 +97,7 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             {
                 using (this.component.UnitOfWork) { this.component.Create(this.Tag); }
 
-                this.Tag = new TagDto(TagCategory.Doctor);
+                this.Tag = new TagDto() { Category = TagCategory.Doctor };
                 PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_DataSaved);
                 Notifyer.OnSpecialisationChanged(this);
             }

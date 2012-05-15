@@ -16,34 +16,30 @@
 */
 namespace Probel.NDoctor.Plugins.MedicalRecord.ViewModel
 {
-    using System;
     using System.Collections.Generic;
-    using System.Windows;
     using System.Windows.Input;
-
-    using AutoMapper;
 
     using Probel.Helpers.Assertion;
     using Probel.Helpers.Strings;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.MedicalRecord.Dto;
-    using Probel.NDoctor.Plugins.MedicalRecord.Helpers;
     using Probel.NDoctor.Plugins.MedicalRecord.Properties;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class WorkbenchViewModel : BaseViewModel
     {
         #region Fields
 
+        private ICommand addFolderCommand;
+        private ICommand addRecordCommand;
         private TitledMedicalRecordCabinetDto cabinet;
-        private IMedicalRecordComponent component = ObjectFactory.GetInstance<IMedicalRecordComponent>();
+        private IMedicalRecordComponent component = ComponentFactory.MedicalRecordComponent;
+        private TitledMedicalRecordDto recordToAdd;
         private TitledMedicalRecordDto selectedRecord;
         private IList<TagDto> tags = new List<TagDto>();
+        private TagDto tagToAdd;
 
         #endregion Fields
 
@@ -56,12 +52,48 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.ViewModel
         public WorkbenchViewModel()
             : base()
         {
-            Notifyer.Refreshed += (sender, e) => this.Refresh();
+            this.RecordToAdd = new TitledMedicalRecordDto() { State = State.Added };
+            this.TagToAdd = new TagDto() { Category = TagCategory.MedicalRecord };
+
+            #region Add record
+            this.addRecordCommand = new RelayCommand(() =>
+            {
+                using (this.component.UnitOfWork)
+                {
+                    this.component.Create(this.RecordToAdd, this.Host.SelectedPatient);
+                }
+                this.Refresh();
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_RecordAdded);
+            }, () => this.RecordToAdd.Tag != null);
+            #endregion
+
+            #region Add folder
+            this.addFolderCommand = new RelayCommand(() =>
+            {
+                using (this.component.UnitOfWork)
+                {
+                    this.component.Create(this.tagToAdd);
+                }
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_TagAdded.StringFormat(this.tagToAdd.Name));
+                this.ResetTagToAdd();
+                this.Refresh();
+            }, () => !string.IsNullOrWhiteSpace(this.tagToAdd.Name));
+            #endregion
         }
 
         #endregion Constructors
 
         #region Properties
+
+        public ICommand AddFolderCommand
+        {
+            get { return this.addFolderCommand; }
+        }
+
+        public ICommand AddRecordCommand
+        {
+            get { return this.addRecordCommand; }
+        }
 
         public TitledMedicalRecordCabinetDto Cabinet
         {
@@ -69,13 +101,18 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.ViewModel
             set
             {
                 this.cabinet = value;
-                this.OnPropertyChanged(() => Cabinet);
+                this.OnPropertyChanged("Cabinet");
             }
         }
 
-        public bool IsRecordSelected
+        public TitledMedicalRecordDto RecordToAdd
         {
-            get { return this.SelectedRecord != null; }
+            get { return this.recordToAdd; }
+            set
+            {
+                this.recordToAdd = value;
+                this.OnPropertyChanged("RecordToAdd");
+            }
         }
 
         public TitledMedicalRecordDto SelectedRecord
@@ -84,8 +121,7 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.ViewModel
             set
             {
                 this.selectedRecord = value;
-                this.OnPropertyChanged(() => this.SelectedRecord);
-                this.OnPropertyChanged(() => this.IsRecordSelected);
+                this.OnPropertyChanged("SelectedRecord");
             }
         }
 
@@ -101,8 +137,48 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.ViewModel
             set
             {
                 this.tags = value;
-                this.OnPropertyChanged(() => Tags);
+                this.OnPropertyChanged("Tags");
             }
+        }
+
+        public TagDto TagToAdd
+        {
+            get { return this.tagToAdd; }
+            set
+            {
+                this.tagToAdd = value;
+                this.OnPropertyChanged("TagToAdd");
+            }
+        }
+
+        public string TitleAddFolder
+        {
+            get { return Messages.Title_AddFolder; }
+        }
+
+        public string TitleAddRecord
+        {
+            get { return Messages.Title_AddRecord; }
+        }
+
+        public string TitleBtnAdd
+        {
+            get { return Messages.Title_BtnAdd; }
+        }
+
+        public string TitleBtnSearch
+        {
+            get { return Messages.Btn_SearchFor; }
+        }
+
+        public string TitleMedicalRecord
+        {
+            get { return Messages.Title_MedicalRecord; }
+        }
+
+        public string TitleSearchFor
+        {
+            get { return Messages.Title_SearchFor; }
         }
 
         #endregion Properties
@@ -111,59 +187,35 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.ViewModel
 
         public void Refresh()
         {
-            Assert.IsNotNull(PluginContext.Host);
-            Assert.IsNotNull(PluginContext.Host.SelectedPatient);
+            Assert.IsNotNull(this.Host);
+            Assert.IsNotNull(this.Host.SelectedPatient);
 
             using (this.component.UnitOfWork)
             {
-                var result = this.component.GetMedicalRecordCabinet(PluginContext.Host.SelectedPatient);
+                var result = this.component.GetMedicalRecordCabinet(this.Host.SelectedPatient);
                 this.Cabinet = TitledMedicalRecordCabinetDto.CreateFrom(result);
                 this.Tags = this.component.FindTags(TagCategory.MedicalRecord);
-
-                if (this.SelectedRecord != null)
-                {
-                    var record = this.component.FindMedicalRecordById(this.SelectedRecord.Id);
-                    this.SelectedRecord = (record != null)
-                        ? TitledMedicalRecordDto.CreateFrom(record)
-                        : null;
-                }
             }
-
-            this.Logger.Debug("Load medical records");
         }
 
         public void Save()
         {
-            Assert.IsNotNull(PluginContext.Host);
-            Assert.IsNotNull(PluginContext.Host.SelectedPatient);
-
-            this.Cabinet.ForEachRecord(x =>
-            {
-                if (x.Rtf != this.selectedRecord.Rtf)
-                {
-                    x.Rtf = this.SelectedRecord.Rtf;
-                    //x.State = State.Updated;
-                    x.LastUpdate = DateTime.Now;
-                }
-            }
-                , s => s.Id == this.SelectedRecord.Id);
+            Assert.IsNotNull(this.Host);
+            Assert.IsNotNull(this.Host.SelectedPatient);
 
             using (this.component.UnitOfWork)
             {
-                this.component.UpdateCabinet(PluginContext.Host.SelectedPatient, this.Cabinet);
+                this.component.UpdateCabinet(this.Host.SelectedPatient, this.Cabinet);
             }
         }
 
-        /// <summary>
-        /// Saves the record if the user interaction demand saving.
-        /// </summary>
-        internal void SaveOnUserAction()
+        private void ResetTagToAdd()
         {
-            if (this.SelectedRecord != null && this.SelectedRecord.State == State.Updated)
-            {
-                var dr = MessageBox.Show(Messages.Msg_SaveMedicalRecord, Messages.Question, MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (dr == MessageBoxResult.Yes) { this.Save(); }
-            }
+            this.tagToAdd.Name = null;
+            this.tagToAdd.Notes = null;
+            this.tagToAdd.Category = TagCategory.MedicalRecord;
+            this.tagToAdd.State = State.Added;
+            this.tagToAdd.Id = -1;
         }
 
         #endregion Methods

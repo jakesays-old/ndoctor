@@ -18,8 +18,6 @@ namespace Probel.NDoctor.Plugins.PatientData.View
 {
     using System.Windows.Controls;
 
-    using Probel.NDoctor.Plugins.PatientData.ViewModel;
-
     /// <summary>
     /// Interaction logic for Workbench.xaml
     /// </summary>
@@ -30,7 +28,6 @@ namespace Probel.NDoctor.Plugins.PatientData.View
         public Workbench()
         {
             InitializeComponent();
-            this.DataContext = new WorkbenchViewModel();
         }
 
         #endregion Constructors

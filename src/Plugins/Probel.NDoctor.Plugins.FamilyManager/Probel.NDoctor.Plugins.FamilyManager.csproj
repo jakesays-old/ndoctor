@@ -41,12 +41,6 @@
     <Reference Include="log4net">
       <HintPath>..\..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Probel.Mvvm">
-      <HintPath>..\..\..\lib\Probel.Mvvm\Probel.Mvvm.dll</HintPath>
-    </Reference>
-    <Reference Include="StructureMap">
-      <HintPath>..\..\packages\structuremap.2.6.3\lib\StructureMap.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
@@ -67,7 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FamilyManager.cs" />
-    <Compile Include="Helpers\Notifyer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -87,14 +80,17 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Translations\AddFamilyWorkbenchText.cs" />
-    <Compile Include="Translations\FamilyText.cs" />
     <Compile Include="Translations\LightPatientText.cs" />
     <Compile Include="ViewModel\LightPatientViewModel.cs" />
     <Compile Include="ViewModel\AddFamilyViewModel.cs" />
+    <Compile Include="ViewModel\MedicalCabinetViewModel.cs" />
     <Compile Include="ViewModel\RemoveFamilyViewModel.cs" />
     <Compile Include="ViewModel\WorkbenchViewModel.cs" />
     <Compile Include="View\AddFamilyWorkbench.xaml.cs">
       <DependentUpon>AddFamilyWorkbench.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MedicalCabinetView.xaml.cs">
+      <DependentUpon>MedicalCabinetView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\RemoveFamilyWorkbench.xaml.cs">
       <DependentUpon>RemoveFamilyWorkbench.xaml</DependentUpon>
@@ -122,10 +118,6 @@
     <Resource Include="Images\Users.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Domain\Probel.NDoctor.Domain.DAL\Probel.NDoctor.Domain.DAL.csproj">
-      <Project>{96B7A128-8A98-4B49-A3CB-30AE783236E9}</Project>
-      <Name>Probel.NDoctor.Domain.DAL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Domain\Probel.NDoctor.Domain.DTO\Probel.NDoctor.Domain.DTO.csproj">
       <Project>{DB2E15D4-BA31-457B-BF73-71208922A0A0}</Project>
       <Name>Probel.NDoctor.Domain.DTO</Name>
@@ -149,6 +141,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="View\AddFamilyWorkbench.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MedicalCabinetView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

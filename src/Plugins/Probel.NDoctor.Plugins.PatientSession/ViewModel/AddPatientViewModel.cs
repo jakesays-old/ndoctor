@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,28 +16,27 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PatientSession.ViewModel
 {
     using System;
     using System.Collections.ObjectModel;
     using System.Windows.Input;
 
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Helpers;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.PatientSession.Properties;
-    using Probel.NDoctor.View.Core.Helpers;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class AddPatientViewModel : BaseViewModel
     {
         #region Fields
 
-        private IPatientSessionComponent component = ObjectFactory.GetInstance<IPatientSessionComponent>();
+        private IPatientSessionComponent component = ComponentFactory.PatientSessionComponent;
         private LightPatientDto patient;
 
         #endregion Fields
@@ -62,6 +63,11 @@ namespace Probel.NDoctor.Plugins.PatientSession.ViewModel
             private set;
         }
 
+        public string BtnAdd
+        {
+            get { return Messages.Btn_Add; }
+        }
+
         public ObservableCollection<Tuple<string, Gender>> Genders
         {
             get;
@@ -74,8 +80,7 @@ namespace Probel.NDoctor.Plugins.PatientSession.ViewModel
             set
             {
                 this.patient = value;
-                this.OnPropertyChanged(() => Patient);
-                this.OnPropertyChanged(() => SelectedGender);
+                this.OnPropertyChanged("Patient", "SelectedGender");
             }
         }
 
@@ -85,8 +90,23 @@ namespace Probel.NDoctor.Plugins.PatientSession.ViewModel
             set
             {
                 this.Patient.Gender = value.Item2;
-                this.OnPropertyChanged(() => SelectedGender);
+                this.OnPropertyChanged("SelectedGender");
             }
+        }
+
+        public string TitleFirstName
+        {
+            get { return Messages.Title_FirstName; }
+        }
+
+        public string TitleGender
+        {
+            get { return Messages.Title_Gender; }
+        }
+
+        public string TitleLastName
+        {
+            get { return Messages.Title_LastName; }
         }
 
         #endregion Properties
@@ -98,8 +118,8 @@ namespace Probel.NDoctor.Plugins.PatientSession.ViewModel
             try
             {
                 using (this.component.UnitOfWork) { this.component.Create(this.Patient); }
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_PatientAdded);
-                InnerWindow.Close();
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_PatientAdded);
+                this.Host.NavigateBack();
             }
             catch (Exception ex)
             {

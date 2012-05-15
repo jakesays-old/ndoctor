@@ -1,20 +1,4 @@
-﻿/*
-    This file is part of NDoctor.
-
-    NDoctor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    NDoctor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
-*/
-namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
+﻿namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
 {
     using System;
     using System.Collections.Generic;
@@ -25,21 +9,17 @@ namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
 
     using Probel.Helpers.Assertion;
     using Probel.Helpers.Events;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Helpers;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.FamilyManager.Properties;
-    using Probel.NDoctor.Plugins.MedicalRecord.Helpers;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class LightPatientViewModel : LightPatientDto
     {
         #region Fields
 
-        private IFamilyComponent component = ObjectFactory.GetInstance<IFamilyComponent>();
+        private IFamilyComponent component = ComponentFactory.FamilyComponent;
         private bool isSelected = false;
         private Tuple<FamilyRelations, string> selectedRelation;
         private LightPatientDto sessionPatient;
@@ -53,7 +33,7 @@ namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
             this.Relations = new List<Tuple<FamilyRelations, string>>();
 
             this.AddCommand = new RelayCommand(() => this.Add(), () => this.CanAdd());
-            this.RemoveCommand = new RelayCommand(() => this.Delete());
+            this.RemoveCommand = new RelayCommand(() => this.Remove());
         }
 
         #endregion Constructors
@@ -84,7 +64,7 @@ namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
             set
             {
                 this.isSelected = value;
-                this.OnPropertyChanged(() => IsSelected);
+                this.OnPropertyChanged("IsSelected");
             }
         }
 
@@ -106,7 +86,7 @@ namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
             set
             {
                 this.selectedRelation = value;
-                this.OnPropertyChanged(() => SelectedRelation);
+                this.OnPropertyChanged("SelectedRelation");
             }
         }
 
@@ -116,7 +96,7 @@ namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
             set
             {
                 this.sessionPatient = value;
-                this.OnPropertyChanged(() => SessionPatient);
+                this.OnPropertyChanged("SessionPatient");
 
                 this.Relations = new List<Tuple<FamilyRelations, string>>();
                 this.Relations.Add(new Tuple<FamilyRelations, string>(FamilyRelations.Parent, this.SetRelation(FamilyRelations.Parent)));
@@ -136,15 +116,12 @@ namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
                 , MessageBoxImage.Question);
             if (dr == MessageBoxResult.No) return;
 
-            //this.State = State.Created;
+            this.State = State.Added;
             using (this.component.UnitOfWork)
             {
                 this.component.Update(this.BuildFamily());
             }
-            this.OnRefreshed(State.Created);
-            this.BuildFamily();
-
-            Notifyer.OnRefreshed(this);
+            this.OnRefreshed(State.Added);
         }
 
         private FamilyDto BuildFamily()
@@ -178,7 +155,7 @@ namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
                 this.Refreshed(this, new EventArgs<State>(state));
         }
 
-        private void Delete()
+        private void Remove()
         {
             var dr = MessageBox.Show(Messages.Msg_AskRemoveMember
                 , Messages.Question
@@ -199,12 +176,10 @@ namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
             switch (current.Gender)
             {
                 case Gender.Male:
-                    family.Fathers.Clear();
-                    family.Fathers.Add(current);
+                    family.Father = current;
                     break;
                 case Gender.Female:
-                    family.Mothers.Clear();
-                    family.Mothers.Add(current);
+                    family.Mother = current;
                     break;
                 default:
                     Assert.FailOnEnumeration(family.Current.Gender);

@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,18 +16,21 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PatientSession.ViewModel
 {
+    using System.Collections.Generic;
+    using System.Windows;
     using System.Windows.Input;
 
-    using Probel.Mvvm.DataBinding;
+    using AutoMapper;
+
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.PatientSession.Properties;
-    using Probel.NDoctor.View.Core.Helpers;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class LightPatientViewModel : LightPatientDto
     {
@@ -45,10 +50,12 @@ namespace Probel.NDoctor.Plugins.PatientSession.ViewModel
                 PluginContext.Host.SelectedPatient = this;
                 this.IncrementCounter();
 
-                InnerWindow.Close();
-                PluginContext.Host.NavigateToStartPage();
+                MessageBox.Show(Messages.Msg_PatientSelected
+                    , Messages.Information
+                    , MessageBoxButton.OK
+                    , MessageBoxImage.Information);
             });
-            this.component = ObjectFactory.GetInstance<IPatientSessionComponent>();
+            this.component = ComponentFactory.PatientSessionComponent;
         }
 
         #endregion Constructors
@@ -69,7 +76,7 @@ namespace Probel.NDoctor.Plugins.PatientSession.ViewModel
             set
             {
                 this.isSelected = value;
-                this.OnPropertyChanged(() => IsSelected);
+                this.OnPropertyChanged("IsSelected");
             }
         }
 
@@ -82,6 +89,26 @@ namespace Probel.NDoctor.Plugins.PatientSession.ViewModel
         #endregion Properties
 
         #region Methods
+
+        /// <summary>
+        /// Creates a <see cref="LightPatientViewModel"/> from an instance of <see cref="LightPatientDto"/>.
+        /// </summary>
+        /// <param name="patient">The patient.</param>
+        /// <returns></returns>
+        public static LightPatientViewModel CreateFrom(LightPatientDto patient)
+        {
+            return Mapper.Map<LightPatientDto, LightPatientViewModel>(patient);
+        }
+
+        /// <summary>
+        /// Creates a enumeration of <see cref="LightPatientViewModel"/> from an instance of enumeration of <see cref="LightPatientDto"/>.
+        /// </summary>
+        /// <param name="patient">The patient.</param>
+        /// <returns></returns>
+        public static IEnumerable<LightPatientViewModel> CreateFrom(IEnumerable<LightPatientDto> patients)
+        {
+            return Mapper.Map<IEnumerable<LightPatientDto>, IEnumerable<LightPatientViewModel>>(patients);
+        }
 
         private void IncrementCounter()
         {

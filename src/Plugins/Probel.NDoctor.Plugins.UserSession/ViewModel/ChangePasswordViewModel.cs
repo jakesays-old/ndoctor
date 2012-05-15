@@ -19,14 +19,10 @@ namespace Probel.NDoctor.Plugins.USerSession.ViewModel
     using System;
     using System.Windows.Input;
 
-    using Probel.Helpers.WPF;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Plugins.UserSession.Properties;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class ChangePasswordViewModel : BaseViewModel
     {
@@ -45,12 +41,9 @@ namespace Probel.NDoctor.Plugins.USerSession.ViewModel
         public ChangePasswordViewModel()
         {
             this.IsPopupOpened = false;
-            if (!Designer.IsDesignMode)
-            {
-                this.component = ObjectFactory.GetInstance<IUserSessionComponent>();
-                this.SaveCommand = new RelayCommand(() => this.Save(), () => this.CanSave());
-                this.OpenPopupCommand = new RelayCommand(() => this.IsPopupOpened = true);
-            }
+            this.component = ComponentFactory.UserSessionComponent;
+            this.SaveCommand = new RelayCommand(() => this.Save(), () => this.CanSave());
+            this.OpenPopupCommand = new RelayCommand(() => this.IsPopupOpened = true);
         }
 
         #endregion Constructors
@@ -63,7 +56,7 @@ namespace Probel.NDoctor.Plugins.USerSession.ViewModel
             set
             {
                 this.checkNewPassword = value;
-                this.OnPropertyChanged(() => CheckNewPassword);
+                this.OnPropertyChanged("CheckNewPassword");
             }
         }
 
@@ -73,7 +66,7 @@ namespace Probel.NDoctor.Plugins.USerSession.ViewModel
             set
             {
                 this.isPopupOpened = value;
-                this.OnPropertyChanged(() => IsPopupOpened);
+                this.OnPropertyChanged("IsPopupOpened");
             }
         }
 
@@ -83,7 +76,7 @@ namespace Probel.NDoctor.Plugins.USerSession.ViewModel
             set
             {
                 this.newPassword = value;
-                this.OnPropertyChanged(() => NewPassword);
+                this.OnPropertyChanged("NewPassword");
             }
         }
 
@@ -93,7 +86,7 @@ namespace Probel.NDoctor.Plugins.USerSession.ViewModel
             set
             {
                 this.oldPassword = value;
-                this.OnPropertyChanged(() => OldPassword);
+                this.OnPropertyChanged("OldPassword");
             }
         }
 
@@ -115,12 +108,12 @@ namespace Probel.NDoctor.Plugins.USerSession.ViewModel
 
         private bool CanSave()
         {
-            if (PluginContext.Host.ConnectedUser == null) return false;
+            if (this.Host.ConnectedUser == null) return false;
 
             var isValidPwd = false;
             using (this.component.UnitOfWork)
             {
-                isValidPwd = this.component.CanConnect(PluginContext.Host.ConnectedUser, this.OldPassword);
+                isValidPwd = this.component.CanConnect(this.Host.ConnectedUser, this.OldPassword);
             }
             return isValidPwd
                 && this.NewPassword == this.CheckNewPassword
@@ -133,10 +126,10 @@ namespace Probel.NDoctor.Plugins.USerSession.ViewModel
             {
                 using (this.component.UnitOfWork)
                 {
-                    this.component.UpdatePassword(PluginContext.Host.ConnectedUser, this.NewPassword);
+                    this.component.UpdatePassword(this.Host.ConnectedUser, this.NewPassword);
                 }
                 this.IsPopupOpened = false;
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_PwdChanged);
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_PwdChanged);
             }
             catch (Exception ex)
             {

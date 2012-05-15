@@ -16,10 +16,7 @@
 */
 namespace Probel.NDoctor.View.Plugins.MenuData
 {
-    using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Windows.Input;
 
     public class RibbonMenuButtonData : RibbonControlData
     {
@@ -38,17 +35,6 @@ namespace Probel.NDoctor.View.Plugins.MenuData
         /// </summary>
         public RibbonMenuButtonData()
             : this(true)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RibbonMenuButtonData"/> class.
-        /// </summary>
-        /// <param name="label">The label.</param>
-        /// <param name="uriImage">The URI image.</param>
-        /// <param name="command">The command.</param>
-        public RibbonMenuButtonData(string label, string uriImage, ICommand command)
-            : base(label, uriImage, command)
         {
         }
 
@@ -76,7 +62,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
             set
             {
                 this.isApplicationMenu = value;
-                this.OnPropertyChanged(() => this.IsApplicationMenu);
+                this.OnPropertyChanged("IsApplicationMenu");
             }
         }
 
@@ -86,20 +72,10 @@ namespace Probel.NDoctor.View.Plugins.MenuData
             set
             {
                 this.nestingDepth = value;
-                this.OnPropertyChanged(() => this.NestingDepth);
+                this.OnPropertyChanged("NestingDepth");
             }
         }
 
         #endregion Properties
-
-        #region Methods
-
-        public void ReplaceDataCollection(IEnumerable<RibbonControlData> collection)
-        {
-            this.controlDataCollection = new ObservableCollection<RibbonControlData>(collection);
-            this.OnPropertyChanged(() => this.ControlDataCollection);
-        }
-
-        #endregion Methods
     }
 }

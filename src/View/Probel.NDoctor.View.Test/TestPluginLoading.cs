@@ -22,7 +22,6 @@ namespace Probel.NDoctor.View.Test
     using NUnit.Framework;
 
     using Probel.NDoctor.View.Plugins;
-    using Probel.NDoctor.View.Plugins.Helpers;
     using Probel.NDoctor.View.Test.Stubs;
 
     using Rhino.Mocks;
@@ -34,6 +33,7 @@ namespace Probel.NDoctor.View.Test
         #region Fields
 
         private PluginContainer container;
+        private IPluginHost host;
         private IPluginLoader loader;
 
         #endregion Fields
@@ -43,7 +43,7 @@ namespace Probel.NDoctor.View.Test
         [Test]
         public void CanLoadValidPlugins()
         {
-            PluginContext.Host.Stub(x => x.HostVersion).Return(new Version("1.0.0.0"));
+            host.Stub(x => x.HostVersion).Return(new Version("1.0.0.0"));
             container.Plugins = this.CreatePlugins("1.0.0.0", new PluginValidator("1.0.0.0", ValidationMode.Strict));
             container.LoadPlugins();
 
@@ -53,7 +53,7 @@ namespace Probel.NDoctor.View.Test
         [Test]
         public void FailToLoadInvalidPlugins()
         {
-            PluginContext.Host.Stub(x => x.HostVersion).Return(new Version("2.0.0.0"));
+            host.Stub(x => x.HostVersion).Return(new Version("2.0.0.0"));
             container.Plugins = this.CreatePlugins("1.0.0.0", new PluginValidator("4.0.0.0", ValidationMode.Strict));
             container.LoadPlugins();
 
@@ -63,20 +63,20 @@ namespace Probel.NDoctor.View.Test
         [TestFixtureSetUp]
         public void PluginFixture()
         {
-            PluginContext.Host = MockRepository.GenerateMock<IPluginHost>();
+            this.host = MockRepository.GenerateMock<IPluginHost>();
             this.loader = MockRepository.GenerateMock<IPluginLoader>();
-            this.container = new PluginContainer(PluginContext.Host, loader);
+            this.container = new PluginContainer(host, loader);
         }
 
         private IList<IPlugin> CreatePlugins(string version, PluginValidator validator)
         {
             return new List<IPlugin>()
             {
-                new PluginStub(version,PluginContext.Host, validator),
-                new PluginStub(version,PluginContext.Host, validator),
-                new PluginStub(version,PluginContext.Host, validator),
-                new PluginStub(version,PluginContext.Host, validator),
-                new PluginStub(version,PluginContext.Host, validator),
+                new PluginStub(version,host, validator),
+                new PluginStub(version,host, validator),
+                new PluginStub(version,host, validator),
+                new PluginStub(version,host, validator),
+                new PluginStub(version,host, validator),
             };
         }
 

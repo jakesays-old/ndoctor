@@ -61,15 +61,6 @@ namespace Probel.NDoctor.Domain.DAL.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The ID type is &apos;{0}&apos; while expecting &apos;{1}&apos;.
-        /// </summary>
-        internal static string DalSessionException_UnknownId1 {
-            get {
-                return ResourceManager.GetString("DalSessionException_UnknownId1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Impossible to execute this action. This is a unexpected state that wasn&apos;t forseen or it will break business logic rules..
         /// </summary>
         internal static string Ex_BusinessLogicException {
@@ -97,15 +88,6 @@ namespace Probel.NDoctor.Domain.DAL.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The ID type is &apos;{0}&apos; while expecting &apos;{1}&apos;.
-        /// </summary>
-        internal static string Ex_DalSessionException_UnknownId {
-            get {
-                return ResourceManager.GetString("Ex_DalSessionException_UnknownId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Empty password are not accepted.
         /// </summary>
         internal static string Ex_EmptyPasswordException {
@@ -124,7 +106,7 @@ namespace Probel.NDoctor.Domain.DAL.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The searched item of type &apos;{0}&apos; doesn&apos;t exist in the database.
+        ///   Looks up a localized string similar to The specified item doesn&apos;t exist in the database.
         /// </summary>
         internal static string Ex_EntityNotFoundException {
             get {
@@ -147,15 +129,6 @@ namespace Probel.NDoctor.Domain.DAL.Properties {
         internal static string Ex_EntityNotFoundException_NoRelationRightSide {
             get {
                 return ResourceManager.GetString("Ex_EntityNotFoundException_NoRelationRightSide", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The item you want to create already exist in the database..
-        /// </summary>
-        internal static string Ex_ExistingItemException {
-            get {
-                return ResourceManager.GetString("Ex_ExistingItemException", resourceCulture);
             }
         }
         

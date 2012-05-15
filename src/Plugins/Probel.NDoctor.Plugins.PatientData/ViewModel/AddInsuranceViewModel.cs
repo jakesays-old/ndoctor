@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,22 +16,22 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 {
     using System;
     using System.Windows.Input;
 
     using Probel.Helpers.WPF;
-    using Probel.Mvvm.DataBinding;
-    using Probel.NDoctor.Domain.DAL.Exceptions;
     using Probel.NDoctor.Domain.DTO.Components;
+    using Probel.NDoctor.Domain.DTO.Exceptions;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.PatientData.Helpers;
     using Probel.NDoctor.Plugins.PatientData.Properties;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class AddInsuranceViewModel : BaseViewModel
     {
@@ -37,6 +39,7 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 
         private IPatientDataComponent component;
         private InsuranceDto insurance;
+        private bool isPopupOpened;
 
         #endregion Fields
 
@@ -47,10 +50,11 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             this.Insurance = new InsuranceDto();
 
             this.AddCommand = new RelayCommand(() => this.Add(), () => this.CanAdd());
+            this.ShowPopupCommand = new RelayCommand(() => this.IsPopupOpened = true);
 
             if (!Designer.IsDesignMode)
             {
-                this.component = ObjectFactory.GetInstance<IPatientDataComponent>();
+                this.component = ComponentFactory.PatientDataComponent;
             }
         }
 
@@ -70,8 +74,26 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             set
             {
                 this.insurance = value;
-                this.OnPropertyChanged(() => Insurance);
+                this.OnPropertyChanged("Insurance");
             }
+        }
+
+        public bool IsPopupOpened
+        {
+            get { return this.isPopupOpened; }
+            set
+            {
+                this.Insurance = new InsuranceDto();
+
+                this.isPopupOpened = value;
+                this.OnPropertyChanged("IsPopupOpened");
+            }
+        }
+
+        public ICommand ShowPopupCommand
+        {
+            get;
+            private set;
         }
 
         #endregion Properties
@@ -86,8 +108,9 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
                 {
                     this.component.Create(this.Insurance);
                 }
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Title_OperationDone);
-                Notifyer.OnSateliteDataChanged(this);
+                this.Host.WriteStatus(StatusType.Info, Messages.Title_OperationDone);
+                this.IsPopupOpened = false;
+                Notifyer.OnDoctorLinkChanged(this);
             }
             catch (ExistingItemException ex)
             {

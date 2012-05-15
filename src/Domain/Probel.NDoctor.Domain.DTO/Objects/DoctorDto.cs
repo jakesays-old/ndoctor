@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,16 +16,14 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Domain.DTO.Objects
 {
-    using System;
-
-    using Probel.Mvvm;
-
     /// <summary>
     /// Doctor
     /// </summary>
-    [Serializable]
     public class DoctorDto : BaseDto
     {
         #region Fields
@@ -62,7 +62,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.address = value;
-                this.OnPropertyChanged(() => this.Address);
+                this.OnPropertyChanged("Address");
             }
         }
 
@@ -90,7 +90,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.firstName = value;
-                this.OnPropertyChanged(() => this.FirstName);
+                this.OnPropertyChanged("FirstName");
             }
         }
 
@@ -104,7 +104,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.gender = value;
-                this.OnPropertyChanged(() => this.Gender);
+                this.OnPropertyChanged("Gender");
             }
         }
 
@@ -120,7 +120,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.lastName = value;
-                this.OnPropertyChanged(() => this.LastName);
+                this.OnPropertyChanged("LastName");
             }
         }
 
@@ -136,7 +136,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.proMail = value;
-                this.OnPropertyChanged(() => this.ProMail);
+                this.OnPropertyChanged("ProMail");
             }
         }
 
@@ -152,7 +152,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.proMobile = value;
-                this.OnPropertyChanged(() => this.ProMobile);
+                this.OnPropertyChanged("ProMobile");
             }
         }
 
@@ -168,7 +168,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.proPhone = value;
-                this.OnPropertyChanged(() => this.ProPhone);
+                this.OnPropertyChanged("ProPhone");
             }
         }
 
@@ -178,7 +178,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.specialisation = value;
-                this.OnPropertyChanged(() => this.Specialisation);
+                this.OnPropertyChanged("Specialisation");
             }
         }
 

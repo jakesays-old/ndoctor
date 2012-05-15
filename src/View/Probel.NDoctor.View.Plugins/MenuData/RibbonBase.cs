@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,59 +16,22 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.View.Plugins.MenuData
 {
-    using System;
-
-    using Probel.Mvvm.DataBinding;
+    using Probel.Helpers.Events;
 
     public class RibbonBase : ObservableObject
     {
         #region Fields
 
-        private double height;
-        private string name = Guid.NewGuid().ToString();
         private int order;
-        private double width;
 
         #endregion Fields
 
-        #region Constructors
-
-        public RibbonBase()
-        {
-            this.width = -1;
-        }
-
-        #endregion Constructors
-
         #region Properties
-
-        public double Height
-        {
-            get { return this.height; }
-            set
-            {
-                this.height = value;
-                this.OnPropertyChanged(() => Height);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the name of this control. It is used to find controls
-        /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
-        public string Name
-        {
-            get { return this.name; }
-            set
-            {
-                this.name = value;
-                this.OnPropertyChanged(() => Name);
-            }
-        }
 
         public int Order
         {
@@ -74,17 +39,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
             set
             {
                 this.order = value;
-                this.OnPropertyChanged(() => Order);
-            }
-        }
-
-        public double Width
-        {
-            get { return this.width; }
-            set
-            {
-                this.width = value;
-                this.OnPropertyChanged(() => Width);
+                this.OnPropertyChanged("Order");
             }
         }
 

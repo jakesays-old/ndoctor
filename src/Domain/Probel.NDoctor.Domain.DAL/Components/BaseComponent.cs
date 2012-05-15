@@ -34,6 +34,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
     using Probel.NDoctor.Domain.DAL.Exceptions;
     using Probel.NDoctor.Domain.DAL.Properties;
     using Probel.NDoctor.Domain.DTO.Components;
+    using Probel.NDoctor.Domain.DTO.Exceptions;
     using Probel.NDoctor.Domain.DTO.Objects;
 
     /* REFACTOR: 1027 lines of code => refactor this god object.
@@ -581,9 +582,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
             this.CheckSession();
 
             var professions = (from profession in this.Session.Query<Profession>()
-                               select profession)
-                                  .OrderBy(e => e.Name)
-                                  .ToList();
+                               select profession).ToList();
 
             return Mapper.Map<IList<Profession>, IList<ProfessionDto>>(professions);
         }
@@ -597,9 +596,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
             this.CheckSession();
 
             var reputations = (from reputation in this.Session.Query<Reputation>()
-                               select reputation)
-                                    .OrderBy(e => e.Name)
-                                    .ToList();
+                               select reputation).ToList();
 
             return Mapper.Map<IList<Reputation>, IList<ReputationDto>>(reputations);
         }
@@ -646,6 +643,18 @@ namespace Probel.NDoctor.Domain.DAL.Components
             {
                 throw new QueryException(ex);
             }
+        }
+
+        /// <summary>
+        /// Gets the patient with the specified id.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <returns></returns>
+        public LightPatientDto GetPatientLightById(long id)
+        {
+            this.CheckSession();
+            var patient = this.Session.Get<Patient>(id);
+            return Mapper.Map<Patient, LightPatientDto>(patient);
         }
 
         /// <summary>
@@ -807,7 +816,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
             this.CheckSession();
 
             var entity = this.Session.Get<Picture>(item.Id);
-            if (entity == null) throw new EntityNotFoundException(typeof(Picture));
+            if (entity == null) throw new EntityNotFoundException();
 
             Mapper.Map<PictureDto, Picture>(item, entity);
             this.Session.Update(entity);
@@ -874,13 +883,8 @@ namespace Probel.NDoctor.Domain.DAL.Components
             this.CheckSession();
 
             var entity = this.Session.Get<MedicalRecord>(item.Id);
-            var tag = this.Session.Get<Tag>(entity.Tag.Id);
-
-            //Reload the tag to avoid exception from nhibernate
             Mapper.Map<MedicalRecordDto, MedicalRecord>(item, entity);
-
-            entity.Tag = tag;
-            this.Session.Merge(entity);
+            this.Session.Update(entity);
         }
 
         private void CloseSession()
@@ -954,9 +958,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
             this.CheckSession();
 
             var insurances = (from insurance in this.Session.Query<Insurance>()
-                              select insurance)
-                                .OrderBy(e => e.Name)
-                                .ToList();
+                              select insurance).ToList();
             return insurances;
         }
 
@@ -974,9 +976,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
             this.CheckSession();
 
             return (from practice in this.Session.Query<Practice>()
-                    select practice)
-                              .OrderBy(e => e.Name)
-                              .ToList();
+                    select practice).ToList();
         }
 
         private IList<Role> GetAllEntitiesRoles()
@@ -996,7 +996,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
         private void OpenSession()
         {
             if (Session == null || !Session.IsOpen)
-                this.Session = DAL.SessionFactory.OpenSession();
+                this.Session = SQLiteDatabase.SessionFactory.OpenSession();
             else throw new DalSessionException(Messages.Msg_ErrorSessionAlreadyOpenException);
         }
 

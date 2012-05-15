@@ -16,7 +16,6 @@
 */
 namespace Probel.NDoctor.Domain.DAL.Components
 {
-    using System;
     using System.Linq;
 
     using AutoMapper;
@@ -25,7 +24,6 @@ namespace Probel.NDoctor.Domain.DAL.Components
     using NHibernate.Linq;
 
     using Probel.Helpers.Assertion;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DAL.Entities;
     using Probel.NDoctor.Domain.DAL.Exceptions;
     using Probel.NDoctor.Domain.DAL.Helpers;
@@ -72,31 +70,14 @@ namespace Probel.NDoctor.Domain.DAL.Components
             var foundPatient = (from p in this.Session.Query<Patient>()
                                 where p.Id == forPatient.Id
                                 select p).FirstOrDefault();
-            if (foundPatient == null) throw new EntityNotFoundException(typeof(Patient));
+            if (foundPatient == null) throw new EntityNotFoundException();
 
             var recEntity = Mapper.Map<MedicalRecordDto, MedicalRecord>(record);
 
             foundPatient.MedicalRecords.Add(recEntity);
 
-            this.Session.SaveOrUpdate(foundPatient);
-        }
-
-        /// <summary>
-        /// Finds the medical record by id.
-        /// </summary>
-        /// <param name="id">The id.</param>
-        /// <returns>
-        /// The medical record or <c>Null</c> if not found
-        /// </returns>
-        public MedicalRecordDto FindMedicalRecordById(long id)
-        {
-            this.CheckSession();
-
-            var result = this.Session.Get<MedicalRecord>(id);
-
-            return (result != null)
-                ? Mapper.Map<MedicalRecord, MedicalRecordDto>(result)
-                : null;
+            this.Session.Save(foundPatient);
+            this.Session.Flush();
         }
 
         /// <summary>
@@ -136,13 +117,9 @@ namespace Probel.NDoctor.Domain.DAL.Components
                             //Nothing to do
                             break;
                         case State.Updated:
-                            record.LastUpdate = DateTime.Now;
                             this.Update(record);
                             break;
-                        case State.Created:
-                            record.LastUpdate
-                                = record.CreationDate
-                                = DateTime.Now;
+                        case State.Added:
                             this.Create(record);
                             break;
                         case State.Removed:

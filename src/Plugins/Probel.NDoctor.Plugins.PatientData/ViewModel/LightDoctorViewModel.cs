@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,20 +16,20 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 {
     using System;
     using System.Windows;
     using System.Windows.Input;
 
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.PatientData.Helpers;
     using Probel.NDoctor.Plugins.PatientData.Properties;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class LightDoctorViewModel : LightDoctorDto
     {
@@ -43,7 +45,7 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 
         public LightDoctorViewModel()
         {
-            this.component = ObjectFactory.GetInstance<IPatientDataComponent>();
+            this.component = ComponentFactory.PatientDataComponent;
             this.errorHandler = new ErrorHandler(this);
             this.AddDoctorCommand = new RelayCommand(() => this.AddDoctor());
             this.RemoveLinkCommand = new RelayCommand(() => this.RemoveLink());
@@ -65,7 +67,7 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             set
             {
                 this.isSelected = value;
-                this.OnPropertyChanged(() => IsSelected);
+                this.OnPropertyChanged("IsSelected");
             }
         }
 
@@ -91,9 +93,9 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 
                 using (this.component.UnitOfWork)
                 {
-                    this.component.AddDoctorTo(PluginContext.Host.SelectedPatient, (LightDoctorDto)this);
+                    this.component.AddLink(PluginContext.Host.SelectedPatient, (LightDoctorDto)this);
                 }
-                Notifyer.OnSateliteDataChanged(this);
+                Notifyer.OnDoctorLinkChanged(this);
                 PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_DoctorAded);
             }
             catch (Exception ex)
@@ -114,9 +116,9 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 
                 using (this.component.UnitOfWork)
                 {
-                    this.component.RemoveDoctorFor(PluginContext.Host.SelectedPatient, (LightDoctorDto)this);
+                    this.component.RemoveLink(PluginContext.Host.SelectedPatient, (LightDoctorDto)this);
                 }
-                Notifyer.OnSateliteDataChanged(this);
+                Notifyer.OnDoctorLinkChanged(this);
                 PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_DoctorRemoved);
             }
             catch (Exception ex)

@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,29 +16,29 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
 {
     using System;
     using System.Windows.Input;
 
     using Probel.Helpers.WPF;
-    using Probel.Mvvm.DataBinding;
-    using Probel.NDoctor.Domain.DAL.Exceptions;
     using Probel.NDoctor.Domain.DTO.Components;
+    using Probel.NDoctor.Domain.DTO.Exceptions;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.PrescriptionManager.Helpers;
     using Probel.NDoctor.Plugins.PrescriptionManager.Properties;
-    using Probel.NDoctor.View.Core.Helpers;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class AddDrugTypeViewModel : BaseViewModel
     {
         #region Fields
 
         private IPrescriptionComponent component;
+        private bool isPopupOpened;
         private TagDto selectedTag;
 
         #endregion Fields
@@ -45,11 +47,12 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
 
         public AddDrugTypeViewModel()
         {
-            if (!Designer.IsDesignMode) this.component = ObjectFactory.GetInstance<IPrescriptionComponent>();
+            if (!Designer.IsDesignMode) this.component = ComponentFactory.PrescriptionComponent;
 
-            this.SelectedTag = new TagDto(TagCategory.Drug);
+            this.SelectedTag = new TagDto() { Category = TagCategory.Drug };
 
             this.AddCommand = new RelayCommand(() => this.Add(), () => this.CanAdd());
+            this.ShowPopupCommand = new RelayCommand(() => this.IsPopupOpened = true);
         }
 
         #endregion Constructors
@@ -62,14 +65,30 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             private set;
         }
 
+        public bool IsPopupOpened
+        {
+            get { return this.isPopupOpened; }
+            set
+            {
+                this.isPopupOpened = value;
+                this.OnPropertyChanged("IsPopupOpened");
+            }
+        }
+
         public TagDto SelectedTag
         {
             get { return this.selectedTag; }
             set
             {
                 this.selectedTag = value;
-                this.OnPropertyChanged(() => SelectedTag);
+                this.OnPropertyChanged("SelectedTag");
             }
+        }
+
+        public ICommand ShowPopupCommand
+        {
+            get;
+            private set;
         }
 
         #endregion Properties
@@ -85,9 +104,9 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
                     this.component.Create(this.SelectedTag);
                 }
                 Notifyer.OnItemChanged(this);
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_DataSaved);
-                this.SelectedTag = new TagDto(TagCategory.Drug);
-                InnerWindow.Close();
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_DataSaved);
+                this.SelectedTag = new TagDto() { Category = TagCategory.Drug };
+                this.IsPopupOpened = false;
             }
             catch (ExistingItemException ex)
             {

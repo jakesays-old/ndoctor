@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PrescriptionManager.Translations
 {
     using Probel.NDoctor.Plugins.PrescriptionManager.Properties;
@@ -52,11 +57,6 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.Translations
             get { return Messages.Title_AddNotesHere; }
         }
 
-        public static string TitleCreatePrescription
-        {
-            get { return Messages.Title_CreatePrescription; }
-        }
-
         public static string TitleCreationDate
         {
             get { return Messages.Title_CreationDate; }
@@ -65,11 +65,6 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.Translations
         public static string TitleName
         {
             get { return Messages.Title_Name; }
-        }
-
-        public static string TitleSearchDrugs
-        {
-            get { return Messages.Title_SearchDrugs; }
         }
 
         public static string TitleTag

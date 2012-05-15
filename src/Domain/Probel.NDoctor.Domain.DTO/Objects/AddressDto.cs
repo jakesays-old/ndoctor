@@ -16,11 +16,6 @@
 */
 namespace Probel.NDoctor.Domain.DTO.Objects
 {
-    using System;
-
-    using Probel.Mvvm;
-
-    [Serializable]
     public class AddressDto : BaseDto
     {
         #region Fields
@@ -45,7 +40,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.boxNumber = value;
-                this.OnPropertyChanged(()=>this.BoxNumber);
+                this.OnPropertyChanged("BoxNumber");
             }
         }
 
@@ -59,7 +54,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.city = value;
-                this.OnPropertyChanged(()=>this.City);
+                this.OnPropertyChanged("City");
             }
         }
 
@@ -73,7 +68,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.postalCode = value;
-                this.OnPropertyChanged(()=>this.PostalCode);
+                this.OnPropertyChanged("PostalCode");
             }
         }
 
@@ -87,7 +82,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.street = value;
-                this.OnPropertyChanged(()=>this.Street);
+                this.OnPropertyChanged("Street");
             }
         }
 
@@ -101,7 +96,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.streetNumber = value;
-                this.OnPropertyChanged(()=>this.StreetNumber);
+                this.OnPropertyChanged("StreetNumber");
             }
         }
 

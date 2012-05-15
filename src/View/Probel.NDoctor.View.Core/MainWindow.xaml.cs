@@ -21,8 +21,6 @@ namespace Probel.NDoctor.View.Core
     using System.Reflection;
     using System.Windows.Controls;
 
-    using AvalonDock;
-
     using log4net;
 
     using Microsoft.Windows.Controls.Ribbon;
@@ -30,7 +28,6 @@ namespace Probel.NDoctor.View.Core
     using Probel.Helpers.Assertion;
     using Probel.Helpers.Conversions;
     using Probel.Helpers.Strings;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Helpers;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.View.Core.Properties;
@@ -169,29 +166,21 @@ namespace Probel.NDoctor.View.Core
         #region Methods
 
         /// <summary>
-        /// Adds the specified context tab.
+        /// Adds the specified tab.
         /// </summary>
-        /// <param name="contextTab">The context tab.</param>
-        public void AddContextualMenu(RibbonContextualTabGroupData contextTab)
+        /// <param name="tab">The tab.</param>
+        public void Add(RibbonTabData tab)
         {
-            this.Dispatcher.Invoke((Action)delegate { App.RibbonData.ContextualTabGroupDataCollection.Add(contextTab); });
+            this.Dispatcher.Invoke((Action)delegate { App.RibbonData.TabDataCollection.Add(tab); });
         }
 
         /// <summary>
-        /// Adds a new side menu window
+        /// Adds the specified context tab.
         /// </summary>
-        /// <param name="title">The title of the side menu.</param>
-        /// <param name="control">The control that will be inserted into the side menu.</param>
-        public void AddDockablePane(string title, UserControl control)
+        /// <param name="contextTab">The context tab.</param>
+        public void Add(RibbonContextualTabGroupData contextTab)
         {
-            var dockable = new DockableContent()
-            {
-                Title = title,
-                Content = control,
-                IsCloseable = false,
-                DockableStyle = DockableStyle.AutoHide,
-            };
-            dockable.Show(this.dockManger);
+            this.Dispatcher.Invoke((Action)delegate { App.RibbonData.ContextualTabGroupDataCollection.Add(contextTab); });
         }
 
         /// <summary>
@@ -199,7 +188,7 @@ namespace Probel.NDoctor.View.Core
         /// </summary>
         /// <param name="button">The button.</param>
         /// <param name="group">The group.</param>
-        public void AddInHome(RibbonControlData button, Groups group)
+        public void AddInHome(RibbonButtonData button, Groups group)
         {
             string criteria = this.FindGroupName(group);
 
@@ -230,15 +219,6 @@ namespace Probel.NDoctor.View.Core
         }
 
         /// <summary>
-        /// Adds the specified tab.
-        /// </summary>
-        /// <param name="tab">The tab.</param>
-        public void AddTab(RibbonTabData tab)
-        {
-            this.Dispatcher.Invoke((Action)delegate { App.RibbonData.TabDataCollection.Add(tab); });
-        }
-
-        /// <summary>
         /// Adds the specified control into the application menu.
         /// </summary>
         /// <param name="control">The control.</param>
@@ -250,34 +230,6 @@ namespace Probel.NDoctor.View.Core
                 App.RibbonData.ApplicationMenuData.ControlDataCollection.Refill(
                     App.RibbonData.ApplicationMenuData.ControlDataCollection.OrderBy(e => e.Order).ToList());
             });
-        }
-
-        /// <summary>
-        /// Finds in the home menu the control with the specified name in the specified group.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="group">The group.</param>
-        /// <returns>
-        /// The searched control or null is not found
-        /// </returns>
-        public RibbonBase FindInHome(string name, Groups group)
-        {
-            string criteria = this.FindGroupName(group);
-
-            var tab = (from menu in App.RibbonData.TabDataCollection
-                       where menu.Header == Messages.Title_Home
-                       select menu).FirstOrDefault();
-            if (tab == null) throw new PluginException(Messages.PluginException_HomeMenuVoid);
-
-            foreach (var grp in tab.GroupDataCollection)
-            {
-                var result = (from control in grp.ButtonDataCollection
-                              where control.Name == name
-                              select control).FirstOrDefault();
-                if (result != null) return result;
-            }
-
-            return null;
         }
 
         /// <summary>
@@ -383,7 +335,7 @@ namespace Probel.NDoctor.View.Core
             this.WriteStatus(StatusType.Info, Messages.Msg_Ready);
         }
 
-        private void AddButton(RibbonTabData tab, string goupName, RibbonControlData button)
+        private void AddButton(RibbonTabData tab, string goupName, RibbonButtonData button)
         {
             var group = (from g in tab.GroupDataCollection
                          where g.Header == goupName
@@ -433,7 +385,7 @@ namespace Probel.NDoctor.View.Core
         private void WriteStatus(LightPatientDto value)
         {
             var name = string.Format("{0} {1}", value.FirstName, value.LastName);
-            this.WriteStatus(StatusType.Info, Messages.Msg_SelectPatient.FormatWith(name));
+            this.WriteStatus(StatusType.Info, Messages.Msg_SelectPatient.StringFormat(name));
         }
 
         #endregion Methods

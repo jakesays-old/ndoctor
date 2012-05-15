@@ -19,6 +19,8 @@ namespace Probel.NDoctor.View.Plugins.MenuData
     using System.Collections.ObjectModel;
     using System.Windows.Media;
 
+    using Probel.Helpers.Events;
+
     public class RibbonContextualTabGroupData : RibbonBase
     {
         #region Fields
@@ -72,7 +74,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
             set
             {
                 this.background = value;
-                this.OnPropertyChanged(() => Background);
+                this.OnPropertyChanged("Background");
             }
         }
 
@@ -82,7 +84,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
             set
             {
                 this.header = value;
-                this.OnPropertyChanged(() => Header);
+                this.OnPropertyChanged("Header");
             }
         }
 
@@ -92,7 +94,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
             set
             {
                 this.isVisible = value;
-                this.OnPropertyChanged(() => IsVisible);
+                this.OnPropertyChanged("IsVisible");
             }
         }
 

@@ -31,7 +31,7 @@ namespace Probel.Helpers.Test
         public void FailsOnEmptyArgs()
         {
             object[] args = null;
-            "Hello".FormatWith(args);
+            "Hello".StringFormat(args);
         }
 
         #endregion Methods

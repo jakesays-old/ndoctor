@@ -18,6 +18,7 @@ namespace Probel.NDoctor.Domain.Test.Component
 {
     using NUnit.Framework;
 
+    using Probel.NDoctor.Domain.DAL.Cfg;
     using Probel.NDoctor.Domain.DAL.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Domain.Test.Helpers;
@@ -35,7 +36,7 @@ namespace Probel.NDoctor.Domain.Test.Component
             {
                 Bitmap = Build.Picture(1),
                 Notes = "Some notes",
-                Tag = new TagDto(TagCategory.Picture) { Name = "SomeTag" },
+                Tag = new TagDto() { Name = "SomeTag" },
             };
 
             this.Component.Create(pic, patients[0]);
@@ -50,7 +51,7 @@ namespace Probel.NDoctor.Domain.Test.Component
         /// <returns></returns>
         protected override PictureComponent GetComponentInstance()
         {
-            return new PictureComponent(this.Database.Session);
+            return new PictureComponent(SQLiteDatabase.Scope.OpenSession());
         }
 
         #endregion Methods

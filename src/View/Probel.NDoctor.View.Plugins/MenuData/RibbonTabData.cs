@@ -17,10 +17,8 @@
 namespace Probel.NDoctor.View.Plugins.MenuData
 {
     using System.Collections.ObjectModel;
-    using System.Linq;
 
-    using Probel.Helpers.Conversions;
-    using Probel.Mvvm.DataBinding;
+    using Probel.Helpers.Events;
 
     public class RibbonTabData : RibbonBase
     {
@@ -34,11 +32,6 @@ namespace Probel.NDoctor.View.Plugins.MenuData
         #endregion Fields
 
         #region Constructors
-
-        public RibbonTabData()
-        {
-            this.ribbonGroupData = new ObservableCollection<RibbonGroupData>();
-        }
 
         public RibbonTabData(string header, ObservableCollection<RibbonGroupData> ribbonGroupData)
         {
@@ -70,18 +63,13 @@ namespace Probel.NDoctor.View.Plugins.MenuData
             set
             {
                 this.contextualTabGroupHeader = value;
-                this.OnPropertyChanged(() => ContextualTabGroupHeader);
+                this.OnPropertyChanged("ContextualTabGroupHeader");
             }
         }
 
         public ObservableCollection<RibbonGroupData> GroupDataCollection
         {
-            get
-            {
-                var sorted = this.ribbonGroupData.OrderBy(e => e.Order).ToList();
-                this.ribbonGroupData.Refill(sorted);
-                return this.ribbonGroupData;
-            }
+            get { return this.ribbonGroupData; }
         }
 
         public string Header
@@ -90,7 +78,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
             set
             {
                 this.header = value;
-                this.OnPropertyChanged(() => Header);
+                this.OnPropertyChanged("Header");
             }
         }
 
@@ -100,7 +88,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
             set
             {
                 this.isSelected = value;
-                this.OnPropertyChanged(() => IsSelected);
+                this.OnPropertyChanged("IsSelected");
             }
         }
 

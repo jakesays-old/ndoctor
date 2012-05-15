@@ -27,8 +27,6 @@ namespace Probel.NDoctor.Domain.DAL.Components
 
     using Probel.Helpers.Assertion;
     using Probel.Helpers.Conversions;
-    using Probel.Mvvm;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DAL.Entities;
     using Probel.NDoctor.Domain.DAL.Exceptions;
     using Probel.NDoctor.Domain.DTO.Components;
@@ -79,7 +77,13 @@ namespace Probel.NDoctor.Domain.DAL.Components
 
             var children = this.GetChildrenAsObservable(current);
 
-            return new FamilyDto(patient, father, mother, children.ToArray());
+            return new FamilyDto()
+            {
+                Current = patient,
+                Father = father,
+                Mother = mother,
+                Children = children,
+            };
         }
 
         /// <summary>
@@ -162,25 +166,23 @@ namespace Probel.NDoctor.Domain.DAL.Components
                            where p.Id == family.Current.Id
                            select p).FirstOrDefault();
 
-            if (patient == null) throw new EntityNotFoundException(typeof(Patient));
+            if (patient == null) throw new EntityNotFoundException();
 
-            if (family.Fathers != null
-                && (family.Fathers.Count > 0 && family.Fathers[0].State == State.Created))
+            if (family.Father != null && family.Father.State == State.Added)
             {
-                var father = this.Session.Get<Patient>(family.Fathers[0].Id);
+                var father = this.Session.Get<Patient>(family.Father.Id);
                 patient.Father = father;
             }
 
-            if (family.Mothers != null
-                && (family.Mothers.Count > 0 && family.Mothers[0].State == State.Created))
+            if (family.Mother != null && family.Mother.State == State.Added)
             {
-                var mother = this.Session.Get<Patient>(family.Mothers[0].Id);
+                var mother = this.Session.Get<Patient>(family.Mother.Id);
                 patient.Mother = mother;
             }
 
             foreach (var child in family.Children)
             {
-                if (child.State == State.Created)
+                if (child.State == State.Added)
                 {
                     var currentChild = this.Session.Get<Patient>(child.Id);
                     switch (patient.Gender)
@@ -237,7 +239,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
             var family = this.GetAllFamilyMembers(patient);
             family.Add(patient);
             return (from r in result
-                    where !family.Contains(r, new BaseDtoComparer<long>())
+                    where !family.Contains(r, LightPatientDto.EqualityComparer)
                     select r).ToList();
         }
 

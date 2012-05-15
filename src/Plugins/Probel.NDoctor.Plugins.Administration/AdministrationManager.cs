@@ -24,8 +24,6 @@ namespace Probel.NDoctor.Plugins.Administration
 
     using Probel.Helpers.Assertion;
     using Probel.Helpers.Strings;
-    using Probel.Mvvm.DataBinding;
-    using Probel.NDoctor.Domain.DAL.Components;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.Administration.Properties;
@@ -35,8 +33,6 @@ namespace Probel.NDoctor.Plugins.Administration
     using Probel.NDoctor.View.Plugins.Helpers;
     using Probel.NDoctor.View.Plugins.MenuData;
 
-    using StructureMap;
-
     [Export(typeof(IPlugin))]
     public class AdministrationManager : Plugin
     {
@@ -44,7 +40,6 @@ namespace Probel.NDoctor.Plugins.Administration
 
         private const string imgUri = @"\Probel.NDoctor.Plugins.Administration;component/Images\{0}.png";
 
-        //private RibbonContextualTabGroupData contextualMenu;
         private ICommand navigateCommand;
         private Workbench workbench;
 
@@ -53,12 +48,11 @@ namespace Probel.NDoctor.Plugins.Administration
         #region Constructors
 
         [ImportingConstructor]
-        public AdministrationManager([Import("version")] Version version)
-            : base(version)
+        public AdministrationManager([Import("version")] Version version, [Import("host")] IPluginHost host)
+            : base(version, host)
         {
             this.Validator = new PluginValidator("3.0.0.0", ValidationMode.Minimum);
 
-            this.ConfigureStructureMap();
             this.ConfigureAutoMapper();
         }
 
@@ -70,8 +64,7 @@ namespace Probel.NDoctor.Plugins.Administration
         {
             get
             {
-                Assert.IsNotNull(PluginContext.Host, string.Format(
-                    "The IPluginHost is not set. It is impossible to setup the data context of the workbench of the plugin '{0}'", this.GetType().Name));
+                Assert.IsNotNull(this.Host, "The IPluginHost is not set. It is impossible to setup the data context of the workbench of the plugin medical record");
                 if (this.workbench.DataContext == null) this.workbench.DataContext = new WorkbenchViewModel();
                 return this.workbench.DataContext as WorkbenchViewModel;
             }
@@ -92,9 +85,9 @@ namespace Probel.NDoctor.Plugins.Administration
         /// </summary>
         public override void Initialise()
         {
-            Assert.IsNotNull(PluginContext.Host, "To initialise the plugin, IPluginHost should be set.");
+            Assert.IsNotNull(this.Host, "To initialise the plugin, IPluginHost should be set.");
 
-            PluginContext.Host.Invoke(() => workbench = new Workbench());
+            this.Host.Invoke(() => workbench = new Workbench());
             this.BuildButtons();
             this.BuildContextMenu();
         }
@@ -107,10 +100,10 @@ namespace Probel.NDoctor.Plugins.Administration
             this.navigateCommand = new RelayCommand(() => this.Navigate(), () => this.CanNavigate());
 
             var navigateButton = new RibbonButtonData(Messages.Title_AdministratorManager
-                    , imgUri.FormatWith("Administration")
+                    , imgUri.StringFormat("Administration")
                     , navigateCommand) { Order = 4 };
 
-            PluginContext.Host.AddToApplicationMenu(navigateButton);
+            this.Host.AddToApplicationMenu(navigateButton);
         }
 
         /// <summary>
@@ -150,18 +143,9 @@ namespace Probel.NDoctor.Plugins.Administration
             Mapper.CreateMap<InsuranceViewModel, InsuranceDto>();
         }
 
-        private void ConfigureStructureMap()
-        {
-            ObjectFactory.Configure(x =>
-            {
-                x.For<IAdministrationComponent>().Add<AdministrationComponent>();
-                x.SelectConstructor<IAdministrationComponent>(() => new AdministrationComponent());
-            });
-        }
-
         private void Navigate()
         {
-            PluginContext.Host.Navigate(this.workbench);
+            this.Host.Navigate(this.workbench);
             var viewModel = new WorkbenchViewModel();
             this.workbench.DataContext = viewModel;
         }

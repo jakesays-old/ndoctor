@@ -42,9 +42,6 @@
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <HintPath>..\..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Probel.Mvvm">
-      <HintPath>..\..\..\lib\Probel.Mvvm\Probel.Mvvm.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
@@ -58,9 +55,6 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DebugControl.xaml.cs">
-      <DependentUpon>DebugControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Messages.fr.Designer.cs">
       <DependentUpon>Messages.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -106,10 +100,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Domain\Probel.NDoctor.Domain.DAL\Probel.NDoctor.Domain.DAL.csproj">
-      <Project>{96B7A128-8A98-4B49-A3CB-30AE783236E9}</Project>
-      <Name>Probel.NDoctor.Domain.DAL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Domain\Probel.NDoctor.Domain.DTO\Probel.NDoctor.Domain.DTO.csproj">
       <Project>{DB2E15D4-BA31-457B-BF73-71208922A0A0}</Project>
       <Name>Probel.NDoctor.Domain.DTO</Name>
@@ -131,12 +121,6 @@
     <EmbeddedResource Include="..\..\..\tools\scripts\InsertUsers.sql">
       <Link>InsertUsers.sql</Link>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="DebugControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -37,8 +37,6 @@ namespace Probel.NDoctor.Domain.DAL.Mappings
         {
             Mapper.CreateMap<LightPatientDto, PatientBmiDto>();
             Mapper.CreateMap<PatientBmiDto, LightPatientDto>();
-            Mapper.CreateMap<LightPracticeDto, PracticeDto>();
-            Mapper.CreateMap<PracticeDto, LightPracticeDto>();
         }
 
         private static void MapDtoToEntity()
@@ -66,8 +64,7 @@ namespace Probel.NDoctor.Domain.DAL.Mappings
             Mapper.CreateMap<PrescriptionDocumentDto, PrescriptionDocument>();
             Mapper.CreateMap<AppointmentDto, Appointment>();
             Mapper.CreateMap<DoctorDto, Doctor>();
-            Mapper.CreateMap<PatientFullDto, Patient>();
-            Mapper.CreateMap<DoctorFullDto, Doctor>();
+            Mapper.CreateMap<LightDoctorDto,Doctor>();
         }
 
         private static void MapEntityToDto()
@@ -99,8 +96,6 @@ namespace Probel.NDoctor.Domain.DAL.Mappings
             Mapper.CreateMap<PrescriptionDocument, PrescriptionDocumentDto>();
             Mapper.CreateMap<Appointment, AppointmentDto>();
             Mapper.CreateMap<Doctor, DoctorDto>();
-            Mapper.CreateMap<Patient, PatientFullDto>();
-            Mapper.CreateMap<Doctor, DoctorFullDto>();
         }
 
         #endregion Methods

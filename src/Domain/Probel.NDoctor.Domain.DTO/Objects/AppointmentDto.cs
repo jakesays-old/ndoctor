@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,13 +16,13 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Domain.DTO.Objects
 {
     using System;
 
-    using Probel.Mvvm;
-
-    [Serializable]
     public class AppointmentDto : BaseDto
     {
         #region Fields
@@ -48,7 +50,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.endTime = value;
-                this.OnPropertyChanged(() => this.EndTime);
+                this.OnPropertyChanged("EndTime");
             }
         }
 
@@ -64,7 +66,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.notes = value;
-                this.OnPropertyChanged(() => this.Notes);
+                this.OnPropertyChanged("Notes");
             }
         }
 
@@ -80,7 +82,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.startTime = value;
-                this.OnPropertyChanged(() => this.StartTime);
+                this.OnPropertyChanged("StartTime");
             }
         }
 
@@ -96,7 +98,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.subject = value;
-                this.OnPropertyChanged(() => this.Subject);
+                this.OnPropertyChanged("Subject");
             }
         }
 
@@ -112,7 +114,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.tag = value;
-                this.OnPropertyChanged(() => this.Tag);
+                this.OnPropertyChanged("Tag");
             }
         }
 
@@ -128,7 +130,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.user = value;
-                this.OnPropertyChanged(() => this.User);
+                this.OnPropertyChanged("User");
             }
         }
 

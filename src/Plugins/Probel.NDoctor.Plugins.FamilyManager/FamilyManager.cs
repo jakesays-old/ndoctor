@@ -25,19 +25,14 @@ namespace Probel.NDoctor.Plugins.FamilyManager
 
     using Probel.Helpers.Assertion;
     using Probel.Helpers.Strings;
-    using Probel.Mvvm.DataBinding;
-    using Probel.NDoctor.Domain.DAL.Components;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.FamilyManager.Properties;
     using Probel.NDoctor.Plugins.FamilyManager.View;
     using Probel.NDoctor.Plugins.FamilyManager.ViewModel;
-    using Probel.NDoctor.View.Core.Helpers;
     using Probel.NDoctor.View.Plugins;
     using Probel.NDoctor.View.Plugins.Helpers;
     using Probel.NDoctor.View.Plugins.MenuData;
-
-    using StructureMap;
 
     [Export(typeof(IPlugin))]
     public class FamilyManager : Plugin
@@ -57,12 +52,10 @@ namespace Probel.NDoctor.Plugins.FamilyManager
         #region Constructors
 
         [ImportingConstructor]
-        public FamilyManager([Import("version")] Version version)
-            : base(version)
+        public FamilyManager([Import("version")] Version version, [Import("host")] IPluginHost host)
+            : base(version, host)
         {
             this.Validator = new PluginValidator("3.0.0.0", ValidationMode.Minimum);
-
-            this.ConfigureStructureMap();
             this.ConfigureAutoMapper();
         }
 
@@ -74,8 +67,7 @@ namespace Probel.NDoctor.Plugins.FamilyManager
         {
             get
             {
-                Assert.IsNotNull(PluginContext.Host, string.Format(
-                    "The IPluginHost is not set. It is impossible to setup the data context of the workbench of the plugin '{0}'", this.GetType().Name));
+                Assert.IsNotNull(this.Host, "The IPluginHost is not set. It is impossible to setup the data context of the workbench of the plugin medical record");
                 if (this.workbench.DataContext == null) this.workbench.DataContext = new WorkbenchViewModel();
                 return this.workbench.DataContext as WorkbenchViewModel;
             }
@@ -96,9 +88,9 @@ namespace Probel.NDoctor.Plugins.FamilyManager
         /// </summary>
         public override void Initialise()
         {
-            Assert.IsNotNull(PluginContext.Host, "To initialise the plugin, IPluginHost should be set.");
+            Assert.IsNotNull(this.Host, "To initialise the plugin, IPluginHost should be set.");
 
-            PluginContext.Host.Invoke(() => workbench = new Workbench());
+            this.Host.Invoke(() => workbench = new Workbench());
             this.BuildButtons();
             this.BuildContextMenu();
         }
@@ -112,7 +104,7 @@ namespace Probel.NDoctor.Plugins.FamilyManager
             this.navigateCommand = new RelayCommand(() => this.Navigate(), () => this.CanNavigate());
 
             var navigateButton = this.BuildMainNavigationButton();
-            PluginContext.Host.AddInHome(navigateButton, Groups.Managers);
+            this.Host.AddInHome(navigateButton, Groups.Managers);
             #endregion
 
             #region Relation add
@@ -123,7 +115,12 @@ namespace Probel.NDoctor.Plugins.FamilyManager
                 {
                     if (this.ViewModel != null) this.ViewModel.Reset();
 
-                    InnerWindow.Show(Messages.Btn_Add, new AddFamilyWorkbench());
+                    var page = new AddFamilyWorkbench();
+                    page.DataContext = new AddFamilyViewModel();
+                    this.Host.Navigate(page);
+
+                    this.contextualMenu.IsVisible = true;
+                    this.contextualMenu.TabDataCollection[0].IsSelected = true;
                 }
                 catch (Exception ex)
                 {
@@ -135,16 +132,16 @@ namespace Probel.NDoctor.Plugins.FamilyManager
             #region Relation remove
             this.navRemoveRelationCommand = new RelayCommand(() =>
             {
-                try
-                {
-                    if (this.ViewModel != null) this.ViewModel.Reset();
+                if (this.ViewModel != null) this.ViewModel.Reset();
 
-                    InnerWindow.Show(Messages.Btn_Remove, new RemoveFamilyWorkbench());
-                }
-                catch (Exception ex)
-                {
-                    this.HandleError(ex, Messages.Msg_FailToLoadFamilyManager);
-                }
+                var page = new RemoveFamilyWorkbench();
+                var dataContext = new RemoveFamilyViewModel();
+                dataContext.Refresh();
+                page.DataContext = dataContext;
+                this.Host.Navigate(page);
+
+                this.contextualMenu.IsVisible = true;
+                this.contextualMenu.TabDataCollection[0].IsSelected = true;
             });
             #endregion
         }
@@ -154,29 +151,34 @@ namespace Probel.NDoctor.Plugins.FamilyManager
         /// </summary>
         private void BuildContextMenu()
         {
+            var navAddRelationButton = new RibbonButtonData(Messages.Title_AddFamilyManager, imgUri.StringFormat("Add"), navAddRelationCommand);
+            var navRemoveRelationButton = new RibbonButtonData(Messages.Title_RemoveFamilyManager, imgUri.StringFormat("Delete"), navRemoveRelationCommand);
+            var mainNavigationButton = this.BuildMainNavigationButton();
+
             var cgroup = new RibbonGroupData(Messages.Menu_Actions);
 
-            cgroup.ButtonDataCollection.Add(new RibbonButtonData(Messages.Title_AddFamilyManager, imgUri.FormatWith("Add"), navAddRelationCommand));
-            cgroup.ButtonDataCollection.Add(new RibbonButtonData(Messages.Title_RemoveFamilyManager, imgUri.FormatWith("Delete"), navRemoveRelationCommand));
+            cgroup.ButtonDataCollection.Add(navAddRelationButton);
+            cgroup.ButtonDataCollection.Add(navRemoveRelationButton);
+            cgroup.ButtonDataCollection.Add(mainNavigationButton);
 
             var tab = new RibbonTabData(Messages.Menu_File, cgroup) { ContextualTabGroupHeader = Messages.Title_FamilyManager };
-            PluginContext.Host.AddTab(tab);
+            this.Host.Add(tab);
 
             this.contextualMenu = new RibbonContextualTabGroupData(Messages.Title_FamilyManager, tab) { Background = Brushes.OrangeRed, IsVisible = false };
-            PluginContext.Host.AddContextualMenu(this.contextualMenu);
+            this.Host.Add(this.contextualMenu);
         }
 
         private RibbonButtonData BuildMainNavigationButton()
         {
             var navigateButton = new RibbonButtonData(Messages.Title_FamilyManager
-                , imgUri.FormatWith("Users")
+                , imgUri.StringFormat("Users")
                 , navigateCommand) { Order = 7 };
             return navigateButton;
         }
 
         private bool CanNavigate()
         {
-            return PluginContext.Host.SelectedPatient != null;
+            return this.Host.SelectedPatient != null;
         }
 
         private void ConfigureAutoMapper()
@@ -184,24 +186,12 @@ namespace Probel.NDoctor.Plugins.FamilyManager
             Mapper.CreateMap<LightPatientDto, LightPatientViewModel>();
         }
 
-        private void ConfigureStructureMap()
-        {
-            ObjectFactory.Configure(x =>
-            {
-                x.For<IFamilyComponent>().Add<FamilyComponent>();
-                x.SelectConstructor<FamilyComponent>(() => new FamilyComponent());
-
-                x.For<IMedicalRecordComponent>().Add<MedicalRecordComponent>();
-                x.SelectConstructor<MedicalRecordComponent>(() => new MedicalRecordComponent());
-            });
-        }
-
         private void Navigate()
         {
             try
             {
                 this.ViewModel.Refresh();
-                PluginContext.Host.Navigate(this.workbench);
+                this.Host.Navigate(this.workbench);
 
                 this.contextualMenu.IsVisible = true;
                 this.contextualMenu.TabDataCollection[0].IsSelected = true;

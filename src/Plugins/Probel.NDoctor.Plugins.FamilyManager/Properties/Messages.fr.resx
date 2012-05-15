@@ -141,14 +141,6 @@
     <value>Chercher</value>
     <comment>Search</comment>
   </data>
-  <data name="Lbl_RecordName" xml:space="preserve">
-    <value>Fiche:</value>
-    <comment>Record</comment>
-  </data>
-  <data name="Lbl_RecordType" xml:space="preserve">
-    <value>Catégorie:</value>
-    <comment>Category</comment>
-  </data>
   <data name="Menu_Actions" xml:space="preserve">
     <value>Action</value>
     <comment>Action</comment>
@@ -213,29 +205,9 @@
     <value>Ajouter une relation</value>
     <comment>Add relation</comment>
   </data>
-  <data name="Title_Children" xml:space="preserve">
-    <value>Enfants</value>
-    <comment>Children</comment>
-  </data>
-  <data name="Title_Family" xml:space="preserve">
-    <value>Famille</value>
-    <comment>Family</comment>
-  </data>
   <data name="Title_FamilyManager" xml:space="preserve">
     <value>Famille</value>
     <comment>Family</comment>
-  </data>
-  <data name="Title_Father" xml:space="preserve">
-    <value>Père</value>
-    <comment>Père</comment>
-  </data>
-  <data name="Title_Mother" xml:space="preserve">
-    <value>Mère</value>
-    <comment>Mère</comment>
-  </data>
-  <data name="Title_Parent" xml:space="preserve">
-    <value>Parents</value>
-    <comment>Parents</comment>
   </data>
   <data name="Title_RemoveFamilyManager" xml:space="preserve">
     <value>Supprimer un membre de la famille</value>
@@ -244,9 +216,5 @@
   <data name="Title_Save" xml:space="preserve">
     <value>Sauver</value>
     <comment>Save</comment>
-  </data>
-  <data name="Title_SearchWatermark" xml:space="preserve">
-    <value>Nom et/ou prénom du membre</value>
-    <comment>First or last name</comment>
   </data>
 </root>

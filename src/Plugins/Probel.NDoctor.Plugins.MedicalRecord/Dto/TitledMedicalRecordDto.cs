@@ -20,9 +20,7 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.Dto
 
     using AutoMapper;
 
-    using Probel.Helpers.Strings;
     using Probel.NDoctor.Domain.DTO.Objects;
-    using Probel.NDoctor.Plugins.MedicalRecord.Properties;
     using Probel.NDoctor.View.Plugins.Helpers;
 
     public class TitledMedicalRecordDto : MedicalRecordDto, ITreeNode
@@ -39,8 +37,6 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.Dto
         public TitledMedicalRecordDto()
         {
             this.IsExpanded = true;
-
-            this.Ignore(() => this.IsExpanded, () => this.IsSelected);
         }
 
         #endregion Constructors
@@ -57,7 +53,7 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.Dto
             set
             {
                 this.isExpanded = value;
-                this.OnPropertyChanged(() => IsExpanded);
+                this.OnPropertyChanged("IsExpanded");
             }
         }
 
@@ -71,18 +67,7 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.Dto
             set
             {
                 this.isSelected = value;
-                this.OnPropertyChanged(() => IsSelected);
-            }
-        }
-
-        public string Title
-        {
-            get
-            {
-                var title = string.Format("[{0}] {1}"
-                    , this.Tag.Name
-                    , this.Name);
-                return Messages.Title_MedicalRecordTitle.FormatWith(title, this.CreationDate, this.LastUpdate);
+                this.OnPropertyChanged("IsSelected");
             }
         }
 

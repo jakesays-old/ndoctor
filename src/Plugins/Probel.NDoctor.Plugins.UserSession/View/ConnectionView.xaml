@@ -13,7 +13,6 @@
     <Page.Resources>
         <Converter:IntToVisibilityConverter x:Key="visibilityConverter" />
         <Converter:InvertVisibilityConverter x:Key="invertVisibility"/>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Page.Resources>
 
     <Grid>
@@ -42,13 +41,13 @@
                   ItemsSource="{Binding Users, Mode=TwoWay}" 
                   DisplayMemberPath="DisplayedName" 
                   SelectedItem="{Binding Path=SelectedUser, Mode=TwoWay}"
-                  Visibility="{Binding Path=HasUsers, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"
+                  Visibility="{Binding Path=Users.Count, Converter={StaticResource visibilityConverter}, UpdateSourceTrigger=PropertyChanged}"
         />
 
         <Button Content="{Binding Source={x:Static Member=text:ConnectionText.MsgCreateAdministrator}}"
                 Grid.Row="3" Width="276" 
                 Height="26" 
-                Command="{Binding NavigateAddUserCommand}" 
+                Command="{Binding NivigateAddUserCommand}" 
                 HorizontalAlignment="Center"  
                 Visibility="{Binding ElementName=userCombobox, Path=Visibility, Converter={StaticResource invertVisibility}}"/>
 

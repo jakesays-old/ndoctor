@@ -16,14 +16,9 @@
 */
 namespace Probel.NDoctor.Domain.DTO.Objects
 {
-    using System;
-
-    using Probel.Mvvm;
-
     /// <summary>
     /// Represents a drug with some notes about this drug.
     /// </summary>
-    [Serializable]
     public class DrugDto : BaseDto
     {
         #region Fields
@@ -41,7 +36,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
         /// </summary>
         public DrugDto()
         {
-            this.Tag = new TagDto(TagCategory.Drug);
+            this.Tag = new TagDto();
         }
 
         #endregion Constructors
@@ -60,7 +55,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.name = value;
-                this.OnPropertyChanged(() => this.Name);
+                this.OnPropertyChanged("Name");
             }
         }
 
@@ -76,7 +71,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.notes = value;
-                this.OnPropertyChanged(() => this.Notes);
+                this.OnPropertyChanged("Notes");
             }
         }
 
@@ -92,7 +87,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.tag = value;
-                this.OnPropertyChanged(() => this.Tag);
+                this.OnPropertyChanged("Tag");
             }
         }
 

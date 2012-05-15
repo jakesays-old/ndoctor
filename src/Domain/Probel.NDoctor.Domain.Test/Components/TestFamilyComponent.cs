@@ -18,6 +18,7 @@ namespace Probel.NDoctor.Domain.Test.Component
 {
     using NUnit.Framework;
 
+    using Probel.NDoctor.Domain.DAL.Cfg;
     using Probel.NDoctor.Domain.DAL.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Domain.Test.Helpers;
@@ -34,9 +35,9 @@ namespace Probel.NDoctor.Domain.Test.Component
             var family = this.Component.FindFamily(new LightPatientDto() { Id = 7 });
 
             Assert.NotNull(family.Current, "No current patient found");
-            Assert.NotNull(family.Fathers, "No father found");
-            Assert.NotNull(family.Mothers, "No mother found");
-            Assert.AreEqual(family.Children, 7, "It is not the number of children expected");
+            Assert.NotNull(family.Father, "No father found");
+            Assert.NotNull(family.Mother, "No mother found");
+            Assert.AreEqual(5, family.Children.Count, "It is not the number of children expected");
         }
 
         /// <summary>
@@ -45,7 +46,7 @@ namespace Probel.NDoctor.Domain.Test.Component
         /// <returns></returns>
         protected override FamilyComponent GetComponentInstance()
         {
-            return new FamilyComponent(this.Database.Session);
+            return new FamilyComponent(SQLiteDatabase.Scope.OpenSession());
         }
 
         #endregion Methods

@@ -20,9 +20,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
     using System.Windows.Input;
 
     using Probel.Helpers.Strings;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Objects;
-    using Probel.NDoctor.View.Core.Helpers;
     using Probel.NDoctor.View.Core.Properties;
     using Probel.NDoctor.View.Core.View;
     using Probel.NDoctor.View.Plugins.Helpers;
@@ -50,33 +48,25 @@ namespace Probel.NDoctor.View.Core.ViewModel
         public MainWindowViewModel()
             : base()
         {
-            this.settingCommand = new RelayCommand(() => this.NavigateToSetting());
+            this.settingCommand = new RelayCommand(() => PluginContext.Host.Navigate(new SettingsView()));
 
-            var menu = new RibbonControlData(Messages.Title_Settings, uriImage.FormatWith("Settings"), settingCommand) { Order = 5 };
-            PluginContext.Host.AddToApplicationMenu(menu);
+            var menu = new RibbonControlData(Messages.Title_Settings, uriImage.StringFormat("Settings"), settingCommand) { Order = 5 };
+            this.Host.AddToApplicationMenu(menu);
 
-            App.RibbonData.ApplicationMenuData.LargeImage = new Uri(uriImage.FormatWith("Home"), UriKind.Relative);
-            App.RibbonData.ApplicationMenuData.SmallImage = new Uri(uriImage.FormatWith("Home"), UriKind.Relative);
-
-            this.ChildWindow = new ChildWindowViewModel();
+            App.RibbonData.ApplicationMenuData.LargeImage = new Uri(uriImage.StringFormat("Home"), UriKind.Relative);
+            App.RibbonData.ApplicationMenuData.SmallImage = new Uri(uriImage.StringFormat("Home"), UriKind.Relative);
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public ChildWindowViewModel ChildWindow
-        {
-            get;
-            private set;
-        }
-
         public string ConnectedPatientText
         {
             get
             {
                 return (this.SelectedPatient != null)
-                    ? Messages.Msg_ConnectedPatient.FormatWith(PluginContext.Host.SelectedPatient.DisplayedName)
+                    ? Messages.Msg_ConnectedPatient.StringFormat(PluginContext.Host.SelectedPatient.DisplayedName)
                     : Messages.Title_NoUserConnected;
             }
         }
@@ -93,9 +83,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
             set
             {
                 this.connectedUser = value;
-
-                this.OnPropertyChanged(() => ConnectedUser);
-                this.OnPropertyChanged(() => WindowTitle);
+                this.OnPropertyChanged("ConnectedUser", "WindowTitle");
             }
         }
 
@@ -111,7 +99,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
             set
             {
                 this.message = value;
-                this.OnPropertyChanged(() => Message);
+                this.OnPropertyChanged("Message");
             }
         }
 
@@ -127,8 +115,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
             set
             {
                 this.selectedPatient = value;
-                this.OnPropertyChanged(() => SelectedPatient);
-                this.OnPropertyChanged(() => ConnectedPatientText);
+                this.OnPropertyChanged("SelectedPatient", "ConnectedPatientText");
             }
         }
 
@@ -144,7 +131,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
             set
             {
                 this.type = value;
-                this.OnPropertyChanged(() => Type);
+                this.OnPropertyChanged("Type");
             }
         }
 
@@ -153,20 +140,11 @@ namespace Probel.NDoctor.View.Core.ViewModel
             get
             {
                 return (this.SelectedPatient != null)
-                    ? Messages.Title_SelectedUser.FormatWith(this.ConnectedUser.DisplayedName)
+                    ? Messages.Title_SelectedUser.StringFormat(this.ConnectedUser.DisplayedName)
                     : Messages.Title_NoUserConnected;
             }
         }
 
         #endregion Properties
-
-        #region Methods
-
-        private void NavigateToSetting()
-        {
-            InnerWindow.Show(Messages.Title_Settings, new SettingsView());
-        }
-
-        #endregion Methods
     }
 }

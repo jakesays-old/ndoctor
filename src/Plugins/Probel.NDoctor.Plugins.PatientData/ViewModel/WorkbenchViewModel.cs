@@ -27,7 +27,6 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
     using Microsoft.Win32;
 
     using Probel.Helpers.Conversions;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Helpers;
     using Probel.NDoctor.Domain.DTO.Objects;
@@ -36,14 +35,11 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
 
-    using StructureMap;
-
     public class WorkbenchViewModel : BaseViewModel
     {
         #region Fields
 
         private IPatientDataComponent component;
-        private PatientDto memento = null;
         private PatientDto patient;
 
         #endregion Fields
@@ -57,9 +53,8 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
         public WorkbenchViewModel()
             : base()
         {
-            this.component = ObjectFactory.GetInstance<IPatientDataComponent>();
-
-            Notifyer.SateliteDataChanged += (sender, e) => this.Refresh();
+            this.component = ComponentFactory.PatientDataComponent;
+            Notifyer.DoctorLinkChanged += (sender, e) => this.Refresh();
 
             this.InitialiseCollections();
 
@@ -69,11 +64,6 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
         #endregion Constructors
 
         #region Properties
-
-        public bool CanRollback
-        {
-            get { return this.memento != null; }
-        }
 
         public ICommand ChangeImageCommand
         {
@@ -105,10 +95,7 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             set
             {
                 this.patient = value;
-                if (this.memento == null) this.memento = value.Clone() as PatientDto;
-
-                this.OnPropertyChanged(() => this.Patient);
-                this.OnPropertyChanged(() => this.SelectedGender);
+                this.OnPropertyChanged("Patient", "SelectedGender");
             }
         }
 
@@ -147,7 +134,7 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             set
             {
                 this.Patient.Gender = value.Item2;
-                this.OnPropertyChanged(() => SelectedGender);
+                this.OnPropertyChanged("SelectedGender");
             }
         }
 
@@ -158,37 +145,51 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
         /// <summary>
         /// Refreshes the data of this instance.
         /// </summary>
-        //TODO: if this code is slow, there's many call to the database here. Should be resolved
         public void Refresh()
         {
-            if (PluginContext.Host.SelectedPatient == null) { return; }
-            if (this.Patient != null) { this.Save(); }
+            if (this.Host.SelectedPatient == null) return;
 
             using (this.component.UnitOfWork)
             {
-                var result = this.component.FindDoctorOf(PluginContext.Host.SelectedPatient);
+                var result = this.component.GetDoctorOf(this.Host.SelectedPatient);
                 var mapped = Mapper.Map<IList<LightDoctorDto>, IList<LightDoctorViewModel>>(result);
                 this.Doctors.Refill(mapped);
 
-                //Refill the collections BEFORE refreshing the patient.
                 this.Insurances.Refill(this.component.GetAllInsurancesLight());
                 this.Practices.Refill(this.component.GetAllPracticesLight());
                 this.Reputations.Refill(this.component.GetAllReputations());
                 this.Professions.Refill(this.component.GetAllProfessions());
 
-                //Refresh the patient with the refreshed collection binding
-                this.Patient = this.component.FindPatient(PluginContext.Host.SelectedPatient);
-                this.RefreshPatientData();
+                //Refill the collections BEFORE refreshing the patient.
+                this.Patient = this.component.GetPatient(this.Host.SelectedPatient);
+                if (this.Patient.Insurance != null)
+                {
+                    this.Patient.Insurance = (from i in this.Insurances
+                                              where i.Id == this.Patient.Insurance.Id
+                                              select i).FirstOrDefault();
+                }
+                if (this.Patient.Practice != null)
+                {
 
-                this.Logger.Debug("Load patient's data");
+                    this.patient.Practice = (from p in this.Practices
+                                             where p.Id == this.Patient.Practice.Id
+                                             select p).FirstOrDefault();
+                }
+
+                if (this.Patient.Reputation != null)
+                {
+                    this.Patient.Reputation = (from r in this.Reputations
+                                               where r.Id == this.Patient.Reputation.Id
+                                               select r).FirstOrDefault();
+                }
+
+                if (this.Patient.Profession != null)
+                {
+                    this.Patient.Profession = (from p in this.Professions
+                                               where p.Id == this.Patient.Profession.Id
+                                               select p).FirstOrDefault();
+                }
             }
-        }
-
-        public void Rollback()
-        {
-            this.patient = this.memento;
-            this.Save();
-            this.Refresh();
         }
 
         public void Save()
@@ -199,7 +200,7 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
                 {
                     this.component.Update(this.Patient);
                 }
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_DataSaved);
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_DataSaved);
             }
             catch (Exception ex)
             {
@@ -239,38 +240,6 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             this.Genders = new ObservableCollection<Tuple<string, Gender>>();
             this.Genders.Add(new Tuple<string, Gender>(Gender.Male.Translate(), Gender.Male));
             this.Genders.Add(new Tuple<string, Gender>(Gender.Female.Translate(), Gender.Female));
-        }
-
-        private void RefreshPatientData()
-        {
-            if (this.Patient.Insurance != null)
-            {
-                this.Patient.Insurance = (from i in this.Insurances
-                                          where i.Id == this.Patient.Insurance.Id
-                                          select i).FirstOrDefault();
-            }
-
-            if (this.Patient.Practice != null)
-            {
-
-                this.Patient.Practice = (from p in this.Practices
-                                         where p.Id == this.Patient.Practice.Id
-                                         select p).FirstOrDefault();
-            }
-
-            if (this.Patient.Reputation != null)
-            {
-                this.Patient.Reputation = (from r in this.Reputations
-                                           where r.Id == this.Patient.Reputation.Id
-                                           select r).FirstOrDefault();
-            }
-
-            if (this.Patient.Profession != null)
-            {
-                this.Patient.Profession = (from p in this.Professions
-                                           where p.Id == this.Patient.Profession.Id
-                                           select p).FirstOrDefault();
-            }
         }
 
         #endregion Methods

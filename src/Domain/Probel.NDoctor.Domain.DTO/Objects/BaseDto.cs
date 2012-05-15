@@ -19,15 +19,15 @@ namespace Probel.NDoctor.Domain.DTO.Objects
     using System;
     using System.Collections.Generic;
 
-    using Probel.Helpers.Data;
     using Probel.Helpers.Events;
-    using Probel.Mvvm;
 
-    [Serializable]
-    public abstract class BaseDto : BaseDto<long>, ICloneable
+    public abstract class BaseDto : ObservableObject, IEquatable<BaseDto>
     {
         #region Fields
-        private bool isImported;
+
+        private static IEqualityComparer<BaseDto> equalityComparer = new BaseDtoEqualityComparer();
+
+        private long id;
 
         #endregion Fields
 
@@ -37,54 +37,101 @@ namespace Probel.NDoctor.Domain.DTO.Objects
         /// Initializes a new instance of the <see cref="BaseDto"/> class.
         /// </summary>
         public BaseDto()
-            : base()
         {
-            this.IsImported = false;
+            this.State = State.Clean;
         }
 
         #endregion Constructors
 
+        #region Properties
+
         /// <summary>
-        /// Gets or sets a value indicating whether this entity is imported from somewhere else.
-        /// By imported, understand the entity wasn't added manually in the database
+        /// Gets the equality comparer used to compare two <see cref="LightPatientDto"/>
+        /// </summary>
+        public static IEqualityComparer<BaseDto> EqualityComparer
+        {
+            get { return equalityComparer; }
+        }
+
+        /// <summary>
+        /// Gets or sets the id of the entity.
         /// </summary>
         /// <value>
-        /// 	<c>true</c> if this instance is imported; otherwise, <c>false</c>.
+        /// The id.
         /// </value>
-        public bool IsImported
+        public long Id
         {
-            get { return this.isImported; }
+            get { return this.id; }
             set
             {
-                this.isImported = value;
-                this.OnPropertyChanged(() => this.IsImported);
+                this.id = value;
+                this.OnPropertyChanged("Id");
             }
         }
 
         /// <summary>
-        /// Gets a value indicating whether this instance is new.
-        /// A new instance means it doesn't exist in the database.
+        /// Gets or sets the state of the DTO.
+        /// This state will be used to determine whether
+        /// this DTO is new/updated/deleted.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is new; otherwise, <c>false</c>.
+        /// The state.
         /// </value>
-        public bool IsNew
+        public State State
         {
-            get
-            {
-                return this.Id >= 0;
-            }
+            get;
+            set;
+        }
+
+        #endregion Properties
+
+        #region Methods
+
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// The equality is checked on the id
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+        /// </returns>
+        public bool Equals(BaseDto other)
+        {
+            return this.id == other.id;
         }
 
         /// <summary>
-        /// Creates a new object that is a copy of the current instance.
+        /// Returns a <see cref="System.String"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A new object that is a copy of this instance.
+        /// A <see cref="System.String"/> that represents this instance.
         /// </returns>
-        public object Clone()
+        public override string ToString()
         {
-            return Cloner.Clone(this);
+            return string.Format("[{0}] id: {1}", this.GetType().Name, this.id);
         }
+
+        #endregion Methods
+
+        #region Nested Types
+
+        private class BaseDtoEqualityComparer : IEqualityComparer<BaseDto>
+        {
+            #region Methods
+
+            public bool Equals(BaseDto x, BaseDto y)
+            {
+                return x.Id == y.Id;
+            }
+
+            public int GetHashCode(BaseDto obj)
+            {
+                return obj.GetHashCode();
+            }
+
+            #endregion Methods
+        }
+
+        #endregion Nested Types
     }
 }

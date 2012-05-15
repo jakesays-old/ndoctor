@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
 {
     using System;
@@ -28,21 +33,17 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
 
     using Probel.Helpers.Conversions;
     using Probel.Helpers.Data;
-    using Probel.Mvvm.DataBinding;
-    using Probel.NDoctor.Domain.DAL.Components;
+    using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
-    using Probel.NDoctor.Plugins.MeetingManager.Helpers;
     using Probel.NDoctor.Plugins.MeetingManager.Properties;
     using Probel.NDoctor.View.Plugins;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class DateRangeViewModel : DateRange, INotifyPropertyChanged, IErrorHandler
     {
         #region Fields
 
-        private ICalendarComponent component = ObjectFactory.GetInstance<ICalendarComponent>();
+        private ICalendarComponent component = ComponentFactory.CalendarComponent;
         private ErrorHandler errorHandler;
         private bool isSelected = false;
         private LightPatientDto patient;
@@ -58,7 +59,7 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
         {
             this.errorHandler = new ErrorHandler(this);
             this.Tags = new ObservableCollection<TagDto>();
-            PluginContext.Host = host;
+            this.Host = host;
             this.AddCommand = new RelayCommand(() => this.Add(), () => this.CanAdd());
             this.RemoveCommand = new RelayCommand(() => this.Remove());
 
@@ -82,6 +83,14 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
         }
 
         #endregion Constructors
+
+        #region Events
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public event EventHandler Refreshed;
+
+        #endregion Events
 
         #region Properties
 
@@ -109,7 +118,7 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
             set
             {
                 this.isSelected = value;
-                this.OnPropertyChanged(() => this.IsSelected);
+                this.OnPropertyChanged("IsSelected");
             }
         }
 
@@ -132,7 +141,7 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
                     ? value.DisplayedName
                     : string.Empty;
 
-                this.OnPropertyChanged(() => Patient);
+                this.OnPropertyChanged("Patient");
             }
         }
 
@@ -148,7 +157,7 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
             set
             {
                 this.selectedTag = value;
-                this.OnPropertyChanged(() => SelectedTag);
+                this.OnPropertyChanged("SelectedTag");
             }
         }
 
@@ -158,7 +167,7 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
             set
             {
                 this.subject = value;
-                this.OnPropertyChanged(() => Subject);
+                this.OnPropertyChanged("Subject");
             }
         }
 
@@ -259,8 +268,8 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
                     var appointment = Mapper.Map<DateRangeViewModel, AppointmentDto>(this);
                     this.component.Create(appointment, patient);
                 }
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_AppointmentAdded);
-                Notifyer.OnRefreshed(this);
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_AppointmentAdded);
+                this.OnRefreshed();
             }
             catch (Exception ex)
             {
@@ -271,6 +280,18 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
         private bool CanAdd()
         {
             return !string.IsNullOrWhiteSpace(this.Subject);
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            if (this.PropertyChanged != null)
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void OnRefreshed()
+        {
+            if (this.Refreshed != null)
+                this.Refreshed(this, EventArgs.Empty);
         }
 
         private void Remove()
@@ -289,8 +310,8 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
                     var appointment = Mapper.Map<DateRangeViewModel, AppointmentDto>(this);
                     this.component.Remove(appointment, this.Patient);
                 }
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_AppointmentRemoved);
-                Notifyer.OnRefreshed(this);
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_AppointmentRemoved);
+                this.OnRefreshed();
             }
             catch (Exception ex)
             {

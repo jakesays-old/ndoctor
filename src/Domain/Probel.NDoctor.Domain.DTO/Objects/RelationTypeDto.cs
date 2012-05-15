@@ -16,11 +16,6 @@
 */
 namespace Probel.NDoctor.Domain.DTO.Objects
 {
-    using System;
-
-    using Probel.Mvvm;
-
-    [Serializable]
     public class RelationTypeDto : BaseDto
     {
         #region Fields
@@ -49,7 +44,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.leftSideName = value;
-                this.OnPropertyChanged(() => LeftSideName);
+                this.OnPropertyChanged("LeftSideName");
             }
         }
 
@@ -65,7 +60,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.rightSideName = value;
-                this.OnPropertyChanged(() => RightSideName);
+                this.OnPropertyChanged("RightSideName");
             }
         }
 

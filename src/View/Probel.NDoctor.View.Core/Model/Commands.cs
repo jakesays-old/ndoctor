@@ -19,7 +19,6 @@ namespace Probel.NDoctor.View.Core.Model
     using System.Windows;
     using System.Windows.Input;
 
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.View.Core.Properties;
     using Probel.NDoctor.View.Plugins.Helpers;
 

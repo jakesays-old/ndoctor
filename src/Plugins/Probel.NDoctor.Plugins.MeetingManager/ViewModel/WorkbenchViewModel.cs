@@ -18,21 +18,18 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Windows.Input;
 
     using AutoMapper;
 
     using Probel.Helpers.Conversions;
     using Probel.Helpers.WPF.Calendar.Model;
-    using Probel.NDoctor.Domain.DAL.Components;
+    using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
-    using Probel.NDoctor.Plugins.MeetingManager.Helpers;
     using Probel.NDoctor.Plugins.MeetingManager.Properties;
-    using Probel.NDoctor.Plugins.MeetingManager.View;
-    using Probel.NDoctor.View.Core.Helpers;
     using Probel.NDoctor.View.Core.ViewModel;
-    using Probel.Mvvm.DataBinding;
-
-    using StructureMap;
+    using Probel.NDoctor.View.Plugins.Helpers;
 
     /// <summary>
     /// Workbench's ViewModel of the plugin
@@ -41,7 +38,8 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
     {
         #region Fields
 
-        private ICalendarComponent component = ObjectFactory.GetInstance<ICalendarComponent>();
+        private ICalendarComponent component = ComponentFactory.CalendarComponent;
+        private string criteria;
         private DateTime dateToDisplay;
 
         #endregion Fields
@@ -56,9 +54,11 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
             : base()
         {
             this.DateToDisplay = DateTime.Today;
+            this.FoundPatients = new ObservableCollection<PatientViewModel>();
             this.DayAppointments = new AppointmentCollection();
 
-            Notifyer.Refreshed += (sender, e) => this.DateToDisplay = this.DateToDisplay.AddMilliseconds(1);
+            this.SearchCommand = new RelayCommand(() => this.Search(), () => this.CanSearch());
+
             this.PropertyChanged += (sender, e) =>
             {
                 if (e.PropertyName == "DateToDisplay")
@@ -70,13 +70,23 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
 
         #region Properties
 
+        public string Criteria
+        {
+            get { return this.criteria; }
+            set
+            {
+                this.criteria = value;
+                this.OnPropertyChanged("Criteria");
+            }
+        }
+
         public DateTime DateToDisplay
         {
             get { return this.dateToDisplay; }
             set
             {
                 this.dateToDisplay = value;
-                this.OnPropertyChanged(() => DateToDisplay);
+                this.OnPropertyChanged("DateToDisplay");
             }
         }
 
@@ -86,9 +96,26 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
             private set;
         }
 
+        public ObservableCollection<PatientViewModel> FoundPatients
+        {
+            get;
+            private set;
+        }
+
+        public ICommand SearchCommand
+        {
+            get;
+            private set;
+        }
+
         #endregion Properties
 
         #region Methods
+
+        private bool CanSearch()
+        {
+            return !string.IsNullOrWhiteSpace(this.Criteria);
+        }
 
         private void RefreshCalendar()
         {
@@ -99,13 +126,39 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
                     var result = this.component.FindAppointments(this.DateToDisplay);
                     var mappedResult = Mapper.Map<IList<AppointmentDto>, AppointmentCollection>(result);
                     this.DayAppointments.Refill(mappedResult);
-
-                    this.Logger.Debug("Calendar refreshed");
                 }
             }
             catch (Exception ex)
             {
                 this.HandleError(ex, Messages.Error_RefreshingCalendar);
+            }
+        }
+
+        private void Search()
+        {
+            try
+            {
+                IList<LightPatientDto> result = new List<LightPatientDto>();
+                using (this.component.UnitOfWork)
+                {
+                    result = this.component.FindPatientsByNameLight(this.Criteria, SearchOn.FirstAndLastName);
+                }
+                var mappedResult = Mapper.Map<IList<LightPatientDto>, IList<PatientViewModel>>(result);
+
+                foreach (var item in mappedResult)
+                {
+                    item.Refreshed += (sender, e) =>
+                    {
+                        this.RefreshCalendar();
+                        this.DateToDisplay = this.DateToDisplay.AddMilliseconds(1);
+                    };
+                }
+                this.FoundPatients.Refill(mappedResult);
+                this.DateToDisplay = this.DateToDisplay.AddMilliseconds(1);
+            }
+            catch (Exception ex)
+            {
+                this.HandleError(ex, Messages.Error_ErrorSearching);
             }
         }
 

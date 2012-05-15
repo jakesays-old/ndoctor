@@ -44,10 +44,14 @@ namespace Probel.NDoctor.View.Plugins
         /// <param name="host">The host.</param>
         /// <param name="cultureInfo">The culture info.</param>
         [ImportingConstructor]
-        public Plugin(Version version)
+        public Plugin(Version version
+            , IPluginHost host)
         {
             this.errorHandler = new ErrorHandler(this);
             this.Version = version;
+            this.Host
+                = PluginContext.Host
+                = host;
         }
 
         /// <summary>
@@ -56,8 +60,8 @@ namespace Probel.NDoctor.View.Plugins
         /// <param name="version">The version of the plugin</param>
         /// <param name="host">The host.</param>
         /// <param name="cultureInfo">The culture info.</param>
-        protected Plugin(string version)
-            : this(new Version(version))
+        protected Plugin(string version, IPluginHost host)
+            : this(new Version(version), host)
         {
         }
 
@@ -108,6 +112,15 @@ namespace Probel.NDoctor.View.Plugins
         }
 
         protected CultureInfo CultureInfo
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Gets the plugin host.
+        /// </summary>
+        protected IPluginHost Host
         {
             get;
             private set;
@@ -228,7 +241,7 @@ namespace Probel.NDoctor.View.Plugins
         /// <exception cref="DeactivatedPluginException">When the user try to show a deactivated plugin</exception>
         public void Show()
         {
-            if (this.IsActive) PluginContext.Host.Navigate(this.Page);
+            if (this.IsActive) this.Host.Navigate(this.Page);
             else throw new DeactivatedPluginException();
         }
 
@@ -238,7 +251,7 @@ namespace Probel.NDoctor.View.Plugins
         /// </summary>
         public void TryShow()
         {
-            if (this.IsActive) PluginContext.Host.Navigate(this.Page);
+            if (this.IsActive) this.Host.Navigate(this.Page);
         }
 
         #endregion Methods

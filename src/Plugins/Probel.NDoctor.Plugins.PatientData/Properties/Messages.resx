@@ -261,6 +261,10 @@
     <value>Address</value>
     <comment>Address</comment>
   </data>
+  <data name="Title_TabContact" xml:space="preserve">
+    <value>Contact</value>
+    <comment>Contact</comment>
+  </data>
   <data name="Title_EmailPrivate" xml:space="preserve">
     <value>Email</value>
     <comment>Email</comment>
@@ -298,15 +302,15 @@
     <comment>Search</comment>
   </data>
   <data name="Title_AddDoctor" xml:space="preserve">
-    <value>Add a doctor</value>
-    <comment>Add a doctor</comment>
+    <value>Add a doctor to this patient...</value>
+    <comment>Add a doctor to this patient...</comment>
   </data>
   <data name="Title_FullName" xml:space="preserve">
     <value>Name</value>
     <comment>Name</comment>
   </data>
   <data name="Title_Specialisation" xml:space="preserve">
-    <value>Specialisation</value>
+    <value>Spécialisation</value>
     <comment>Specialisation</comment>
   </data>
   <data name="Msg_AskAddDoctor" xml:space="preserve">
@@ -361,6 +365,10 @@
     <value>The operation succeeded.</value>
     <comment>The operation succeeded.</comment>
   </data>
+  <data name="Title_OperationDone1" xml:space="preserve">
+    <value>L'opération s'est déroulée avec succès.</value>
+    <comment>The operation succeeded.</comment>
+  </data>
   <data name="Title_Data" xml:space="preserve">
     <value>Data</value>
     <comment>Data</comment>
@@ -376,49 +384,5 @@
   <data name="Title_Phone" xml:space="preserve">
     <value>Phone</value>
     <comment>Phone</comment>
-  </data>
-  <data name="Title_AddSpecialisation" xml:space="preserve">
-    <value>Add a specialisation</value>
-    <comment>Add a new specialisation</comment>
-  </data>
-  <data name="Title_BindDoctor" xml:space="preserve">
-    <value>Bind a doctor...</value>
-    <comment>Bind a doctor...</comment>
-  </data>
-  <data name="Title_AddInsurance" xml:space="preserve">
-    <value>Add an insurance</value>
-    <comment>Add an insurance</comment>
-  </data>
-  <data name="Title_AddReputation" xml:space="preserve">
-    <value>Add a reputation</value>
-    <comment>Add a reputation</comment>
-  </data>
-  <data name="Title_AddPractice" xml:space="preserve">
-    <value>Add a practice</value>
-    <comment>Add a practice</comment>
-  </data>
-  <data name="Title_AddProfession" xml:space="preserve">
-    <value>Add a profession</value>
-    <comment>Add a profession</comment>
-  </data>
-  <data name="Menu_Add" xml:space="preserve">
-    <value>Add</value>
-    <comment>Add</comment>
-  </data>
-  <data name="Title_Rollback" xml:space="preserve">
-    <value>Cancel modifications</value>
-    <comment>Cancel modifications</comment>
-  </data>
-  <data name="Title_TabPrivateContact" xml:space="preserve">
-    <value>Private</value>
-    <comment>Private</comment>
-  </data>
-  <data name="Title_TabProContact" xml:space="preserve">
-    <value>Professional</value>
-    <comment>Professional</comment>
-  </data>
-  <data name="Title_TabContact" xml:space="preserve">
-    <value>Contact</value>
-    <comment>Contact</comment>
   </data>
 </root>

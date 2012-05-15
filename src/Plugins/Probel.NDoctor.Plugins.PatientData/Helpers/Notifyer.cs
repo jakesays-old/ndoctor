@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PatientData.Helpers
 {
     using System;
@@ -26,9 +31,9 @@ namespace Probel.NDoctor.Plugins.PatientData.Helpers
         #region Events
 
         /// <summary>
-        /// Occurs when satelite data is changed.
+        /// Occurs when a link bewteen a doctor and a patient changed.
         /// </summary>
-        public static event EventHandler SateliteDataChanged;
+        public static event EventHandler DoctorLinkChanged;
 
         /// <summary>
         /// Occurs when a specialisation changed.
@@ -40,14 +45,14 @@ namespace Probel.NDoctor.Plugins.PatientData.Helpers
         #region Methods
 
         /// <summary>
-        /// Notifies when satelite data is changed.
+        /// Notifies a doctor was linked to a patinent
         /// </summary>
         /// <param name="sender">The sender.</param>
-        public static void OnSateliteDataChanged(object sender)
+        public static void OnDoctorLinkChanged(object sender)
         {
-            if (SateliteDataChanged != null)
+            if (DoctorLinkChanged != null)
             {
-                SateliteDataChanged(sender, EventArgs.Empty);
+                DoctorLinkChanged(sender, EventArgs.Empty);
             }
         }
 

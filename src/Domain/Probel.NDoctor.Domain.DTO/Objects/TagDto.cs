@@ -16,14 +16,9 @@
 */
 namespace Probel.NDoctor.Domain.DTO.Objects
 {
-    using System;
-
-    using Probel.Mvvm;
-
     /// <summary>
     /// Dto of a tag
     /// </summary>
-    [Serializable]
     public class TagDto : BaseDto
     {
         #region Fields
@@ -33,26 +28,6 @@ namespace Probel.NDoctor.Domain.DTO.Objects
         private TagCategory tagType;
 
         #endregion Fields
-
-        #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TagDto"/> class.
-        /// </summary>
-        /// <param name="category">The category.</param>
-        public TagDto(TagCategory category)
-        {
-            this.Category = category;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TagDto"/> class.
-        /// </summary>
-        private TagDto()
-        {
-        }
-
-        #endregion Constructors
 
         #region Properties
 
@@ -68,7 +43,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.tagType = value;
-                this.OnPropertyChanged(() => Category);
+                this.OnPropertyChanged("Category");
             }
         }
 
@@ -84,7 +59,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.name = value;
-                this.OnPropertyChanged(() => Name);
+                this.OnPropertyChanged("Name");
             }
         }
 
@@ -100,27 +75,10 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.notes = value;
-                this.OnPropertyChanged(() => Notes);
+                this.OnPropertyChanged("Notes");
             }
         }
 
         #endregion Properties
-
-        #region Methods
-
-        /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
-        /// </returns>
-        public override string ToString()
-        {
-            return string.Format("[{0}] {1}"
-                , this.Category
-                , this.Name);
-        }
-
-        #endregion Methods
     }
 }

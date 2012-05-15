@@ -16,48 +16,26 @@
 */
 namespace Probel.NDoctor.Domain.DTO.Objects
 {
-    using System;
     using System.Collections.ObjectModel;
-
-    using Probel.Mvvm;
 
     /// <summary>
     /// Represents the family of a patient
     /// </summary>
-    [Serializable]
     public class FamilyDto : BaseDto
     {
         #region Fields
 
         private LightPatientDto current;
+        private LightPatientDto father;
+        private LightPatientDto mother;
 
         #endregion Fields
 
         #region Constructors
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FamilyDto"/> class.
-        /// </summary>
         public FamilyDto()
         {
-            this.Fathers = new ObservableCollection<LightPatientDto>();
-            this.Mothers = new ObservableCollection<LightPatientDto>();
             this.Children = new ObservableCollection<LightPatientDto>();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FamilyDto"/> class.
-        /// </summary>
-        /// <param name="current">The current.</param>
-        /// <param name="father">The father.</param>
-        /// <param name="mother">The mother.</param>
-        /// <param name="children">The children.</param>
-        public FamilyDto(LightPatientDto current, LightPatientDto father, LightPatientDto mother, LightPatientDto[] children)
-        {
-            this.Current = current;
-            this.Fathers = new ObservableCollection<LightPatientDto>(new LightPatientDto[] { father });
-            this.Mothers = new ObservableCollection<LightPatientDto>(new LightPatientDto[] { mother });
-            this.Children = new ObservableCollection<LightPatientDto>(children);
         }
 
         #endregion Constructors
@@ -67,7 +45,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
         public ObservableCollection<LightPatientDto> Children
         {
             get;
-            private set;
+            set;
         }
 
         /// <summary>
@@ -80,7 +58,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.current = value;
-                this.OnPropertyChanged(()=>this.Current);
+                this.OnPropertyChanged("Current");
             }
         }
 
@@ -88,20 +66,28 @@ namespace Probel.NDoctor.Domain.DTO.Objects
         /// Gets or sets the father of the current patient
         /// </summary>
         /// <value>The father</value>
-        public ObservableCollection<LightPatientDto> Fathers
+        public LightPatientDto Father
         {
-            get;
-            private set;
+            get { return this.father; }
+            set
+            {
+                this.father = value;
+                this.OnPropertyChanged("Father");
+            }
         }
 
         /// <summary>
         /// Gets or sets the mother of the current patient
         /// </summary>
         /// <value>The mother</value>
-        public ObservableCollection<LightPatientDto> Mothers
+        public LightPatientDto Mother
         {
-            get;
-            private set;
+            get { return this.mother; }
+            set
+            {
+                this.mother = value;
+                this.OnPropertyChanged("Mother");
+            }
         }
 
         #endregion Properties

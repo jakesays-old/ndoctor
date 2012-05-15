@@ -18,9 +18,9 @@ namespace Probel.NDoctor.Domain.Test.Component
 {
     using NUnit.Framework;
 
+    using Probel.NDoctor.Domain.DAL.Cfg;
     using Probel.NDoctor.Domain.DAL.Components;
     using Probel.NDoctor.Domain.DAL.Exceptions;
-    using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.Test.Helpers;
 
     public class TestPatientDataComponent : TestBase<PatientDataComponent>
@@ -30,12 +30,12 @@ namespace Probel.NDoctor.Domain.Test.Component
         [Test]
         public void CanFillData()
         {
-            var c = new PatientSessionComponent(this.Database.Session);
-            var patients = c.FindPatientsByNameLight("Patient", SearchOn.FirstAndLastName);
-            Assert.Greater(patients.Count, 0, "A patient with the name 'Patient' should exist in the database");
+            var c = new PatientSessionComponent(SQLiteDatabase.Scope.OpenSession());
+            var patient = c.GetPatientLightById(3);
+            Assert.NotNull(patient, "A patient with the id '3' should exist in the database");
 
-            long id = patients[0].Id;
-            var loadedPatient = this.Component.FindPatient(id);
+            long id = patient.Id;
+            var loadedPatient = this.Component.GetPatient(id);
 
             Assert.NotNull(loadedPatient, "The patient with id {0} should exist", id);
             Assert.NotNull(loadedPatient.Insurance, "Insurance should be loaded");
@@ -50,7 +50,7 @@ namespace Probel.NDoctor.Domain.Test.Component
         public void FailToLoadUnknownPatient()
         {
             long id = 123456789;
-            var loadedPatient = this.Component.FindPatient(id);
+            var loadedPatient = this.Component.GetPatient(id);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Probel.NDoctor.Domain.Test.Component
         /// <returns></returns>
         protected override PatientDataComponent GetComponentInstance()
         {
-            return new PatientDataComponent(this.Database.Session);
+            return new PatientDataComponent(SQLiteDatabase.Scope.OpenSession());
         }
 
         #endregion Methods

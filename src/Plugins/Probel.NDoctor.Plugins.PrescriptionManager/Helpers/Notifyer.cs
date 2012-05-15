@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,13 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PrescriptionManager.Helpers
 {
     using System;
-    using System.Collections.Generic;
-
-    using Probel.Helpers.Events;
-    using Probel.NDoctor.Domain.DTO.Objects;
 
     /// <summary>
     /// Static repository that fires statis events
@@ -34,11 +35,6 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.Helpers
         /// </summary>
         public static event EventHandler ItemChanged;
 
-        /// <summary>
-        /// Occurs when the prescription search is done and prescriptions are found.
-        /// </summary>
-        public static event EventHandler<EventArgs<PrescriptionResultDto>> PrescriptionFound;
-
         #endregion Events
 
         #region Methods
@@ -51,19 +47,6 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.Helpers
         {
             if (ItemChanged != null)
                 ItemChanged(sender, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Called when user the prescription search is done and results are found.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="result">The document.</param>
-        public static void OnPrescriptionFound(object sender, PrescriptionResultDto result)
-        {
-            if (PrescriptionFound != null)
-            {
-                PrescriptionFound(sender, new EventArgs<PrescriptionResultDto>(result));
-            }
         }
 
         #endregion Methods

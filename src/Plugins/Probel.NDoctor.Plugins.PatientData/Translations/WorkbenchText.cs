@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PatientData.Translations
 {
     using Probel.NDoctor.Plugins.PatientData.Properties;
@@ -95,16 +100,6 @@ namespace Probel.NDoctor.Plugins.PatientData.Translations
         public static string TabContact
         {
             get { return Messages.Title_TabContact; }
-        }
-
-        public static string TabPrivateContact
-        {
-            get { return Messages.Title_TabPrivateContact; }
-        }
-
-        public static string TabProContact
-        {
-            get { return Messages.Title_TabProContact; }
         }
 
         public static string TitleAddressBox

@@ -16,8 +16,6 @@
 */
 namespace Probel.NDoctor.View.Plugins.MenuData
 {
-    using System.Windows.Input;
-
     public class RibbonMenuItemData : RibbonMenuButtonData
     {
         #region Fields
@@ -27,29 +25,6 @@ namespace Probel.NDoctor.View.Plugins.MenuData
 
         #endregion Fields
 
-        #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RibbonMenuItemData"/> class.
-        /// </summary>
-        public RibbonMenuItemData()
-            : base(true)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RibbonMenuItemData"/> class.
-        /// </summary>
-        /// <param name="label">The label.</param>
-        /// <param name="uriImage">The URI image.</param>
-        /// <param name="command">The command.</param>
-        public RibbonMenuItemData(string label, string uriImage, ICommand command)
-            : base(label, uriImage, command)
-        {
-        }
-
-        #endregion Constructors
-
         #region Properties
 
         public bool IsCheckable
@@ -58,7 +33,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
             set
             {
                 this.isCheckable = value;
-                this.OnPropertyChanged(() => IsCheckable);
+                this.OnPropertyChanged("IsCheckable");
             }
         }
 
@@ -68,7 +43,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
             set
             {
                 this.isChecked = value;
-                this.OnPropertyChanged(() => IsChecked);
+                this.OnPropertyChanged("IsChecked");
             }
         }
 

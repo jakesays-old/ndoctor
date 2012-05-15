@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.Administration.ViewModel
 {
     using System;
@@ -24,12 +29,12 @@ namespace Probel.NDoctor.Plugins.Administration.ViewModel
 
     using Probel.Helpers.Conversions;
     using Probel.Helpers.WPF;
-    using Probel.Mvvm.DataBinding;
+    using Probel.NDoctor.Domain.DTO.Collections;
     using Probel.NDoctor.Domain.DTO.Components;
+    using Probel.NDoctor.Domain.DTO.Helpers;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.View.Core.ViewModel;
-
-    using StructureMap;
+    using Probel.NDoctor.View.Plugins;
 
     /// <summary>
     /// Workbench's ViewModel of the plugin
@@ -51,7 +56,7 @@ namespace Probel.NDoctor.Plugins.Administration.ViewModel
         /// <param name="host">The host.</param>
         public WorkbenchViewModel()
         {
-            if (!Designer.IsDesignMode) this.component = ObjectFactory.GetInstance<IAdministrationComponent>();
+            if (!Designer.IsDesignMode) this.component = ComponentFactory.AdministrationComponent;
 
             this.Insurances = new ObservableCollection<InsuranceViewModel>();
             this.Practices = new ObservableCollection<PracticeViewModel>();
@@ -110,7 +115,7 @@ namespace Probel.NDoctor.Plugins.Administration.ViewModel
             set
             {
                 this.selectedCategory = value;
-                this.OnPropertyChanged(() => SelectedCategory);
+                this.OnPropertyChanged("SelectedCategory");
             }
         }
 

@@ -257,9 +257,9 @@
     <value>Adresse</value>
     <comment>Address</comment>
   </data>
-  <data name="Title_TabPrivateContact" xml:space="preserve">
-    <value>Privé</value>
-    <comment>Private</comment>
+  <data name="Title_TabContact" xml:space="preserve">
+    <value>Contact</value>
+    <comment>Contact</comment>
   </data>
   <data name="Title_EmailPrivate" xml:space="preserve">
     <value>Email privé</value>
@@ -302,7 +302,7 @@
     <comment>Search</comment>
   </data>
   <data name="Title_AddDoctor" xml:space="preserve">
-    <value>Ajouer un médecin</value>
+    <value>Ajouter un médecin à ce patient...</value>
     <comment>Add a doctor to this patient...</comment>
   </data>
   <data name="Title_FullName" xml:space="preserve">
@@ -380,45 +380,5 @@
   <data name="Title_Phone" xml:space="preserve">
     <value>Tél.</value>
     <comment>Phone</comment>
-  </data>
-  <data name="Title_AddSpecialisation" xml:space="preserve">
-    <value>Ajouter une spécialisation</value>
-    <comment>Add a new specialisation</comment>
-  </data>
-  <data name="Title_BindDoctor" xml:space="preserve">
-    <value>Lier un médecin...</value>
-    <comment>Bind a doctor...</comment>
-  </data>
-  <data name="Title_AddInsurance" xml:space="preserve">
-    <value>Ajouter une mutuelle</value>
-    <comment>Add an insurance</comment>
-  </data>
-  <data name="Title_AddReputation" xml:space="preserve">
-    <value>Ajouter une réputation</value>
-    <comment>Add a reputation</comment>
-  </data>
-  <data name="Title_AddPractice" xml:space="preserve">
-    <value>Ajouter un cabinet</value>
-    <comment>Add a practice</comment>
-  </data>
-  <data name="Title_AddProfession" xml:space="preserve">
-    <value>Ajouter une profession</value>
-    <comment>Add a profession</comment>
-  </data>
-  <data name="Menu_Add" xml:space="preserve">
-    <value>Ajouter</value>
-    <comment>Add</comment>
-  </data>
-  <data name="Title_Rollback" xml:space="preserve">
-    <value>Annuler modifications</value>
-    <comment>Cancel modifications</comment>
-  </data>
-  <data name="Title_TabProContact" xml:space="preserve">
-    <value>Professionnel</value>
-    <comment>Professional</comment>
-  </data>
-  <data name="Title_TabContact" xml:space="preserve">
-    <value>Contact</value>
-    <comment>Contact</comment>
   </data>
 </root>

@@ -18,11 +18,8 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.View
 {
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Input;
 
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Plugins.MedicalRecord.Dto;
-    using Probel.NDoctor.Plugins.MedicalRecord.Helpers;
     using Probel.NDoctor.Plugins.MedicalRecord.ViewModel;
 
     /// <summary>
@@ -35,34 +32,20 @@ namespace Probel.NDoctor.Plugins.MedicalRecord.View
         public Workbench()
         {
             InitializeComponent();
-            Context.RichTextBox = this.richTextBox;
-            this.richTextBox.IsEnabled = false;
         }
 
         #endregion Constructors
 
         #region Methods
 
-        private void treeView_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (this.DataContext is WorkbenchViewModel)
             {
                 var viewModel = this.DataContext as WorkbenchViewModel;
-
                 if (this.treeView.SelectedItem is TitledMedicalRecordDto)
                 {
-                    viewModel.SaveOnUserAction();
-
                     viewModel.SelectedRecord = this.treeView.SelectedItem as TitledMedicalRecordDto;
-                    viewModel.SelectedRecord.Clean();
-
-                    this.richTextBox.IsEnabled = true;
-
-                }
-                else
-                {
-                    viewModel.SelectedRecord = null;
-                    this.richTextBox.Clear();
                 }
             }
         }

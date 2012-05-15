@@ -41,12 +41,6 @@
     <Reference Include="log4net">
       <HintPath>..\..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Probel.Mvvm">
-      <HintPath>..\..\..\lib\Probel.Mvvm\Probel.Mvvm.dll</HintPath>
-    </Reference>
-    <Reference Include="StructureMap, Version=2.6.3.0, Culture=neutral, PublicKeyToken=e60ad81abae3c223, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\structuremap.2.6.3\lib\StructureMap.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
@@ -66,8 +60,6 @@
     <Compile Include="Dto\TitledMedicalRecordCabinetDto.cs" />
     <Compile Include="Dto\TitledMedicalRecordDto.cs" />
     <Compile Include="Dto\TitledMedicalRecordFolderDto.cs" />
-    <Compile Include="Helpers\Notifyer.cs" />
-    <Compile Include="Helpers\Context.cs" />
     <Compile Include="MedicalRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -87,18 +79,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Translations\AddFolderText.cs" />
-    <Compile Include="Translations\AddRecordText.cs" />
-    <Compile Include="Translations\WorkbenchText.cs" />
-    <Compile Include="ViewModel\AddFolderViewModel.cs" />
-    <Compile Include="ViewModel\AddRecordViewModel.cs" />
     <Compile Include="ViewModel\WorkbenchViewModel.cs" />
-    <Compile Include="View\AddFolderView.xaml.cs">
-      <DependentUpon>AddFolderView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\AddRecordView.xaml.cs">
-      <DependentUpon>AddRecordView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Workbench.xaml.cs">
       <DependentUpon>Workbench.xaml</DependentUpon>
     </Compile>
@@ -120,13 +101,13 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Domain\Probel.NDoctor.Domain.DAL\Probel.NDoctor.Domain.DAL.csproj">
-      <Project>{96B7A128-8A98-4B49-A3CB-30AE783236E9}</Project>
-      <Name>Probel.NDoctor.Domain.DAL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Domain\Probel.NDoctor.Domain.DTO\Probel.NDoctor.Domain.DTO.csproj">
       <Project>{DB2E15D4-BA31-457B-BF73-71208922A0A0}</Project>
       <Name>Probel.NDoctor.Domain.DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ExtTools\SmithHtmlEditor\SmithHtmlEditor\SmithHtmlEditor.csproj">
+      <Project>{84BADDA1-AB3A-4064-B87E-178D7446901D}</Project>
+      <Name>SmithHtmlEditor</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Helpers\Probel.Helpers.WPF\Probel.Helpers.WPF.csproj">
       <Project>{625CC14F-559B-4004-A814-4C9DFF5DF503}</Project>
@@ -146,14 +127,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="View\AddFolderView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\AddRecordView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\Workbench.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -168,28 +141,6 @@
   <ItemGroup>
     <Resource Include="Images\Document.png" />
     <Resource Include="Images\Folder.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\TextHighlightColorPicker.png" />
-    <Resource Include="Images\Underline.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Numbering.png" />
-    <Resource Include="Images\RightAlign.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\FontColorPicker.png" />
-    <Resource Include="Images\Italic.png" />
-    <Resource Include="Images\JustifyAlign.png" />
-    <Resource Include="Images\LeftAlign.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Bold.png" />
-    <Resource Include="Images\Bullets.png" />
-    <Resource Include="Images\CenterAlign.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

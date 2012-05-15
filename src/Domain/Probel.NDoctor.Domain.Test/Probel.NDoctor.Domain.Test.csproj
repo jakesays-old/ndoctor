@@ -55,9 +55,6 @@
     <Reference Include="pnunit.framework">
       <HintPath>..\packages\NUnit.2.5.10.11092\lib\pnunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Probel.Mvvm">
-      <HintPath>..\..\..\lib\Probel.Mvvm\Probel.Mvvm.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
@@ -91,7 +88,6 @@
     <Compile Include="Components\TestUserSessionComponent.cs" />
     <Compile Include="Helpers\InMemoryDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Components\TestBaseComponentWhenNullSession.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.FamilyManager.Translations
 {
     using Probel.NDoctor.Plugins.FamilyManager.Properties;
@@ -25,11 +30,6 @@ namespace Probel.NDoctor.Plugins.FamilyManager.Translations
         public static string BtnSearch
         {
             get { return Messages.Btn_Search; }
-        }
-
-        public static string TitleWatermark
-        {
-            get { return Messages.Title_SearchWatermark; }
         }
 
         #endregion Properties

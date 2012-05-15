@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,22 +16,22 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PictureManager.ViewModel
 {
     using System;
     using System.Windows.Input;
 
     using Probel.Helpers.WPF;
-    using Probel.NDoctor.Domain.DAL.Exceptions;
     using Probel.NDoctor.Domain.DTO.Components;
+    using Probel.NDoctor.Domain.DTO.Exceptions;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.PictureManager.Helpers;
     using Probel.NDoctor.Plugins.PictureManager.Properties;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
-    using Probel.Mvvm.DataBinding;
 
     public class AddTagViewModel : BaseViewModel
     {
@@ -45,9 +47,9 @@ namespace Probel.NDoctor.Plugins.PictureManager.ViewModel
 
         public AddTagViewModel()
         {
-            this.SelectedTag = new TagDto(TagCategory.Picture);
+            this.SelectedTag = new TagDto() { Category = TagCategory.Picture };
 
-            if (!Designer.IsDesignMode) this.component = ObjectFactory.GetInstance<IPictureComponent>();
+            if (!Designer.IsDesignMode) this.component = ComponentFactory.PictureComponent;
 
             this.ShowPopupCommand = new RelayCommand(() => this.IsPopupOpened = true);
             this.AddCommand = new RelayCommand(() => this.Add(), () => this.CanAdd());
@@ -69,7 +71,7 @@ namespace Probel.NDoctor.Plugins.PictureManager.ViewModel
             set
             {
                 this.isPopupOpened = value;
-                this.OnPropertyChanged(() => IsPopupOpened);
+                this.OnPropertyChanged("IsPopupOpened");
             }
         }
 
@@ -79,7 +81,7 @@ namespace Probel.NDoctor.Plugins.PictureManager.ViewModel
             set
             {
                 this.selectedTag = value;
-                this.OnPropertyChanged(() => SelectedTag);
+                this.OnPropertyChanged("SelectedTag");
             }
         }
 
@@ -101,8 +103,8 @@ namespace Probel.NDoctor.Plugins.PictureManager.ViewModel
                 {
                     this.component.Create(this.SelectedTag);
                 }
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Title_OperationDone);
-                this.SelectedTag = new TagDto(TagCategory.Picture);
+                this.Host.WriteStatus(StatusType.Info, Messages.Title_OperationDone);
+                this.SelectedTag = new TagDto() { Category = TagCategory.Picture };
                 this.IsPopupOpened = false;
                 Notifyer.OnItemChanged(this);
             }

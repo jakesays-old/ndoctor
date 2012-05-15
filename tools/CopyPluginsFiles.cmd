@@ -259,22 +259,6 @@ copy "%rsxPlugin%" "%directory%\fr"
 copy "%rsxCore%" "%directory%\fr"
 copy "%rsxViewPlugin%" "%directory%\fr"
 echo=======================================================================================================
-set "pluginName=DbConvert"
-echo "Plugin: %pluginName%"
-echo=======================================================================================================
-set "return=r13"
-goto refresh
-:r13
-
-mkdir "%directory%"
-mkdir "%directoryFr%"
-
-copy "%pluginDll%" "%directory%\
-copy "%rsxHelper%" "%directory%\fr"
-copy "%rsxDal%" "%directory%\fr"
-copy "%rsxPlugin%" "%directory%\fr"
-copy "%rsxCore%" "%directory%\fr"
-copy "%rsxViewPlugin%" "%directory%\fr"
-echo=======================================================================================================
 
 echo Script executed
+pause;

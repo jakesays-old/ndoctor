@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Probel.Helpers", "Helpers\P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Probel.Helpers.Test", "Helpers\Probel.Helpers.Test\Probel.Helpers.Test.csproj", "{D1CF7F78-2D53-4F67-B064-67E2FBD4A989}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmithHtmlEditor", "ExtTools\SmithHtmlEditor\SmithHtmlEditor\SmithHtmlEditor.csproj", "{84BADDA1-AB3A-4064-B87E-178D7446901D}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Probel.Helpers.WPF", "Helpers\Probel.Helpers.WPF\Probel.Helpers.WPF.csproj", "{031C3942-6CE3-4999-89A7-D6DAAD781645}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{5514298B-11CD-4CC3-A3B9-85D10D55D3FB}"
@@ -51,8 +53,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Probel.NDoctor.Plugins.Meet
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Probel.NDoctor.Plugins.Administration", "Plugins\Probel.NDoctor.Plugins.Administration\Probel.NDoctor.Plugins.Administration.csproj", "{CA15F6F8-428C-4774-8169-8138FFC7B374}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Probel.NDoctor.Plugins.DbConvert", "Plugins\Probel.NDoctor.Plugins.DbConvert\Probel.NDoctor.Plugins.DbConvert.csproj", "{ED7EFCBD-0CAD-4F8B-9180-3CF42BB90719}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +83,16 @@ Global
 		{D1CF7F78-2D53-4F67-B064-67E2FBD4A989}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D1CF7F78-2D53-4F67-B064-67E2FBD4A989}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D1CF7F78-2D53-4F67-B064-67E2FBD4A989}.Release|x86.ActiveCfg = Release|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{84BADDA1-AB3A-4064-B87E-178D7446901D}.Release|x86.ActiveCfg = Release|Any CPU
 		{031C3942-6CE3-4999-89A7-D6DAAD781645}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{031C3942-6CE3-4999-89A7-D6DAAD781645}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{031C3942-6CE3-4999-89A7-D6DAAD781645}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -273,16 +283,6 @@ Global
 		{CA15F6F8-428C-4774-8169-8138FFC7B374}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CA15F6F8-428C-4774-8169-8138FFC7B374}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CA15F6F8-428C-4774-8169-8138FFC7B374}.Release|x86.ActiveCfg = Release|Any CPU
-		{ED7EFCBD-0CAD-4F8B-9180-3CF42BB90719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED7EFCBD-0CAD-4F8B-9180-3CF42BB90719}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED7EFCBD-0CAD-4F8B-9180-3CF42BB90719}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{ED7EFCBD-0CAD-4F8B-9180-3CF42BB90719}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{ED7EFCBD-0CAD-4F8B-9180-3CF42BB90719}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{ED7EFCBD-0CAD-4F8B-9180-3CF42BB90719}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED7EFCBD-0CAD-4F8B-9180-3CF42BB90719}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ED7EFCBD-0CAD-4F8B-9180-3CF42BB90719}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{ED7EFCBD-0CAD-4F8B-9180-3CF42BB90719}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{ED7EFCBD-0CAD-4F8B-9180-3CF42BB90719}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -290,6 +290,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{18F7EA3E-0BF5-430F-9B1D-258BDAB6304E} = {0E6CA6C6-8A36-4CBB-9A8F-AC3A691F77BC}
 		{D1CF7F78-2D53-4F67-B064-67E2FBD4A989} = {0E6CA6C6-8A36-4CBB-9A8F-AC3A691F77BC}
+		{84BADDA1-AB3A-4064-B87E-178D7446901D} = {0E6CA6C6-8A36-4CBB-9A8F-AC3A691F77BC}
 		{031C3942-6CE3-4999-89A7-D6DAAD781645} = {0E6CA6C6-8A36-4CBB-9A8F-AC3A691F77BC}
 		{96B7A128-8A98-4B49-A3CB-30AE783236E9} = {5514298B-11CD-4CC3-A3B9-85D10D55D3FB}
 		{DB2E15D4-BA31-457B-BF73-71208922A0A0} = {5514298B-11CD-4CC3-A3B9-85D10D55D3FB}
@@ -309,6 +310,5 @@ Global
 		{9FBFF473-4348-4AC8-B4AC-5D2CC423DCE4} = {D8360C59-BA27-4022-B495-A8A725325A41}
 		{B4B8E01C-B816-46BA-A4B6-81FCE666D809} = {D8360C59-BA27-4022-B495-A8A725325A41}
 		{CA15F6F8-428C-4774-8169-8138FFC7B374} = {D8360C59-BA27-4022-B495-A8A725325A41}
-		{ED7EFCBD-0CAD-4F8B-9180-3CF42BB90719} = {D8360C59-BA27-4022-B495-A8A725325A41}
 	EndGlobalSection
 EndGlobal

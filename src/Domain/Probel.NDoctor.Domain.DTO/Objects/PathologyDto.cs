@@ -16,14 +16,9 @@
 */
 namespace Probel.NDoctor.Domain.DTO.Objects
 {
-    using System;
-
-    using Probel.Mvvm;
-
     /// <summary>
     /// Represents a pathology
     /// </summary>
-    [Serializable]
     public class PathologyDto : BaseDto
     {
         #region Fields
@@ -38,7 +33,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
 
         public PathologyDto()
         {
-            this.Tag = new TagDto(TagCategory.Pathology);
+            this.Tag = new TagDto();
         }
 
         #endregion Constructors
@@ -57,7 +52,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.name = value;
-                this.OnPropertyChanged(() => Name);
+                this.OnPropertyChanged("Name");
             }
         }
 
@@ -73,7 +68,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.notes = value;
-                this.OnPropertyChanged(() => Notes);
+                this.OnPropertyChanged("Notes");
             }
         }
 
@@ -90,7 +85,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.tag = value;
-                this.OnPropertyChanged(() => Tag);
+                this.OnPropertyChanged("Tag");
             }
         }
 

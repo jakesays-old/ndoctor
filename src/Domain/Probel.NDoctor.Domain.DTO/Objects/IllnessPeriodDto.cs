@@ -18,12 +18,9 @@ namespace Probel.NDoctor.Domain.DTO.Objects
 {
     using System;
 
-    using Probel.Mvvm;
-
     /// <summary>
     /// Represents a illness period while a patient was ill
     /// </summary>
-    [Serializable]
     public class IllnessPeriodDto : BaseDto
     {
         #region Fields
@@ -49,7 +46,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.end = value;
-                this.OnPropertyChanged(()=>this.End);
+                this.OnPropertyChanged("End");
             }
         }
 
@@ -65,7 +62,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.notes = value;
-                this.OnPropertyChanged(()=>this.Notes);
+                this.OnPropertyChanged("Notes");
             }
         }
 
@@ -81,7 +78,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.pathology = value;
-                this.OnPropertyChanged(()=>this.Pathology);
+                this.OnPropertyChanged("Pathology");
             }
         }
 
@@ -97,7 +94,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.start = value;
-                this.OnPropertyChanged(()=>this.Start);
+                this.OnPropertyChanged("Start");
             }
         }
 

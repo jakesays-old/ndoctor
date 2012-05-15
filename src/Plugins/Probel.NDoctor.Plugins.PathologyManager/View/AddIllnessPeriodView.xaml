@@ -6,26 +6,32 @@
              xmlns:this="clr-namespace:Probel.NDoctor.Plugins.PathologyManager.ViewModel"
              xmlns:ctrl="clr-namespace:Probel.NDoctor.Plugins.PathologyManager.View"
              mc:Ignorable="d" 
-             Height="250" 
-             Width="450">
+             d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
-    <DockPanel LastChildFill="True">
-        <Grid DockPanel.Dock="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="70"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBox Grid.Column="0"
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="26"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="70"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBox Grid.Column="0"
                      Text="{Binding Path=Criteria, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Button  Grid.Column="2" 
+                <ctrl:AddPathologyView Grid.Column="1"/>
+
+                <Button  Grid.Column="2" 
                      Content="{Binding BtnSearch}"
                      Command="{Binding SearchCommand}"/>
-        </Grid>
-        <ScrollViewer DockPanel.Dock="Bottom">
+            </Grid>
             <ListView Grid.Row="1" ItemsSource="{Binding Path=FoundPathologies}"
                       SelectedItem="{Binding Path=SelectedPathology}">
                 <ListView.Resources>
@@ -86,6 +92,6 @@
                 </ListView.ItemContainerStyle>
 
             </ListView>
-        </ScrollViewer>
-    </DockPanel>
+        </Grid>
+    </Grid>
 </UserControl>

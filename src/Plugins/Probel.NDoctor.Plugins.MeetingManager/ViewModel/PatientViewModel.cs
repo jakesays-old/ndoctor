@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
 {
     using System;
@@ -24,22 +29,18 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
 
     using Probel.Helpers.Conversions;
     using Probel.Helpers.Data;
-    using Probel.Mvvm.DataBinding;
-    using Probel.NDoctor.Domain.DAL.Components;
+    using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Helpers;
     using Probel.NDoctor.Domain.DTO.Objects;
-    using Probel.NDoctor.Plugins.MeetingManager.Helpers;
     using Probel.NDoctor.Plugins.MeetingManager.Properties;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class PatientViewModel : BaseViewModel
     {
         #region Fields
 
-        private ICalendarComponent component = ObjectFactory.GetInstance<ICalendarComponent>();
+        private ICalendarComponent component = ComponentFactory.CalendarComponent;
         private DateTime fromDate;
         private bool isSelected;
         private LightPatientDto patient;
@@ -59,16 +60,23 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
             this.fromDate
                 = this.toDate
                 = DateTime.Today;
-
-            Notifyer.Refreshed += (sender, e) =>
-            {
-                if (CanSearch()) { this.Search(); }
-            };
         }
 
         #endregion Constructors
 
+        #region Events
+
+        public event EventHandler Refreshed;
+
+        #endregion Events
+
         #region Properties
+
+        public ICommand AddCommand
+        {
+            get;
+            private set;
+        }
 
         public string DisplayedName
         {
@@ -99,7 +107,7 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
             {
                 this.fromDate = value;
                 this.ToDate = this.FromDate;
-                this.OnPropertyChanged(() => FromDate);
+                this.OnPropertyChanged("FromDate");
             }
         }
 
@@ -114,7 +122,7 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
                     this.FoundSlotsToRemove.Clear();
                 }
                 this.isSelected = value;
-                this.OnPropertyChanged(() => IsSelected);
+                this.OnPropertyChanged("IsSelected");
             }
         }
 
@@ -124,8 +132,14 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
             set
             {
                 this.patient = value;
-                this.OnPropertyChanged(() => Patient);
+                this.OnPropertyChanged("Patient");
             }
+        }
+
+        public ICommand RemoveCommand
+        {
+            get;
+            private set;
         }
 
         public ICommand SearchCommand
@@ -140,7 +154,7 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
             set
             {
                 this.toDate = value;
-                this.OnPropertyChanged(() => ToDate);
+                this.OnPropertyChanged("ToDate");
             }
         }
 
@@ -151,6 +165,12 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
         private bool CanSearch()
         {
             return this.FromDate <= this.ToDate;
+        }
+
+        private void OnRefreshed()
+        {
+            if (this.Refreshed != null)
+                this.Refreshed(this, EventArgs.Empty);
         }
 
         private void Search()
@@ -171,7 +191,7 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
 
         private void SearchAppointmentToAdd()
         {
-            var result = this.component.FindSlots(this.FromDate, this.ToDate, PluginContext.Host.Workday);
+            var result = this.component.FindSlots(this.FromDate, this.ToDate, this.Host.Workday);
             var mappedResult = Mapper.Map<IList<DateRange>, IList<DateRangeViewModel>>(result);
 
             // Fills the default subject to all the found appointments and the
@@ -179,6 +199,11 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
             foreach (var item in mappedResult)
             {
                 item.Patient = this.Patient;
+                item.Refreshed += (sender, e) =>
+                {
+                    this.Search();
+                    this.OnRefreshed();
+                };
             }
             this.FoundSlotsToAdd.Refill(mappedResult);
         }
@@ -193,6 +218,11 @@ namespace Probel.NDoctor.Plugins.MeetingManager.ViewModel
             foreach (var item in mappedResult)
             {
                 item.Patient = this.Patient;
+                item.Refreshed += (sender, e) =>
+                {
+                    this.Search();
+                    this.OnRefreshed();
+                };
             }
 
             this.FoundSlotsToRemove.Refill(mappedResult);

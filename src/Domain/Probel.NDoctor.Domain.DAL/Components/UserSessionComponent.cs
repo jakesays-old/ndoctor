@@ -28,6 +28,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
     using Probel.NDoctor.Domain.DAL.Exceptions;
     using Probel.NDoctor.Domain.DAL.Properties;
     using Probel.NDoctor.Domain.DTO.Components;
+    using Probel.NDoctor.Domain.DTO.Exceptions;
     using Probel.NDoctor.Domain.DTO.Objects;
 
     /// <summary>
@@ -134,7 +135,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
         public void UpdatePassword(LightUserDto user, string password)
         {
             var entity = this.Session.Get<User>(user.Id);
-            if (entity == null) throw new EntityNotFoundException(typeof(User));
+            if (entity == null) throw new EntityNotFoundException();
 
             entity.Password = password;
             this.Session.Update(entity);

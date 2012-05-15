@@ -26,7 +26,6 @@ namespace Probel.NDoctor.Domain.DAL.Components
     using NHibernate.Linq;
 
     using Probel.Helpers.Conversions;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DAL.Entities;
     using Probel.NDoctor.Domain.DAL.Exceptions;
     using Probel.NDoctor.Domain.DTO.Components;
@@ -70,7 +69,7 @@ namespace Probel.NDoctor.Domain.DAL.Components
             var entity = this.Session.Get<Patient>(patient.Id);
 
             if (entity != null) entity.BmiHistory.Add(Mapper.Map<BmiDto, Bmi>(bmi));
-            else throw new EntityNotFoundException(typeof(Bmi));
+            else throw new EntityNotFoundException();
         }
 
         /// <summary>

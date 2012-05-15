@@ -18,12 +18,10 @@ namespace Probel.Helpers.Data
 {
     using System;
 
-    using Probel.Mvvm.DataBinding;
-
     /// <summary>
     /// 
     /// </summary>
-    public class DateRange : ObservableObject, IEquatable<DateRange>
+    public class DateRange : IEquatable<DateRange>
     {
         #region Constructors
 

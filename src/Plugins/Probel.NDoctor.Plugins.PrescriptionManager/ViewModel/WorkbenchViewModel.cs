@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
 {
     using System;
@@ -21,16 +26,11 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
     using System.Windows.Input;
 
     using Probel.Helpers.Conversions;
-    using Probel.Helpers.Strings;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
-    using Probel.NDoctor.Plugins.PrescriptionManager.Helpers;
     using Probel.NDoctor.Plugins.PrescriptionManager.Properties;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-    using Probel.Mvvm.DataBinding;
-
-    using StructureMap;
 
     /// <summary>
     /// Workbench's ViewModel of the plugin
@@ -39,7 +39,7 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
     {
         #region Fields
 
-        private IPrescriptionComponent component = ObjectFactory.GetInstance<IPrescriptionComponent>();
+        private IPrescriptionComponent component = ComponentFactory.PrescriptionComponent;
         private DateTime endCriteria;
         private PrescriptionDocumentDto selectPrescriptionDocument;
         private DateTime startCriteria;
@@ -59,19 +59,18 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             this.EndCriteria = DateTime.Today.AddMonths(1);
 
             this.FoundPrescriptions = new ObservableCollection<PrescriptionDocumentDto>();
-            Notifyer.PrescriptionFound += (sender, e) =>
-            {
-                this.FoundPrescriptions.Refill(e.Data.Prescriptions);
-                this.StartCriteria = e.Data.From;
-                this.EndCriteria = e.Data.To;
 
-                this.Logger.Debug("Load prescriptions");
-            };
+            this.SearchCommand = new RelayCommand(() => this.Search(), () => this.CanSearch());
         }
 
         #endregion Constructors
 
         #region Properties
+
+        public string BtnSearch
+        {
+            get { return Messages.Btn_Search; }
+        }
 
         public DateTime EndCriteria
         {
@@ -79,8 +78,7 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             set
             {
                 this.endCriteria = value;
-                this.OnPropertyChanged(() => EndCriteria);
-                this.OnPropertyChanged(() => PrescriptionHeader);
+                this.OnPropertyChanged("EndCriteria");
             }
         }
 
@@ -90,17 +88,10 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             private set;
         }
 
-        /// <summary>
-        /// Gets the prescription header. The binding is done when the <see cref="EndCriteria"/> is updated
-        /// </summary>
-        public string PrescriptionHeader
+        public ICommand SearchCommand
         {
-            get
-            {
-                return Messages.Title_PrescriptionHeader.FormatWith(
-                    this.StartCriteria.ToShortDateString()
-                    , this.EndCriteria.ToShortDateString());
-            }
+            get;
+            private set;
         }
 
         public PrescriptionDocumentDto SelectedPrescriptionDocument
@@ -109,7 +100,7 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             set
             {
                 this.selectPrescriptionDocument = value;
-                this.OnPropertyChanged(() => SelectedPrescriptionDocument);
+                this.OnPropertyChanged("SelectedPrescriptionDocument");
             }
         }
 
@@ -119,11 +110,46 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             set
             {
                 this.startCriteria = value;
-                // I update the  header 'FromTo' from the EndCriteria
-                this.OnPropertyChanged(() => StartCriteria);
+                this.OnPropertyChanged("StartCriteria");
             }
         }
 
+        public string TitleFrom
+        {
+            get { return Messages.Title_From; }
+        }
+
+        public string TitleTo
+        {
+            get { return Messages.Title_To; }
+        }
+
         #endregion Properties
+
+        #region Methods
+
+        private bool CanSearch()
+        {
+            return this.StartCriteria < this.EndCriteria;
+        }
+
+        private void Search()
+        {
+            try
+            {
+                using (this.component.UnitOfWork)
+                {
+                    var found = this.component.FindPrescriptionsByDates(this.Host.SelectedPatient
+                        , this.StartCriteria, this.EndCriteria);
+                    this.FoundPrescriptions.Refill(found);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.HandleError(ex, Messages.Msg_ErrorSearchingPrescriptions);
+            }
+        }
+
+        #endregion Methods
     }
 }

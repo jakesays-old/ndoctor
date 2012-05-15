@@ -1,20 +1,4 @@
-﻿/*
-    This file is part of NDoctor.
-
-    NDoctor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    NDoctor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
-*/
-namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
+﻿namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -22,20 +6,17 @@ namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
     using AutoMapper;
 
     using Probel.Helpers.Conversions;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.FamilyManager.Properties;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
 
-    using StructureMap;
-
     public class RemoveFamilyViewModel : BaseViewModel
     {
         #region Fields
 
-        private IFamilyComponent component = ObjectFactory.GetInstance<IFamilyComponent>();
+        private IFamilyComponent component = ComponentFactory.FamilyComponent;
         private LightPatientViewModel selectedPatient;
 
         #endregion Fields
@@ -64,7 +45,7 @@ namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
             set
             {
                 this.selectedPatient = value;
-                this.OnPropertyChanged(() => SelectedPatient);
+                this.OnPropertyChanged("SelectedPatient");
             }
         }
 
@@ -76,21 +57,21 @@ namespace Probel.NDoctor.Plugins.FamilyManager.ViewModel
         {
             using (this.component.UnitOfWork)
             {
-                var result = this.component.GetAllFamilyMembers(PluginContext.Host.SelectedPatient);
+                var result = this.component.GetAllFamilyMembers(this.Host.SelectedPatient);
                 var mapped = Mapper.Map<IList<LightPatientDto>, IList<LightPatientViewModel>>(result);
 
                 for (int i = 0; i < mapped.Count; i++)
                 {
-                    mapped[i].SessionPatient = PluginContext.Host.SelectedPatient;
+                    mapped[i].SessionPatient = this.Host.SelectedPatient;
                     mapped[i].Refreshed += (sender, e) =>
                     {
                         this.Refresh();
-                        if (e.Data == State.Created) { PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_RelationAdded); }
-                        else if (e.Data == State.Removed) { PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_RelationRemoved); }
+                        if (e.Data == State.Added) { this.Host.WriteStatus(StatusType.Info, Messages.Msg_RelationAdded); }
+                        else if (e.Data == State.Removed) { this.Host.WriteStatus(StatusType.Info, Messages.Msg_RelationRemoved); }
                     };
                 }
                 this.FamilyMembers.Refill(mapped);
-                PluginContext.Host.WriteStatusReady();
+                this.Host.WriteStatusReady();
             }
         }
 

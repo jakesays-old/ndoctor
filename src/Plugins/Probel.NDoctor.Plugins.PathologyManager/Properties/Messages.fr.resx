@@ -185,13 +185,9 @@
     <value>Ajouter</value>
     <comment>Add</comment>
   </data>
-  <data name="Title_AddPathology" xml:space="preserve">
-    <value>Ajouter une maladie</value>
-    <comment>Add a pathology</comment>
-  </data>
   <data name="Title_AddPeriods" xml:space="preserve">
-    <value>Ajouter une période</value>
-    <comment>Add a period</comment>
+    <value>Ajouter des périodes de maladie</value>
+    <comment>Add illness periods</comment>
   </data>
   <data name="Title_Chart" xml:space="preserve">
     <value>Graphiques</value>

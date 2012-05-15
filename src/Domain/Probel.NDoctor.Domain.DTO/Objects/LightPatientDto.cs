@@ -16,14 +16,9 @@
 */
 namespace Probel.NDoctor.Domain.DTO.Objects
 {
-    using System;
-
-    using Probel.Mvvm;
-
     /// <summary>
     /// Represents a light weight data patient
     /// </summary>
-    [Serializable]
     public class LightPatientDto : BaseDto
     {
         #region Fields
@@ -62,7 +57,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.firstName = value;
-                this.OnPropertyChanged(() => FirstName);
+                this.OnPropertyChanged("FirstName");
             }
         }
 
@@ -78,7 +73,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.gender = value;
-                this.OnPropertyChanged(() => Gender);
+                this.OnPropertyChanged("Gender");
             }
         }
 
@@ -94,7 +89,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.height = value;
-                this.OnPropertyChanged(() => Height);
+                this.OnPropertyChanged("Height");
             }
         }
 
@@ -110,7 +105,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.lastName = value;
-                this.OnPropertyChanged(() => LastName);
+                this.OnPropertyChanged("LastName");
             }
         }
 

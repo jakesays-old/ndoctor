@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PictureManager.ViewModel
 {
     using System;
@@ -33,9 +38,6 @@ namespace Probel.NDoctor.Plugins.PictureManager.ViewModel
     using Probel.NDoctor.Plugins.PictureManager.Properties;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
-using Probel.Mvvm.DataBinding;
 
     public class WorkbenchViewModel : BaseViewModel
     {
@@ -59,9 +61,9 @@ using Probel.Mvvm.DataBinding;
         {
             this.IsInformationExpanded = false;
             this.SelectedPicture = new PictureDto();
-            this.component = ObjectFactory.GetInstance<IPictureComponent>();
+            this.component = ComponentFactory.PictureComponent;
 
-            this.AddPictureCommand = new RelayCommand(() => AddPicture(), () => PluginContext.Host.SelectedPatient != null);
+            this.AddPictureCommand = new RelayCommand(() => AddPicture(), () => this.Host.SelectedPatient != null);
             this.SaveCommand = new RelayCommand(() => Save(), () => CheckSave());
             this.FilterPictureCommand = new RelayCommand(() => this.Refresh());
 
@@ -95,19 +97,19 @@ using Probel.Mvvm.DataBinding;
             set
             {
                 this.filterTag = value;
-                this.OnPropertyChanged(() => FilterTag);
+                this.OnPropertyChanged("FilterTag");
 
                 this.Logger.DebugFormat("The filter tag changed. Filter is null: {0}", (value == null));
             }
-            }
+        }
 
-            public bool IsInformationExpanded
-            {
+        public bool IsInformationExpanded
+        {
             get { return this.isInformationExpanded; }
             set
             {
                 this.isInformationExpanded = value;
-                this.OnPropertyChanged(() => IsInformationExpanded);
+                this.OnPropertyChanged("IsInformationExpanded");
             }
         }
 
@@ -133,21 +135,18 @@ using Probel.Mvvm.DataBinding;
                 SelectTagOfPicture();
                 this.creatingNewPicture = false;
 
-                this.OnPropertyChanged(() => SelectedPicture);
-                this.OnPropertyChanged(()=> TitleCreationDate);
-                this.OnPropertyChanged(()=>TitleLastUpdate);
-
+                this.OnPropertyChanged("SelectedPicture", "TitleCreationDate", "TitleLastUpdate");
                 this.SetStatusToReady();
             }
-            }
+        }
 
-            public TagDto SelectedTag
-            {
+        public TagDto SelectedTag
+        {
             get { return this.selectedTag; }
             set
             {
                 this.selectedTag = value;
-                this.OnPropertyChanged(() => SelectedTag);
+                this.OnPropertyChanged("SelectedTag");
             }
         }
 
@@ -168,7 +167,7 @@ using Probel.Mvvm.DataBinding;
             {
                 if (selectedPicture != null)
                 {
-                    return Messages.Title_CreationDate.FormatWith(this.SelectedPicture.Creation.Date.ToShortDateString());
+                    return Messages.Title_CreationDate.StringFormat(this.SelectedPicture.Creation.Date.ToShortDateString());
                 }
                 else return string.Empty;
             }
@@ -180,7 +179,7 @@ using Probel.Mvvm.DataBinding;
             {
                 if (selectedPicture != null)
                 {
-                    return Messages.Title_LastUpdate.FormatWith(this.SelectedPicture.LastUpdate);
+                    return Messages.Title_LastUpdate.StringFormat(this.SelectedPicture.LastUpdate);
                 }
                 else return string.Empty;
             }
@@ -207,13 +206,11 @@ using Probel.Mvvm.DataBinding;
                 using (this.component.UnitOfWork)
                 {
                     tags = this.component.FindTags(TagCategory.Picture);
-                    pictures = this.component.FindPictures(PluginContext.Host.SelectedPatient, this.FilterTag);
+                    pictures = this.component.FindPictures(this.Host.SelectedPatient, this.FilterTag);
                 }
                 this.Tags.Refill(tags);
                 this.Pictures.Refill(pictures);
                 this.creatingNewPicture = false;
-
-                this.Logger.Debug("Load pictures");
             }
             catch (Exception ex)
             {
@@ -236,7 +233,7 @@ using Probel.Mvvm.DataBinding;
                 this.SelectedPicture = new PictureDto();
                 this.SelectedPicture.Bitmap = bytes;
                 this.creatingNewPicture = true;
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_PictureAdded);
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_PictureAdded);
                 this.creatingNewPicture = true;
             }
             else return;
@@ -262,7 +259,7 @@ using Probel.Mvvm.DataBinding;
                 {
                     if (this.creatingNewPicture)
                     {
-                        this.component.Create(this.SelectedPicture, PluginContext.Host.SelectedPatient);
+                        this.component.Create(this.SelectedPicture, this.Host.SelectedPatient);
                         this.creatingNewPicture = false;
                     }
                     else this.component.Update(this.SelectedPicture);
@@ -272,7 +269,7 @@ using Probel.Mvvm.DataBinding;
 
                 this.Refresh();
 
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_PictureUpdated);
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_PictureUpdated);
                 this.SelectedPicture = new PictureDto();
                 this.IsInformationExpanded = false;
             }

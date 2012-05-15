@@ -19,12 +19,9 @@ namespace Probel.NDoctor.Domain.DTO.Objects
     using System;
     using System.Collections.ObjectModel;
 
-    using Probel.Mvvm;
-
     /// <summary>
     /// Represents a set of drug prescriptions.
     /// </summary>
-    [Serializable]
     public class PrescriptionDocumentDto : BaseDto
     {
         #region Fields
@@ -61,7 +58,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.creationDate = value;
-                this.OnPropertyChanged(() => CreationDate);
+                this.OnPropertyChanged("CreationDate");
             }
         }
 
@@ -91,7 +88,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.tag = value;
-                this.OnPropertyChanged(() => Tag);
+                this.OnPropertyChanged("Tag");
             }
         }
 
@@ -107,7 +104,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.title = value;
-                this.OnPropertyChanged(() => Title);
+                this.OnPropertyChanged("Title");
             }
         }
 

@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.DebugTools
 {
     using System;
@@ -22,17 +27,15 @@ namespace Probel.NDoctor.Plugins.DebugTools
     using System.Reflection;
     using System.Text;
 
-    using Probel.NDoctor.Domain.DAL.Components;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.View.Plugins;
-    using Probel.NDoctor.View.Plugins.Helpers;
 
     [Export(typeof(IPlugin))]
     public class DebugTools : Plugin
     {
         #region Fields
 
-        private SQLComponent component = new SQLComponent();
+        private IDebugComponent component = ComponentFactory.DebugComponent;
 
         #endregion Fields
 
@@ -44,8 +47,8 @@ namespace Probel.NDoctor.Plugins.DebugTools
         /// <param name="version">The version.</param>
         /// <param name="host">The host.</param>
         [ImportingConstructor]
-        public DebugTools([Import("version")] Version version)
-            : base(version)
+        public DebugTools([Import("version")] Version version, [Import("host")]  IPluginHost host)
+            : base(version, host)
         {
             this.Validator = new PluginValidator("1.0.0.0", ValidationMode.Minimum);
             this.Logger.Warn("Debug plugin is loaded. It shouldn't be used in production!");
@@ -90,14 +93,14 @@ namespace Probel.NDoctor.Plugins.DebugTools
 
         private void LoadUserForDebug()
         {
-            PluginContext.Host.Invoke(() =>
+            this.Host.Invoke(() =>
             {
                 using (this.component.UnitOfWork)
                 {
                     var patients = this.component.FindPatientsByNameLight("Robris", SearchOn.LastName);
                     if (patients.Count == 0) return;
 
-                    PluginContext.Host.SelectedPatient = patients[0];
+                    this.Host.SelectedPatient = patients[0];
 
                     this.Logger.DebugFormat("Default patient '{0} {1}' loaded for debug"
                         , patients[0].FirstName

@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 {
     using System.Collections.Generic;
@@ -24,13 +29,10 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 
     using Probel.Helpers.Conversions;
     using Probel.Helpers.WPF;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class AddDoctorViewModel : BaseViewModel
     {
@@ -38,6 +40,7 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 
         private IPatientDataComponent component;
         private string criteria;
+        private bool isPopupOpened;
         private LightDoctorViewModel selectedDoctor;
 
         #endregion Fields
@@ -46,10 +49,11 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 
         public AddDoctorViewModel()
         {
-            if (!Designer.IsDesignMode) this.component = ObjectFactory.GetInstance<IPatientDataComponent>();
+            if (!Designer.IsDesignMode) this.component = ComponentFactory.PatientDataComponent;
 
             this.FoundDoctors = new ObservableCollection<LightDoctorViewModel>();
             this.SearchCommand = new RelayCommand(() => this.Search(), () => this.CanSearch());
+            this.OpenPopupCommand = new RelayCommand(() => this.IsPopupOpened = true);
         }
 
         #endregion Constructors
@@ -62,11 +66,29 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             set
             {
                 this.criteria = value;
-                this.OnPropertyChanged(() => Criteria);
+                this.OnPropertyChanged("Criteria");
             }
         }
 
         public ObservableCollection<LightDoctorViewModel> FoundDoctors
+        {
+            get;
+            private set;
+        }
+
+        public bool IsPopupOpened
+        {
+            get { return this.isPopupOpened; }
+            set
+            {
+                if (value) this.FoundDoctors.Clear();
+
+                this.isPopupOpened = value;
+                this.OnPropertyChanged("IsPopupOpened");
+            }
+        }
+
+        public ICommand OpenPopupCommand
         {
             get;
             private set;
@@ -84,7 +106,7 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             set
             {
                 this.selectedDoctor = value;
-                this.OnPropertyChanged(() => SelectedDoctor);
+                this.OnPropertyChanged("SelectedDoctor");
             }
         }
 
@@ -102,7 +124,7 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             IList<LightDoctorDto> result;
             using (this.component.UnitOfWork)
             {
-                result = this.component.FindNotLinkedDoctorsFor(PluginContext.Host.SelectedPatient, this.Criteria, SearchOn.FirstAndLastName);
+                result = this.component.FindDoctorsFor(this.Host.SelectedPatient, this.Criteria, SearchOn.FirstAndLastName);
             }
             var mapped = Mapper.Map<IList<LightDoctorDto>, IList<LightDoctorViewModel>>(result);
             this.FoundDoctors.Refill(mapped);

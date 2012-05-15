@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
 {
     using System;
@@ -27,15 +32,12 @@ namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
 
     using Probel.Helpers.Assertion;
     using Probel.Helpers.Conversions;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.BmiRecord.Helpers;
     using Probel.NDoctor.Plugins.BmiRecord.Properties;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class WorkbenchViewModel : BaseViewModel
     {
@@ -57,7 +59,7 @@ namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
             : base()
         {
             this.CurrentBmi = new BmiDto();
-            this.component = ObjectFactory.GetInstance<IBmiComponent>();
+            this.component = ComponentFactory.BmiComponent;
             this.BmiHistory = new ObservableCollection<BmiViewModel>();
 
             this.AddBmiCommand = new RelayCommand(() => this.AddBmi(), () => this.CanAddBmi());
@@ -90,7 +92,7 @@ namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
             set
             {
                 this.bmiToAdd = value;
-                this.OnPropertyChanged(() => CurrentBmi);
+                this.OnPropertyChanged("CurrentBmi");
             }
         }
 
@@ -123,11 +125,7 @@ namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
             {
                 this.patient = value;
                 this.CurrentBmi.Height = value.Height;
-
-                this.OnPropertyChanged(() => this.Patient);
-                this.OnPropertyChanged(() => this.StartDate);
-                this.OnPropertyChanged(() => this.EndDate);
-                this.OnPropertyChanged(() => this.CurrentBmi);
+                this.OnPropertyChanged("Patient", "StartDate", "EndDate", "CurrentBmi");
             }
         }
 
@@ -235,19 +233,19 @@ namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
 
         public void Refresh()
         {
-            Assert.IsNotNull(PluginContext.Host);
-            Assert.IsNotNull(PluginContext.Host.SelectedPatient);
+            Assert.IsNotNull(this.Host);
+            Assert.IsNotNull(this.Host.SelectedPatient);
 
             var thread = new BackgroundWorker();
             PatientBmiDto patient = null;
 
             thread.DoWork += (sender, e) =>
             {
-                PluginContext.Host.Invoke(() =>
+                this.Host.Invoke(() =>
                 {
                     using (this.component.UnitOfWork)
                     {
-                        patient = this.component.GetPatientWithBmiHistory(PluginContext.Host.SelectedPatient);
+                        patient = this.component.GetPatientWithBmiHistory(this.Host.SelectedPatient);
                     }
 
                     if (patient.BmiHistory.Count > 0)
@@ -261,12 +259,12 @@ namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
             {
                 if (patient == null) return;
 
-                PluginContext.Host.Invoke(() =>
+                this.Host.Invoke(() =>
                 {
                     this.Patient = patient;
-                    PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_BmiHistoryLoaded);
+                    this.Host.WriteStatus(StatusType.Info, Messages.Msg_BmiHistoryLoaded);
                 });
-                this.Logger.DebugFormat("Load Bmi history ({0} item(s))", patient.BmiHistory.Count);
+                this.Logger.DebugFormat("Loaded Bmi history ({0} item(s))", patient.BmiHistory.Count);
             };
 
             thread.RunWorkerAsync();
@@ -274,21 +272,21 @@ namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
 
         private void AddBmi()
         {
-            Assert.IsNotNull(PluginContext.Host, "The host shouldn't be null");
-            Assert.IsNotNull(PluginContext.Host.SelectedPatient, "A patient should be selected if you want to manage data of a patient");
+            Assert.IsNotNull(this.Host, "The host shouldn't be null");
+            Assert.IsNotNull(this.Host.SelectedPatient, "A patient should be selected if you want to manage data of a patient");
             Assert.IsNotNull(this.bmiToAdd, "The BMI to add shouldn't be null in order to add the item to the BMI history");
 
             try
             {
                 using (this.component.UnitOfWork)
                 {
-                    this.component.AddBmi(this.bmiToAdd, PluginContext.Host.SelectedPatient);
+                    this.component.AddBmi(this.bmiToAdd, this.Host.SelectedPatient);
 
-                    PluginContext.Host.SelectedPatient.Height = this.CurrentBmi.Height;
-                    this.component.Update(PluginContext.Host.SelectedPatient);
+                    this.Host.SelectedPatient.Height = this.CurrentBmi.Height;
+                    this.component.Update(this.Host.SelectedPatient);
                 }
                 this.Refresh();
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_BmiAdded);
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_BmiAdded);
                 this.bmiToAdd = new BmiDto();
             }
             catch (Exception ex)

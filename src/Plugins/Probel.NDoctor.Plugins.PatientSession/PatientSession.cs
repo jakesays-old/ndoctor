@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PatientSession
 {
     using System;
@@ -23,43 +28,37 @@ namespace Probel.NDoctor.Plugins.PatientSession
     using AutoMapper;
 
     using Probel.Helpers.Strings;
-    using Probel.Mvvm.DataBinding;
-    using Probel.NDoctor.Domain.DAL.Components;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.PatientSession.Properties;
     using Probel.NDoctor.Plugins.PatientSession.View;
     using Probel.NDoctor.Plugins.PatientSession.ViewModel;
-    using Probel.NDoctor.View.Core.Helpers;
     using Probel.NDoctor.View.Plugins;
     using Probel.NDoctor.View.Plugins.Helpers;
     using Probel.NDoctor.View.Plugins.MenuData;
-
-    using StructureMap;
 
     [Export(typeof(IPlugin))]
     public class PatientSession : Plugin
     {
         #region Fields
 
-        private const string uriIco = @"\Probel.NDoctor.Plugins.PatientSession;component/Images\{0}.ico";
-        private const string uriPng = @"\Probel.NDoctor.Plugins.PatientSession;component/Images\{0}.png";
+        private const string searchUri = @"\Probel.NDoctor.Plugins.PatientSession;component/Images\{0}.png";
 
         private ICommand addCommand;
+        private AddPatientView addPatientView;
         private ICommand searchCommand;
-        private ICommand showTopTenCommand;
+        private Workbench workbench;
 
         #endregion Fields
 
         #region Constructors
 
         [ImportingConstructor]
-        public PatientSession([Import("version")] Version version)
-            : base(version)
+        public PatientSession([Import("version")] Version version, [Import("host")] IPluginHost host)
+            : base(version, host)
         {
             this.Validator = new PluginValidator("3.0.0.0", ValidationMode.Minimum);
             this.ConfigureAutoMapper();
-            this.ConfigureStructureMap();
         }
 
         #endregion Constructors
@@ -72,89 +71,39 @@ namespace Probel.NDoctor.Plugins.PatientSession
         /// </summary>
         public override void Initialise()
         {
+            this.Host.Invoke(() =>
+            {
+                this.workbench = new Workbench();
+                this.workbench.DataContext = new WorkbenchViewModel();
+                this.addPatientView = new AddPatientView();
+            });
+
             this.BuildButtons();
         }
 
         private void BuildButtons()
         {
-            #region Add
-            var splitterExist = true;
-            var splitter = PluginContext.Host.FindInHome("add", Groups.Tools);
-            if (splitter == null || splitter.GetType() != typeof(RibbonMenuButtonData))
+            this.searchCommand = new RelayCommand(() => this.Host.Navigate(this.workbench));
+            var navButton = new RibbonButtonData(Messages.Title_ButtonSearch, this.searchCommand)
             {
-                splitterExist = false;
-                splitter = new RibbonMenuButtonData(Messages.Btn_Add, uriPng.FormatWith("Add"), null)
-                {
-                    Order = 1,
-                    Name = "add",
-                };
-            }
+                SmallImage = new Uri(searchUri.StringFormat("Search"), UriKind.Relative),
+                Order = 1,
+            };
 
-            this.addCommand = new RelayCommand(() => this.NavigateAddPatient());
-            var addButton = new RibbonMenuItemData(Messages.Title_ButtonAddPatient, uriPng.FormatWith("Add"), this.addCommand)
+            this.addCommand = new RelayCommand(() => this.Host.Navigate(this.addPatientView));
+            var addButton = new RibbonButtonData(Messages.Title_ButtonAddPatient, this.addCommand)
             {
+                SmallImage = new Uri(searchUri.StringFormat("Add"), UriKind.Relative),
                 Order = 2,
             };
-
-            (splitter as RibbonMenuButtonData).Command = addCommand;
-            (splitter as RibbonMenuButtonData).ControlDataCollection.Add(addButton);
-            if (!splitterExist) PluginContext.Host.AddInHome((splitter as RibbonMenuButtonData), Groups.Tools);
-            #endregion
-
-            #region Search
-            this.searchCommand = new RelayCommand(() => this.NavigateSearchPatient());
-            var searchButton = new RibbonButtonData(Messages.Title_SearchPatient, this.searchCommand)
-            {
-                SmallImage = new Uri(uriPng.FormatWith("SearchSmall"), UriKind.Relative),
-                Order = 0,
-            };
-
-            this.showTopTenCommand = new RelayCommand(() => this.NavigateTopTen());
-            var topTenButton = new RibbonButtonData(Messages.Title_MostUsed, this.showTopTenCommand)
-            {
-                SmallImage = new Uri(uriPng.FormatWith("SearchSmall"), UriKind.Relative),
-                Order = 0,
-            };
-
-            var searchSplitButton = new RibbonSplitButtonData(Messages.Title_ButtonSearch, uriIco.FormatWith("Search"), this.searchCommand)
-            {
-                Order = 0,
-            };
-            searchSplitButton.ControlDataCollection.Add(searchButton);
-            searchSplitButton.ControlDataCollection.Add(topTenButton);
-
-            PluginContext.Host.AddInHome(searchSplitButton, Groups.Tools);
-            #endregion
+            this.Host.AddInHome(navButton, Groups.Tools);
+            this.Host.AddInHome(addButton, Groups.Tools);
         }
 
         private void ConfigureAutoMapper()
         {
             Mapper.CreateMap<LightPatientDto, LightPatientViewModel>();
             Mapper.CreateMap<LightPatientViewModel, LightPatientDto>();
-        }
-
-        private void ConfigureStructureMap()
-        {
-            ObjectFactory.Configure(x =>
-            {
-                x.For<IPatientSessionComponent>().Add<PatientSessionComponent>();
-                x.SelectConstructor<PatientSessionComponent>(() => new PatientSessionComponent());
-            });
-        }
-
-        private void NavigateAddPatient()
-        {
-            InnerWindow.Show(Messages.Title_AddPatient, new AddPatientControl());
-        }
-
-        private void NavigateSearchPatient()
-        {
-            InnerWindow.Show(Messages.Title_SearchPatient,new SearchPatientControl());
-        }
-
-        private void NavigateTopTen()
-        {
-            InnerWindow.Show(Messages.Title_MostUsed,new TopTenControl());
         }
 
         #endregion Methods

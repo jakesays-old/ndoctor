@@ -51,6 +51,18 @@ namespace Probel.NDoctor.Domain.DAL.Entities
         }
 
         /// <summary>
+        /// Gets or sets the HTML representing the medical record.
+        /// </summary>
+        /// <value>
+        /// The HTML.
+        /// </value>
+        public virtual string Html
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets or sets the date of the last update.
         /// </summary>
         /// <value>
@@ -71,18 +83,6 @@ namespace Probel.NDoctor.Domain.DAL.Entities
         public virtual string Name
         {
             get; set;
-        }
-
-        /// <summary>
-        /// Gets or sets the HTML representing the medical record.
-        /// </summary>
-        /// <value>
-        /// The HTML.
-        /// </value>
-        public virtual string Rtf
-        {
-            get;
-            set;
         }
 
         /// <summary>

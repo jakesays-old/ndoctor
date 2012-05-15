@@ -27,10 +27,6 @@ namespace Probel.NDoctor.Plugins.PathologyManager.ViewModel
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.PathologyManager.Helpers;
     using Probel.NDoctor.View.Core.ViewModel;
-    using Probel.NDoctor.View.Plugins.Helpers;
-    using Probel.Mvvm.DataBinding;
-
-    using StructureMap;
 
     /// <summary>
     /// Workbench's ViewModel of the plugin
@@ -40,7 +36,7 @@ namespace Probel.NDoctor.Plugins.PathologyManager.ViewModel
         #region Fields
 
         private Chart<string, double> chart;
-        private IPathologyComponent component = ObjectFactory.GetInstance<IPathologyComponent>();
+        private IPathologyComponent component = ComponentFactory.PathologyComponent;
         private IllnessPeriodViewModel selectedIllnessPeriod;
 
         #endregion Fields
@@ -68,7 +64,7 @@ namespace Probel.NDoctor.Plugins.PathologyManager.ViewModel
             set
             {
                 this.chart = value;
-                this.OnPropertyChanged(() => Chart);
+                this.OnPropertyChanged("Chart");
             }
         }
 
@@ -87,7 +83,7 @@ namespace Probel.NDoctor.Plugins.PathologyManager.ViewModel
             set
             {
                 this.selectedIllnessPeriod = value;
-                this.OnPropertyChanged(() => SelectedIllnessPeriod);
+                this.OnPropertyChanged("SelectedIllnessPeriod");
             }
         }
 
@@ -102,7 +98,7 @@ namespace Probel.NDoctor.Plugins.PathologyManager.ViewModel
         {
             using (this.component.UnitOfWork)
             {
-                var history = this.component.GetIllnessHistory(PluginContext.Host.SelectedPatient);
+                var history = this.component.GetIllnessHistory(this.Host.SelectedPatient);
                 var viewModels = Mapper.Map<IList<IllnessPeriodDto>, IList<IllnessPeriodViewModel>>(history.Periods);
 
                 for (int i = 0; i < viewModels.Count; i++)
@@ -111,9 +107,7 @@ namespace Probel.NDoctor.Plugins.PathologyManager.ViewModel
                 }
                 this.IllnessHistory.Refill(viewModels);
 
-                this.Chart = this.component.GetIlnessAsChart(PluginContext.Host.SelectedPatient);
-
-                this.Logger.Debug("Load pathologies");
+                this.Chart = this.component.GetIlnessAsChart(this.Host.SelectedPatient);
             }
         }
 

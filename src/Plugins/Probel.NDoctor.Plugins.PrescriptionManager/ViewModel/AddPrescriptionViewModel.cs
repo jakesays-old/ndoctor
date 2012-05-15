@@ -1,20 +1,4 @@
-﻿/*
-    This file is part of NDoctor.
-
-    NDoctor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    NDoctor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
-*/
-namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
+﻿namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
 {
     using System;
     using System.Collections.Generic;
@@ -25,7 +9,6 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
     using AutoMapper;
 
     using Probel.Helpers.Conversions;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.PrescriptionManager.Helpers;
@@ -33,13 +16,11 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
 
-    using StructureMap;
-
     public class AddPrescriptionViewModel : BaseViewModel
     {
         #region Fields
 
-        private IPrescriptionComponent component = ObjectFactory.GetInstance<IPrescriptionComponent>();
+        private IPrescriptionComponent component = ComponentFactory.PrescriptionComponent;
         private string criteria;
         private PrescriptionDto currentPrescription;
         private PrescriptionDocumentDto prescriptionDocumentToCreate;
@@ -79,7 +60,7 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             set
             {
                 this.criteria = value;
-                this.OnPropertyChanged(() => Criteria);
+                this.OnPropertyChanged("Criteria");
             }
         }
 
@@ -89,7 +70,7 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             set
             {
                 this.currentPrescription = value;
-                this.OnPropertyChanged(() => CurrentPrescription);
+                this.OnPropertyChanged("CurrentPrescription");
             }
         }
 
@@ -105,7 +86,7 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             set
             {
                 this.prescriptionDocumentToCreate = value;
-                this.OnPropertyChanged(() => PrescriptionDocumentToCreate);
+                this.OnPropertyChanged("PrescriptionDocumentToCreate");
             }
         }
 
@@ -121,7 +102,7 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             set
             {
                 this.searchOnTags = value;
-                this.OnPropertyChanged(() => SearchOnTags);
+                this.OnPropertyChanged("SearchOnTags");
             }
         }
 
@@ -137,7 +118,7 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             set
             {
                 this.selectedDrug = value;
-                this.OnPropertyChanged(() => SelectedDrug);
+                this.OnPropertyChanged("SelectedDrug");
             }
         }
 
@@ -147,7 +128,7 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             set
             {
                 this.selectedPrescriptionToDelete = value;
-                this.OnPropertyChanged(() => SelectedPrescriptionToDelete);
+                this.OnPropertyChanged("SelectedPrescriptionToDelete");
             }
         }
 
@@ -157,7 +138,7 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
             set
             {
                 this.selectedTag = value;
-                this.OnPropertyChanged(() => SelectedTag);
+                this.OnPropertyChanged("SelectedTag");
             }
         }
 
@@ -225,7 +206,7 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
                 var tags = this.component.FindTags(TagCategory.Drug);
                 this.Tags.Refill(tags);
             }
-            PluginContext.Host.WriteStatusReady();
+            this.Host.WriteStatusReady();
         }
 
         public void Save()
@@ -238,9 +219,9 @@ namespace Probel.NDoctor.Plugins.PrescriptionManager.ViewModel
                 using (this.component.UnitOfWork)
                 {
 
-                    this.component.Create(this.PrescriptionDocumentToCreate, PluginContext.Host.SelectedPatient);
+                    this.component.Create(this.PrescriptionDocumentToCreate, this.Host.SelectedPatient);
                 }
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_PrescriptionSaved);
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_PrescriptionSaved);
             }
             catch (Exception ex)
             {

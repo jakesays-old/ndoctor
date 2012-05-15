@@ -17,15 +17,14 @@
 namespace Probel.NDoctor.View.Plugins.MenuData
 {
     using System.Collections.ObjectModel;
-    using System.Linq;
 
-    using Probel.Helpers.Conversions;
+    using Probel.Helpers.Events;
 
     public class RibbonGroupData : RibbonBase
     {
         #region Fields
 
-        private ObservableCollection<RibbonControlData> buttons = new ObservableCollection<RibbonControlData>();
+        private ObservableCollection<RibbonButtonData> buttons = new ObservableCollection<RibbonButtonData>();
         private string header;
 
         #endregion Fields
@@ -33,9 +32,9 @@ namespace Probel.NDoctor.View.Plugins.MenuData
         #region Constructors
 
         public RibbonGroupData(string name, ObservableCollection<RibbonButtonData> buttonDataCollection)
-            : this()
         {
             this.Header = name;
+            this.buttons = new ObservableCollection<RibbonButtonData>();
             foreach (var button in buttonDataCollection) this.buttons.Add(button);
         }
 
@@ -49,22 +48,11 @@ namespace Probel.NDoctor.View.Plugins.MenuData
         {
         }
 
-        public RibbonGroupData(string name, int order)
-            : this(name)
-        {
-            this.Order = order;
-        }
-
-        public RibbonGroupData()
-        {
-            this.buttons = new ObservableCollection<RibbonControlData>();
-        }
-
         #endregion Constructors
 
         #region Properties
 
-        public ObservableCollection<RibbonControlData> ButtonDataCollection
+        public ObservableCollection<RibbonButtonData> ButtonDataCollection
         {
             get { return this.buttons; }
         }
@@ -75,7 +63,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
             set
             {
                 this.header = value;
-                this.OnPropertyChanged(() => Header);
+                this.OnPropertyChanged("Header");
             }
         }
 

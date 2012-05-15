@@ -24,9 +24,6 @@ namespace Probel.NDoctor.View.Plugins
     using Probel.NDoctor.View.Plugins.Helpers;
     using Probel.NDoctor.View.Plugins.MenuData;
 
-    /// <summary>
-    /// 
-    /// </summary>
     public interface IPluginHost
     {
         #region Properties
@@ -101,44 +98,29 @@ namespace Probel.NDoctor.View.Plugins
         #region Methods
 
         /// <summary>
+        /// Adds the specified tab.
+        /// </summary>
+        /// <param name="tab">The tab.</param>
+        void Add(RibbonTabData tab);
+
+        /// <summary>
         /// Adds the specified context tab.
         /// </summary>
         /// <param name="contextTab">The context tab.</param>
-        void AddContextualMenu(RibbonContextualTabGroupData contextTab);
-
-        /// <summary>
-        /// Adds a new side menu window
-        /// </summary>
-        /// <param name="title">The title of the side menu.</param>
-        /// <param name="control">The control that will be inserted into the side menu.</param>
-        void AddDockablePane(string title, UserControl control);
+        void Add(RibbonContextualTabGroupData contextTab);
 
         /// <summary>
         /// Adds the specified button in the specified group in home menu.
         /// </summary>
         /// <param name="button">The button.</param>
         /// <param name="group">The group.</param>
-        void AddInHome(RibbonControlData button, Groups group);
-
-        /// <summary>
-        /// Adds the specified tab.
-        /// </summary>
-        /// <param name="tab">The tab.</param>
-        void AddTab(RibbonTabData tab);
+        void AddInHome(RibbonButtonData button, Groups group);
 
         /// <summary>
         /// Adds the specified control into the application menu.
         /// </summary>
         /// <param name="control">The control.</param>
         void AddToApplicationMenu(RibbonControlData control);
-
-        /// <summary>
-        /// Finds in the home menu the control with the specified name in the specified group.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="group">The group.</param>
-        /// <returns>The searched control or null is not found</returns>
-        RibbonBase FindInHome(string name, Groups group);
 
         /// <summary>
         /// Deactivates the menu.

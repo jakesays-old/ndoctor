@@ -28,8 +28,8 @@ namespace Probel.NDoctor.View.Core.ViewModel
     using System.Windows.Input;
 
     using Probel.Helpers.Strings;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DAL.Cfg;
+    using Probel.NDoctor.Domain.DTO;
     using Probel.NDoctor.View.Core.Model;
     using Probel.NDoctor.View.Core.Properties;
     using Probel.NDoctor.View.Plugins;
@@ -84,7 +84,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
             {
                 if (value > 100) return;
                 this.progress = value;
-                this.OnPropertyChanged(() => Progress);
+                this.OnPropertyChanged("Progress");
             }
         }
 
@@ -94,7 +94,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
             set
             {
                 this.status = value;
-                this.OnPropertyChanged(() => Status);
+                this.OnPropertyChanged("Status");
             }
         }
 
@@ -104,7 +104,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
             set
             {
                 this.title = value;
-                this.OnPropertyChanged(() => Title);
+                this.OnPropertyChanged("Title");
             }
         }
 
@@ -137,7 +137,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
                     this.BuildHomeMenu();
 
                     var version = Assembly.GetExecutingAssembly().GetName().Version;
-                    this.Title = string.Format("nDoctor BETA {0}.{1}.{2}", version.Major, version.Minor, version.Build);
+                    this.Title = string.Format("nDoctor BETA {0}.{1}", version.Major, version.Minor);
 
                     this.Status = Messages.Msg_ConfiguringNHibernate;
                     this.ConfigureNHibernate();
@@ -157,7 +157,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
                 {
                     this.Logger.Error("An error occured in the spashscreen", ex);
 
-                    MessageBox.Show(Messages.Msg_FatalErrorOccured.FormatWith(ex.Message)
+                    MessageBox.Show(Messages.Msg_FatalErrorOccured.StringFormat(ex.Message)
                         , Messages.Title_Error
                         , MessageBoxButton.OK
                         , MessageBoxImage.Error);
@@ -172,20 +172,20 @@ namespace Probel.NDoctor.View.Core.ViewModel
         {
             #region Quit menu
             var shutdownMenu = new RibbonControlData(Messages.Menu_Exit, "", Commands.Shutdown) { Order = 999 };
-            PluginContext.Host.AddToApplicationMenu(shutdownMenu);
+            Host.AddToApplicationMenu(shutdownMenu);
 
-            PluginContext.Host.AddToApplicationMenu(new RibbonSeparatorData(6));
+            Host.AddToApplicationMenu(new RibbonSeparatorData(6));
             #endregion
 
             #region Home menu
             ICommand homeCommand = new RelayCommand(() =>
             {
-                PluginContext.Host.NavigateToStartPage();
+                this.Host.NavigateToStartPage();
             });
             var homeMenu = new RibbonControlData(Messages.Menu_Home, "/Images/Home.png", homeCommand) { Order = 1 };
 
-            PluginContext.Host.AddToApplicationMenu(homeMenu);
-            PluginContext.Host.AddToApplicationMenu(new RibbonSeparatorData(2));
+            Host.AddToApplicationMenu(homeMenu);
+            Host.AddToApplicationMenu(new RibbonSeparatorData(2));
             #endregion
         }
 
@@ -198,25 +198,26 @@ namespace Probel.NDoctor.View.Core.ViewModel
             groups.Add(new RibbonGroupData(Messages.Title_Managers));
             groups.Add(new RibbonGroupData(Messages.Title_GlobalTools));
 
-            PluginContext.Host.AddTab(new RibbonTabData(Messages.Title_Home, groups));
+            this.Host.Add(new RibbonTabData(Messages.Title_Home, groups));
         }
 
         private void ConfigureNHibernate()
         {
             this.Logger.Info("Configuring nHibernate...");
-            var path = ConfigurationManager.AppSettings["Database"];
-            if (!File.Exists(path) && !this.CreateDatabase) throw new FileNotFoundException(Messages.Msg_ErrorDatabaseNotFound);
+            var file = ConfigurationManager.AppSettings["Database"];
+            if (!File.Exists(file) && !this.CreateDatabase) throw new FileNotFoundException(Messages.Msg_ErrorDatabaseNotFound);
 
-            this.Logger.DebugFormat("Database path: {0}", path);
+            this.Logger.DebugFormat("Database path: {0}", file);
             this.LogDatabaseCreation();
-            new DAL().ConfigureUsingFile(path, this.CreateDatabase);
+
+            new SQLiteDatabase().ConfigureUsingFile(file, this.CreateDatabase);
         }
 
         private void ConfigurePlugins()
         {
             this.Logger.Info("Configuring plugins...");
             var loader = ObjectFactory.GetInstance<IPluginLoader>();
-            var container = new PluginContainer(PluginContext.Host, loader);
+            var container = new PluginContainer(this.Host, loader);
             container.LoadPlugins();
         }
 

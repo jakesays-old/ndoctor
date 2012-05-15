@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.UserSession.Translations
 {
     using Probel.NDoctor.Plugins.UserSession.Properties;
@@ -21,16 +26,6 @@ namespace Probel.NDoctor.Plugins.UserSession.Translations
     public static class UpdateUserText
     {
         #region Properties
-
-        public static string BtnCancel
-        {
-            get { return Messages.Btn_Cancel; }
-        }
-
-        public static string BtnSave
-        {
-            get { return Messages.Btn_Save; }
-        }
 
         public static string ContactSeparator
         {

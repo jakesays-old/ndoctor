@@ -20,24 +20,19 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows;
-    using System.Windows.Input;
 
     using Probel.Helpers.Conversions;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.UserSession.Properties;
-    using Probel.NDoctor.View.Core.Helpers;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class UpdateUserViewModel : BaseViewModel
     {
         #region Fields
 
-        private IUserSessionComponent component = ObjectFactory.GetInstance<IUserSessionComponent>();
+        private IUserSessionComponent component = ComponentFactory.UserSessionComponent;
         private ObservableCollection<PracticeDto> practices;
         private ObservableCollection<LightRoleDto> roles;
         private UserDto user;
@@ -53,29 +48,11 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
         public UpdateUserViewModel()
             : base()
         {
-            this.UpdateCommand = new RelayCommand(() => this.UpdateUser(), () => this.CanUpdateUser());
-            this.CancelCommand = new RelayCommand(() => InnerWindow.Close());
-            InnerWindow.Loaded += (sender, e) => this.Refresh();
-        }
-
-        /// <summary>
-        /// Releases unmanaged resources and performs other cleanup operations before the
-        /// <see cref="UpdateUserViewModel"/> is reclaimed by garbage collection.
-        /// </summary>
-        ~UpdateUserViewModel()
-        {
-            InnerWindow.Loaded -= (sender, e) => this.Refresh();
         }
 
         #endregion Constructors
 
         #region Properties
-
-        public ICommand CancelCommand
-        {
-            get;
-            private set;
-        }
 
         public bool IsDefaultUser
         {
@@ -98,7 +75,7 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
                     if (dr == MessageBoxResult.No) return;
                 }
                 this.User.IsDefault = value;
-                this.OnPropertyChanged(() => IsDefaultUser);
+                this.OnPropertyChanged("IsDefaultUser");
             }
         }
 
@@ -114,7 +91,7 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
             set
             {
                 this.practices = value;
-                this.OnPropertyChanged(() => Practices);
+                this.OnPropertyChanged("Practices");
             }
         }
 
@@ -130,7 +107,7 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
             set
             {
                 this.roles = value;
-                this.OnPropertyChanged(() => Roles);
+                this.OnPropertyChanged("Roles");
             }
         }
 
@@ -146,7 +123,7 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
             {
                 if (this.User == null) return;
                 this.User.Practice = value;
-                this.OnPropertyChanged(() => SelectedPractice);
+                this.OnPropertyChanged("SelectedPractice");
             }
         }
 
@@ -162,14 +139,8 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
             {
                 if (this.User == null) return;
                 this.User.AssignedRole = value;
-                this.OnPropertyChanged(() => SelectedRole);
+                this.OnPropertyChanged("SelectedRole");
             }
-        }
-
-        public ICommand UpdateCommand
-        {
-            get;
-            private set;
         }
 
         /// <summary>
@@ -184,8 +155,7 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
             set
             {
                 this.user = value;
-                this.OnPropertyChanged(() => User);
-                this.OnPropertyChanged(() => IsDefaultUser);
+                this.OnPropertyChanged("User", "IsDefaultUser");
             }
         }
 
@@ -197,14 +167,14 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
         {
             try
             {
-                if (PluginContext.Host.ConnectedUser == null) return;
+                if (this.Host.ConnectedUser == null) return;
 
                 using (this.component.UnitOfWork)
                 {
                     this.Practices = this.component.GetAllPractices().ToObservableCollection();
                     this.Roles = this.component.GetAllRolesLight().ToObservableCollection();
 
-                    var user = this.component.LoadUser(PluginContext.Host.ConnectedUser);
+                    var user = this.component.LoadUser(Host.ConnectedUser);
                     this.User = user;
 
                     if (this.User.Practice != null)
@@ -221,40 +191,11 @@ namespace Probel.NDoctor.Plugins.UserSession.ViewModel
                                              select r).FirstOrDefault();
                     }
 
-                    PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_Ready);
+                    this.Host.WriteStatus(StatusType.Info, Messages.Msg_Ready);
                 }
 
             }
             catch (Exception ex) { this.HandleError(ex, Messages.Msg_ErrorWhileLoadingUser); }
-        }
-
-        private bool CanUpdateUser()
-        {
-            return !string.IsNullOrWhiteSpace(this.User.FirstName)
-                && !string.IsNullOrWhiteSpace(this.User.LastName)
-                && this.User.Practice != null;
-        }
-
-        private void UpdateUser()
-        {
-            try
-            {
-                var component = ObjectFactory.GetInstance<IUserSessionComponent>();
-
-                using (component.UnitOfWork)
-                {
-                    component.Update(this.User);
-                }
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_UserUpdated);
-            }
-            catch (Exception ex)
-            {
-                this.HandleError(ex, Messages.Msg_ErrorUpdateUser);
-            }
-            finally
-            {
-                InnerWindow.Close();
-            }
         }
 
         #endregion Methods

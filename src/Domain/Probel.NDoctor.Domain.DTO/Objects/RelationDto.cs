@@ -16,10 +16,7 @@
 */
 namespace Probel.NDoctor.Domain.DTO.Objects
 {
-    using System;
-
     using Probel.Helpers.Assertion;
-    using Probel.Mvvm;
 
     /// <summary>
     /// Represents a relation with a patient. It's part of a family
@@ -27,7 +24,6 @@ namespace Probel.NDoctor.Domain.DTO.Objects
     /// is on the left side (which is the property LeftSide of
     /// the dto <see cref="FamilyDto"/>)
     /// </summary>
-    [Serializable]
     public class RelationDto : BaseDto
     {
         #region Fields
@@ -52,7 +48,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.leftSide = value;
-                this.OnPropertyChanged(() => LeftSide);
+                this.OnPropertyChanged("LeftSide");
             }
         }
 
@@ -83,7 +79,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.rightSide = value;
-                this.OnPropertyChanged(() => RightSide);
+                this.OnPropertyChanged("RightSide");
             }
         }
 
@@ -99,7 +95,7 @@ namespace Probel.NDoctor.Domain.DTO.Objects
             set
             {
                 this.type = value;
-                this.OnPropertyChanged(() => Type);
+                this.OnPropertyChanged("Type");
             }
         }
 

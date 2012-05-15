@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 {
     using System;
@@ -23,9 +28,8 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
 
     using Probel.Helpers.Conversions;
     using Probel.Helpers.WPF;
-    using Probel.Mvvm.DataBinding;
-    using Probel.NDoctor.Domain.DAL.Exceptions;
     using Probel.NDoctor.Domain.DTO.Components;
+    using Probel.NDoctor.Domain.DTO.Exceptions;
     using Probel.NDoctor.Domain.DTO.Helpers;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.PatientData.Helpers;
@@ -33,14 +37,13 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
 
-    using StructureMap;
-
     public class CreateDoctorViewModel : BaseViewModel
     {
         #region Fields
 
         private IPatientDataComponent component;
         private DoctorDto doctor;
+        private bool isPopupOpened;
         private Tuple<string, Gender> selectedGender;
 
         #endregion Fields
@@ -51,9 +54,11 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
         {
             this.InitialiseCollections();
 
-            if (!Designer.IsDesignMode) this.component = ObjectFactory.GetInstance<IPatientDataComponent>();
+            if (!Designer.IsDesignMode) this.component = ComponentFactory.PatientDataComponent;
 
             this.Doctor = new DoctorDto();
+
+            this.ShowPopupCommand = new RelayCommand(() => this.IsPopupOpened = true);
             this.AddCommand = new RelayCommand(() => this.Add(), () => this.CanAdd());
 
             Notifyer.SpecialisationChanged += (FluentMessageSender, e) => this.Refresh();
@@ -77,7 +82,7 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             set
             {
                 this.doctor = value;
-                this.OnPropertyChanged(() => Doctor);
+                this.OnPropertyChanged("Doctor");
             }
         }
 
@@ -87,6 +92,18 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             set;
         }
 
+        public bool IsPopupOpened
+        {
+            get { return this.isPopupOpened; }
+            set
+            {
+                this.Doctor = new DoctorDto();
+
+                this.isPopupOpened = value;
+                this.OnPropertyChanged("IsPopupOpened");
+            }
+        }
+
         public Tuple<string, Gender> SelectedGender
         {
             get { return this.selectedGender; }
@@ -94,8 +111,14 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
             {
                 this.Doctor.Gender = value.Item2;
                 this.selectedGender = value;
-                this.OnPropertyChanged(() => SelectedGender);
+                this.OnPropertyChanged("SelectedGender");
             }
+        }
+
+        public ICommand ShowPopupCommand
+        {
+            get;
+            private set;
         }
 
         public ObservableCollection<TagDto> Specialisations
@@ -116,7 +139,8 @@ namespace Probel.NDoctor.Plugins.PatientData.ViewModel
                 {
                     this.component.Create(this.Doctor);
                 }
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_DataSaved);
+                this.Host.WriteStatus(StatusType.Info, Messages.Msg_DataSaved);
+                this.IsPopupOpened = false;
                 this.Doctor = new DoctorDto();
             }
             catch (ExistingItemException ex)

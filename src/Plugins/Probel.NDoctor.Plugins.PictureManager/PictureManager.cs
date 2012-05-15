@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PictureManager
 {
     using System;
@@ -23,7 +28,6 @@ namespace Probel.NDoctor.Plugins.PictureManager
 
     using Probel.Helpers.Assertion;
     using Probel.Helpers.Strings;
-    using Probel.NDoctor.Domain.DAL.Components;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Plugins.PictureManager.Properties;
     using Probel.NDoctor.Plugins.PictureManager.View;
@@ -31,9 +35,6 @@ namespace Probel.NDoctor.Plugins.PictureManager
     using Probel.NDoctor.View.Plugins;
     using Probel.NDoctor.View.Plugins.Helpers;
     using Probel.NDoctor.View.Plugins.MenuData;
-
-    using StructureMap;
-    using Probel.Mvvm.DataBinding;
 
     [Export(typeof(IPlugin))]
     public class PictureManager : Plugin
@@ -56,11 +57,10 @@ namespace Probel.NDoctor.Plugins.PictureManager
         /// <param name="version">The version.</param>
         /// <param name="host">The host.</param>
         [ImportingConstructor]
-        public PictureManager([Import("version")] Version version)
-            : base(version)
+        public PictureManager([Import("version")] Version version, [Import("host")] IPluginHost host)
+            : base(version, host)
         {
             this.Validator = new PluginValidator("3.0.0.0", ValidationMode.Minimum);
-            this.ConfigureStructureMap();
         }
 
         #endregion Constructors
@@ -71,8 +71,7 @@ namespace Probel.NDoctor.Plugins.PictureManager
         {
             get
             {
-                Assert.IsNotNull(PluginContext.Host, string.Format(
-                    "The IPluginHost is not set. It is impossible to setup the data context of the workbench of the plugin '{0}'", this.GetType().Name));
+                Assert.IsNotNull(this.Host, "The IPluginHost is not set. It is impossible to setup the data context of the workbench of the plugin medical record");
                 if (this.workbench.DataContext == null) this.workbench.DataContext = new WorkbenchViewModel();
                 return this.workbench.DataContext as WorkbenchViewModel;
             }
@@ -93,7 +92,7 @@ namespace Probel.NDoctor.Plugins.PictureManager
         /// </summary>
         public override void Initialise()
         {
-            PluginContext.Host.Invoke(() =>
+            this.Host.Invoke(() =>
             {
                 this.workbench = new Workbench();
                 this.workbench.DataContext = this.ViewModel;
@@ -107,53 +106,44 @@ namespace Probel.NDoctor.Plugins.PictureManager
             this.navigateCommand = new RelayCommand(() => Navigate(), () => this.CanNavigate());
 
             var navigateButton = new RibbonButtonData(Messages.Title_PictureManager
-                    , imgUri.FormatWith("Picture")
+                    , imgUri.StringFormat("Picture")
                     , navigateCommand) { Order = 5 };
 
-            PluginContext.Host.AddInHome(navigateButton, Groups.Managers);
+            this.Host.AddInHome(navigateButton, Groups.Managers);
         }
 
         private void BuildContextMenu()
         {
-            var addPicButton = new RibbonButtonData(Messages.Title_BtnAddPic, imgUri.FormatWith("Add"), this.GetAddPicCommand());
-            var saveButton = new RibbonButtonData(Messages.Title_Save, imgUri.FormatWith("Save"), this.GetSaveCommand());
+            var addPicButton = new RibbonButtonData(Messages.Title_BtnAddPic, imgUri.StringFormat("Add"), this.GetAddPicCommand());
+            var saveButton = new RibbonButtonData(Messages.Title_Save, imgUri.StringFormat("Save"), this.GetSaveCommand());
             var cgroup = new RibbonGroupData(Messages.Menu_Actions);
 
             cgroup.ButtonDataCollection.Add(saveButton);
             cgroup.ButtonDataCollection.Add(addPicButton);
 
             var tab = new RibbonTabData(Messages.Menu_File, cgroup) { ContextualTabGroupHeader = Messages.Title_Pictures };
-            PluginContext.Host.AddTab(tab);
+            this.Host.Add(tab);
 
             this.contextualMenu = new RibbonContextualTabGroupData(Messages.Title_Pictures, tab) { Background = Brushes.OrangeRed, IsVisible = false };
-            PluginContext.Host.AddContextualMenu(this.contextualMenu);
+            this.Host.Add(this.contextualMenu);
         }
 
         private bool CanNavigate()
         {
-            return PluginContext.Host.SelectedPatient != null;
-        }
-
-        private void ConfigureStructureMap()
-        {
-            ObjectFactory.Configure(x =>
-            {
-                x.For<IPictureComponent>().Add<PictureComponent>();
-                x.SelectConstructor<PictureComponent>(() => new PictureComponent());
-            });
+            return this.Host.SelectedPatient != null;
         }
 
         private ICommand GetAddPicCommand()
         {
             ICommand cmd = null;
-            PluginContext.Host.Invoke(() => cmd = this.ViewModel.AddPictureCommand);
+            this.Host.Invoke(() => cmd = this.ViewModel.AddPictureCommand);
             return cmd;
         }
 
         private ICommand GetSaveCommand()
         {
             ICommand cmd = null;
-            PluginContext.Host.Invoke(() => cmd = this.ViewModel.SaveCommand);
+            this.Host.Invoke(() => cmd = this.ViewModel.SaveCommand);
             return cmd;
         }
 
@@ -161,7 +151,7 @@ namespace Probel.NDoctor.Plugins.PictureManager
         {
             try
             {
-                PluginContext.Host.Navigate(this.workbench);
+                this.Host.Navigate(this.workbench);
                 this.workbench.DataContext = this.ViewModel;
 
                 this.ViewModel.Refresh();
@@ -171,7 +161,7 @@ namespace Probel.NDoctor.Plugins.PictureManager
             }
             catch (Exception ex)
             {
-                this.HandleError(ex, Messages.Msg_FailToLoadMedicalPictures.FormatWith(ex.Message));
+                this.HandleError(ex, Messages.Msg_FailToLoadMedicalPictures.StringFormat(ex.Message));
             }
         }
 

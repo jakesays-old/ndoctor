@@ -19,6 +19,8 @@ namespace Probel.NDoctor.View.Plugins.MenuData
     using System;
     using System.Windows.Input;
 
+    using Probel.Helpers.Events;
+
     /// <summary>
     /// Class used for binding of a RibbonControl
     /// </summary>
@@ -41,15 +43,6 @@ namespace Probel.NDoctor.View.Plugins.MenuData
         #endregion Fields
 
         #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RibbonControlData"/> class.
-        /// </summary>
-        /// <param name="label">The label.</param>
-        public RibbonControlData(string label)
-            : this(label, null, null)
-        {
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RibbonControlData"/> class.
@@ -101,7 +94,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
                 if (this.command != value)
                 {
                     this.command = value;
-                    this.OnPropertyChanged(() => Command);
+                    this.OnPropertyChanged("Command");
                 }
             }
         }
@@ -114,7 +107,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
                 if (this.keyTip != value)
                 {
                     this.keyTip = value;
-                    this.OnPropertyChanged(() => KeyTip);
+                    this.OnPropertyChanged("KeyTip");
                 }
             }
         }
@@ -127,7 +120,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
                 if (this.label != value)
                 {
                     this.label = value;
-                    this.OnPropertyChanged(() => Label);
+                    this.OnPropertyChanged("Label");
                 }
             }
         }
@@ -140,7 +133,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
                 if (this.largeImage != value)
                 {
                     this.largeImage = value;
-                    this.OnPropertyChanged(() => LargeImage);
+                    this.OnPropertyChanged("LargeImage");
                 }
             }
         }
@@ -153,7 +146,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
                 if (this.smallImage != value)
                 {
                     this.smallImage = value;
-                    this.OnPropertyChanged(() => SmallImage);
+                    this.OnPropertyChanged("SmallImage");
                 }
             }
         }
@@ -166,7 +159,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
                 if (this.toolTipDescription != value)
                 {
                     this.toolTipDescription = value;
-                    this.OnPropertyChanged(() => ToolTipDescription);
+                    this.OnPropertyChanged("ToolTipDescription");
                 }
             }
         }
@@ -179,7 +172,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
                 if (this.toolTipFooterDescription != value)
                 {
                     this.toolTipFooterDescription = value;
-                    this.OnPropertyChanged(() => ToolTipFooterDescription);
+                    this.OnPropertyChanged("ToolTipFooterDescription");
                 }
             }
         }
@@ -192,7 +185,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
                 if (this.toolTipFooterImage != value)
                 {
                     this.toolTipFooterImage = value;
-                    this.OnPropertyChanged(() => ToolTipFooterImage);
+                    this.OnPropertyChanged("ToolTipFooterImage");
                 }
             }
         }
@@ -205,7 +198,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
                 if (this.toolTipFooterTitle != value)
                 {
                     this.toolTipFooterTitle = value;
-                    this.OnPropertyChanged(() => ToolTipFooterTitle);
+                    this.OnPropertyChanged("ToolTipFooterTitle");
                 }
             }
         }
@@ -218,7 +211,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
                 if (this.toolTipImage != value)
                 {
                     this.toolTipImage = value;
-                    this.OnPropertyChanged(() => ToolTipImage);
+                    this.OnPropertyChanged("ToolTipImage");
                 }
             }
         }
@@ -231,7 +224,7 @@ namespace Probel.NDoctor.View.Plugins.MenuData
                 if (this.toolTipTitle != value)
                 {
                     this.toolTipTitle = value;
-                    this.OnPropertyChanged(() => ToolTipTitle);
+                    this.OnPropertyChanged("ToolTipTitle");
                 }
             }
         }

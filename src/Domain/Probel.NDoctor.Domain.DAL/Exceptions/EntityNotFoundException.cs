@@ -19,7 +19,6 @@ namespace Probel.NDoctor.Domain.DAL.Exceptions
     using System;
     using System.Runtime.Serialization;
 
-    using Probel.Helpers.Strings;
     using Probel.NDoctor.Domain.DAL.Properties;
 
     /// <summary>
@@ -30,8 +29,8 @@ namespace Probel.NDoctor.Domain.DAL.Exceptions
     {
         #region Constructors
 
-        public EntityNotFoundException(Type searchedType)
-            : this(Messages.Ex_EntityNotFoundException.FormatWith(searchedType.Name))
+        public EntityNotFoundException()
+            : this(Messages.Ex_EntityNotFoundException)
         {
         }
 

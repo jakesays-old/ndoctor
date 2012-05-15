@@ -23,7 +23,6 @@ namespace Probel.NDoctor.View.Core.ViewModel
     using Probel.Helpers.Events;
     using Probel.Helpers.Strings;
     using Probel.Helpers.WPF;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.View.Core.Properties;
     using Probel.NDoctor.View.Plugins;
     using Probel.NDoctor.View.Plugins.Exceptions;
@@ -45,13 +44,19 @@ namespace Probel.NDoctor.View.Core.ViewModel
             if (!Designer.IsDesignMode)
             {
                 if (PluginContext.Host == null) throw new NDoctorConfigurationException(Messages.Ex_NDoctorConfigurationException_HostNull);
-                PluginContext.Host = PluginContext.Host;
+                this.Host = PluginContext.Host;
             }
         }
 
         #endregion Constructors
 
         #region Properties
+
+        public IPluginHost Host
+        {
+            get;
+            private set;
+        }
 
         public ILog Logger
         {
@@ -124,7 +129,7 @@ namespace Probel.NDoctor.View.Core.ViewModel
         /// </summary>
         public void SetStatusToReady()
         {
-            if (PluginContext.Host != null) PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_Ready);
+            if (this.Host != null) this.Host.WriteStatus(StatusType.Info, Messages.Msg_Ready);
         }
 
         private void IndicateError()
@@ -134,9 +139,9 @@ namespace Probel.NDoctor.View.Core.ViewModel
 
         private void IndicateError(string msg)
         {
-            if (PluginContext.Host == null) return;
+            if (this.Host == null) return;
 
-            PluginContext.Host.WriteStatus(StatusType.Error, Messages.Msg_ErrorOccured.FormatWith(msg));
+            this.Host.WriteStatus(StatusType.Error, Messages.Msg_ErrorOccured.StringFormat(msg));
         }
 
         private void IndicateWarning()
@@ -146,9 +151,9 @@ namespace Probel.NDoctor.View.Core.ViewModel
 
         private void IndicateWarning(string msg)
         {
-            if (PluginContext.Host == null) return;
+            if (this.Host == null) return;
 
-            PluginContext.Host.WriteStatus(StatusType.Error, Messages.Msg_WarningOccured.FormatWith(msg));
+            this.Host.WriteStatus(StatusType.Error, Messages.Msg_WarningOccured.StringFormat(msg));
         }
 
         #endregion Methods

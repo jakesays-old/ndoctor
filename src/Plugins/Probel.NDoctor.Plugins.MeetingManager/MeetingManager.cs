@@ -19,7 +19,6 @@ namespace Probel.NDoctor.Plugins.MeetingManager
     using System;
     using System.ComponentModel.Composition;
     using System.Windows.Input;
-    using System.Windows.Media;
 
     using AutoMapper;
 
@@ -27,18 +26,14 @@ namespace Probel.NDoctor.Plugins.MeetingManager
     using Probel.Helpers.Data;
     using Probel.Helpers.Strings;
     using Probel.Helpers.WPF.Calendar.Model;
-    using Probel.Mvvm.DataBinding;
-    using Probel.NDoctor.Domain.DAL.Components;
+    using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.MeetingManager.Properties;
     using Probel.NDoctor.Plugins.MeetingManager.View;
     using Probel.NDoctor.Plugins.MeetingManager.ViewModel;
-    using Probel.NDoctor.View.Core.Helpers;
     using Probel.NDoctor.View.Plugins;
     using Probel.NDoctor.View.Plugins.Helpers;
     using Probel.NDoctor.View.Plugins.MenuData;
-
-    using StructureMap;
 
     [Export(typeof(IPlugin))]
     public class MeetingManager : Plugin
@@ -56,12 +51,10 @@ namespace Probel.NDoctor.Plugins.MeetingManager
         #region Constructors
 
         [ImportingConstructor]
-        public MeetingManager([Import("version")] Version version)
-            : base(version)
+        public MeetingManager([Import("version")] Version version, [Import("host")] IPluginHost host)
+            : base(version, host)
         {
             this.Validator = new PluginValidator("3.0.0.0", ValidationMode.Minimum);
-
-            this.ConfigureStructureMap();
             this.ConfigureAutoMapper();
         }
 
@@ -73,8 +66,7 @@ namespace Probel.NDoctor.Plugins.MeetingManager
         {
             get
             {
-                Assert.IsNotNull(PluginContext.Host, string.Format(
-                    "The IPluginHost is not set. It is impossible to setup the data context of the workbench of the plugin '{0}'", this.GetType().Name));
+                Assert.IsNotNull(this.Host, "The IPluginHost is not set. It is impossible to setup the data context of the workbench of the plugin medical record");
                 if (this.workbench.DataContext == null) this.workbench.DataContext = new WorkbenchViewModel();
                 return this.workbench.DataContext as WorkbenchViewModel;
             }
@@ -95,9 +87,9 @@ namespace Probel.NDoctor.Plugins.MeetingManager
         /// </summary>
         public override void Initialise()
         {
-            Assert.IsNotNull(PluginContext.Host, "To initialise the plugin, IPluginHost should be set.");
+            Assert.IsNotNull(this.Host, "To initialise the plugin, IPluginHost should be set.");
 
-            PluginContext.Host.Invoke(() =>
+            this.Host.Invoke(() =>
             {
                 this.workbench = new Workbench();
                 this.workbench.DataContext = this.ViewModel;
@@ -114,10 +106,10 @@ namespace Probel.NDoctor.Plugins.MeetingManager
             this.navigateCommand = new RelayCommand(() => this.Navigate(), () => this.CanNavigate());
 
             var navigateButton = new RibbonButtonData(Messages.Title_Calendar
-                , imgUri.FormatWith("Calendar")
+                , imgUri.StringFormat("Calendar")
                 , navigateCommand);
 
-            PluginContext.Host.AddInHome(navigateButton, Groups.GlobalTools);
+            this.Host.AddInHome(navigateButton, Groups.GlobalTools);
         }
 
         /// <summary>
@@ -125,16 +117,7 @@ namespace Probel.NDoctor.Plugins.MeetingManager
         /// </summary>
         private void BuildContextMenu()
         {
-            var cgroup = new RibbonGroupData(Messages.Menu_Actions, 1);
-            var tab = new RibbonTabData() { Header = Messages.Menu_File, ContextualTabGroupHeader = Messages.Title_MeetingsManager };
-
-            tab.GroupDataCollection.Add(cgroup);
-            this.contextualMenu = new RibbonContextualTabGroupData(Messages.Title_MeetingsManager, tab) { Background = Brushes.OrangeRed, IsVisible = false, };
-            PluginContext.Host.AddContextualMenu(this.contextualMenu);
-            PluginContext.Host.AddTab(tab);
-
-            ICommand searchCommand = new RelayCommand(() => InnerWindow.Show(Messages.Title_ManageMeeting, new SearchView()));
-            cgroup.ButtonDataCollection.Add(new RibbonButtonData(Messages.Title_ManageMeeting, imgUri.FormatWith("Add"), searchCommand) { Order = 1, });
+            //No context menu
         }
 
         private bool CanNavigate()
@@ -148,28 +131,19 @@ namespace Probel.NDoctor.Plugins.MeetingManager
                 .ForMember(src => src.Patient, opt => opt.MapFrom(dest => dest));
 
             Mapper.CreateMap<DateRange, DateRangeViewModel>()
-                  .ConstructUsing(obj => new DateRangeViewModel(obj.StartTime, obj.EndTime, PluginContext.Host));
+                  .ConstructUsing(obj => new DateRangeViewModel(obj.StartTime, obj.EndTime, this.Host));
 
             Mapper.CreateMap<DateRangeViewModel, AppointmentDto>()
-                .ForMember(src => src.User, opt => opt.MapFrom(dest => PluginContext.Host.ConnectedUser))
+                .ForMember(src => src.User, opt => opt.MapFrom(dest => this.Host.ConnectedUser))
                 .ForMember(src => src.Tag, opt => opt.MapFrom(dest => dest.SelectedTag));
 
             Mapper.CreateMap<AppointmentDto, DateRangeViewModel>()
                 .ForMember(src => src.SelectedTag, opt => opt.MapFrom(dest => dest.Tag))
-                .ConstructUsing(obj => new DateRangeViewModel(obj.StartTime, obj.EndTime, PluginContext.Host));
+                .ConstructUsing(obj => new DateRangeViewModel(obj.StartTime, obj.EndTime, this.Host));
 
             Mapper.CreateMap<DateRangeViewModel, DateRange>();
 
             Mapper.CreateMap<AppointmentDto, Appointment>();
-        }
-
-        private void ConfigureStructureMap()
-        {
-            ObjectFactory.Configure(x =>
-            {
-                x.For<ICalendarComponent>().Add<CalendarComponent>();
-                x.SelectConstructor<CalendarComponent>(() => new CalendarComponent());
-            });
         }
 
         private void Navigate()
@@ -177,7 +151,7 @@ namespace Probel.NDoctor.Plugins.MeetingManager
             try
             {
                 //this.ViewModel.Refresh();
-                PluginContext.Host.Navigate(this.workbench);
+                this.Host.Navigate(this.workbench);
 
                 if (this.contextualMenu != null)
                 {

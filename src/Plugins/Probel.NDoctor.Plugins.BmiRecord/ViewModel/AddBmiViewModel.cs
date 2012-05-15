@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
 {
     using System;
@@ -21,23 +26,19 @@ namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
 
     using Probel.Helpers.Assertion;
     using Probel.Helpers.WPF;
-    using Probel.Mvvm.DataBinding;
     using Probel.NDoctor.Domain.DTO.Components;
     using Probel.NDoctor.Domain.DTO.Objects;
-    using Probel.NDoctor.Plugins.BmiRecord.Helpers;
     using Probel.NDoctor.Plugins.BmiRecord.Properties;
-    using Probel.NDoctor.View.Core.Helpers;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class AddBmiViewModel : BaseViewModel
     {
         #region Fields
 
         private IBmiComponent component = null;
-        private BmiDto currentBmi = new BmiDto();
+        private BmiDto currentBmi;
+        private bool isPopupOpened;
 
         #endregion Fields
 
@@ -45,15 +46,9 @@ namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
 
         public AddBmiViewModel()
         {
-            if (!Designer.IsDesignMode) this.component = ObjectFactory.GetInstance<IBmiComponent>();
+            if (!Designer.IsDesignMode) this.component = ComponentFactory.BmiComponent;
 
             this.AddCommand = new RelayCommand(() => this.AddBmi(), () => this.CanAddBmi());
-
-            if (PluginContext.Host.SelectedPatient != null)
-            {
-                this.CurrentBmi.Height = PluginContext.Host.SelectedPatient.Height;
-                this.CurrentBmi.Date = DateTime.Today;
-            }
         }
 
         #endregion Constructors
@@ -72,7 +67,17 @@ namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
             set
             {
                 this.currentBmi = value;
-                this.OnPropertyChanged(() => CurrentBmi);
+                this.OnPropertyChanged("CurrentBmi");
+            }
+        }
+
+        public bool IsPopupOpened
+        {
+            get { return this.isPopupOpened; }
+            set
+            {
+                this.isPopupOpened = value;
+                this.OnPropertyChanged("IsPopupOpened");
             }
         }
 
@@ -82,16 +87,16 @@ namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
 
         private void AddBmi()
         {
-            Assert.IsNotNull(PluginContext.Host, "The host shouldn't be null");
-            Assert.IsNotNull(PluginContext.Host.SelectedPatient, "A patient should be selected if you want to manage data of a patient");
+            Assert.IsNotNull(this.Host, "The host shouldn't be null");
+            Assert.IsNotNull(this.Host.SelectedPatient, "A patient should be selected if you want to manage data of a patient");
             Assert.IsNotNull(this.CurrentBmi, "The BMI to add shouldn't be null in order to add the item to the BMI history");
 
             using (this.component.UnitOfWork)
             {
                 try
                 {
-                    this.component.AddBmi(this.CurrentBmi, PluginContext.Host.SelectedPatient);
-                    PluginContext.Host.WriteStatus(StatusType.Info, Messages.Msg_BmiAdded);
+                    this.component.AddBmi(this.CurrentBmi, this.Host.SelectedPatient);
+                    this.Host.WriteStatus(StatusType.Info, Messages.Msg_BmiAdded);
                     this.CurrentBmi = new BmiDto();
                 }
                 catch (Exception ex)
@@ -99,16 +104,13 @@ namespace Probel.NDoctor.Plugins.BmiRecord.ViewModel
                     this.HandleError(ex, Messages.Msg_ErrAddBmi);
                 }
             }
-            Notifyer.OnItemChanged(this);
-            InnerWindow.Close();
         }
 
         private bool CanAddBmi()
         {
             return this.CurrentBmi.Date <= DateTime.Now
                 && this.CurrentBmi.Height > 0
-                && this.CurrentBmi.Weight > 0
-                && PluginContext.Host.SelectedPatient != null;
+                && this.CurrentBmi.Weight > 0;
         }
 
         #endregion Methods

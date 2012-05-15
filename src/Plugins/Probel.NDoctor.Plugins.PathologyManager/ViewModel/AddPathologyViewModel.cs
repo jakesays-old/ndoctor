@@ -1,4 +1,6 @@
-﻿/*
+﻿#region Header
+
+/*
     This file is part of NDoctor.
 
     NDoctor is free software: you can redistribute it and/or modify
@@ -14,6 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with NDoctor.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#endregion Header
+
 namespace Probel.NDoctor.Plugins.PathologyManager.ViewModel
 {
     using System;
@@ -22,16 +27,13 @@ namespace Probel.NDoctor.Plugins.PathologyManager.ViewModel
 
     using Probel.Helpers.Conversions;
     using Probel.Helpers.WPF;
-    using Probel.Mvvm.DataBinding;
-    using Probel.NDoctor.Domain.DAL.Exceptions;
     using Probel.NDoctor.Domain.DTO.Components;
+    using Probel.NDoctor.Domain.DTO.Exceptions;
     using Probel.NDoctor.Domain.DTO.Objects;
     using Probel.NDoctor.Plugins.PathologyManager.Helpers;
     using Probel.NDoctor.Plugins.PathologyManager.Properties;
     using Probel.NDoctor.View.Core.ViewModel;
     using Probel.NDoctor.View.Plugins.Helpers;
-
-    using StructureMap;
 
     public class AddPathologyViewModel : BaseViewModel
     {
@@ -47,7 +49,7 @@ namespace Probel.NDoctor.Plugins.PathologyManager.ViewModel
 
         public AddPathologyViewModel()
         {
-            if (!Designer.IsDesignMode) this.component = ObjectFactory.GetInstance<IPathologyComponent>();
+            if (!Designer.IsDesignMode) this.component = ComponentFactory.PathologyComponent;
             this.Tags = new ObservableCollection<TagDto>();
             this.Pathology = new PathologyDto();
 
@@ -76,7 +78,7 @@ namespace Probel.NDoctor.Plugins.PathologyManager.ViewModel
             set
             {
                 this.isPopupOpened = value;
-                this.OnPropertyChanged(() => IsPopupOpened);
+                this.OnPropertyChanged("IsPopupOpened");
             }
         }
 
@@ -86,7 +88,7 @@ namespace Probel.NDoctor.Plugins.PathologyManager.ViewModel
             set
             {
                 this.pathology = value;
-                this.OnPropertyChanged(() => Pathology);
+                this.OnPropertyChanged("Pathology");
             }
         }
 
@@ -113,7 +115,7 @@ namespace Probel.NDoctor.Plugins.PathologyManager.ViewModel
                 {
                     this.component.Create(this.Pathology);
                 }
-                PluginContext.Host.WriteStatus(StatusType.Info, Messages.Title_OperationDone);
+                this.Host.WriteStatus(StatusType.Info, Messages.Title_OperationDone);
                 this.IsPopupOpened = false;
                 Notifyer.OnPathologyAdded(this, this.Pathology.Name);
             }

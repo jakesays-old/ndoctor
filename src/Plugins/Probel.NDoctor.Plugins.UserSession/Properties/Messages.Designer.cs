@@ -70,24 +70,6 @@ namespace Probel.NDoctor.Plugins.UserSession.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel.
-        /// </summary>
-        internal static string Btn_Cancel {
-            get {
-                return ResourceManager.GetString("Btn_Cancel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save.
-        /// </summary>
-        internal static string Btn_Save {
-            get {
-                return ResourceManager.GetString("Btn_Save", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Actions.
         /// </summary>
         internal static string Menu_Actions {

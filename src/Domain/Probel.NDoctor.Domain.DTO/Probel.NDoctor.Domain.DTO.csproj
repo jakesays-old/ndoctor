@@ -32,8 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Probel.Mvvm">
-      <HintPath>..\..\..\lib\Probel.Mvvm\Probel.Mvvm.dll</HintPath>
+    <Reference Include="StructureMap">
+      <HintPath>..\..\packages\structuremap.2.6.3\lib\StructureMap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,10 +46,12 @@
       <Link>Version.cs</Link>
     </Compile>
     <Compile Include="Collections\TagCategoryCollection.cs" />
+    <Compile Include="Components\ComponentFactory.cs" />
     <Compile Include="Components\IAdministrationComponent.cs" />
     <Compile Include="Components\ICalendarComponent.cs" />
-    <Compile Include="Components\IImportComponent.cs" />
     <Compile Include="Components\IPrescriptionComponent.cs" />
+    <Compile Include="Exceptions\DALNotConfiguredException.cs" />
+    <Compile Include="Exceptions\ExistingItemException.cs" />
     <Compile Include="Helpers\ConvertSlotDurationAndTimeSpan.cs" />
     <Compile Include="Helpers\SlotDuration.cs" />
     <Compile Include="Helpers\TimeSlotCollection.cs" />
@@ -59,7 +61,6 @@
     <Compile Include="Components\IFamilyComponent.cs" />
     <Compile Include="Components\IPathologyComponent.cs" />
     <Compile Include="Objects\DoctorDto.cs" />
-    <Compile Include="Objects\DoctorFullDto.cs" />
     <Compile Include="Objects\DrugDto.cs" />
     <Compile Include="Objects\FamilyDto.cs" />
     <Compile Include="Components\IMedicalRecordComponent.cs" />
@@ -87,11 +88,9 @@
     <Compile Include="Objects\MedicalRecordFolderDto.cs" />
     <Compile Include="Objects\AppointmentDto.cs" />
     <Compile Include="Objects\PathologyDto.cs" />
-    <Compile Include="Objects\PatientFullDto.cs" />
     <Compile Include="Objects\PrescriptionDocumentDto.cs" />
     <Compile Include="Objects\PrescriptionDto.cs" />
     <Compile Include="Helpers\Workday.cs" />
-    <Compile Include="Objects\PrescriptionResultDto.cs" />
     <Compile Include="Properties\Messages.Designer.cs">
       <DependentUpon>Messages.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -111,6 +110,7 @@
     <Compile Include="Objects\RelationDto.cs" />
     <Compile Include="Objects\RelationTypeDto.cs" />
     <Compile Include="Objects\ReputationDto.cs" />
+    <Compile Include="Objects\State.cs" />
     <Compile Include="Objects\TagCategory.cs" />
     <Compile Include="Objects\TagDto.cs" />
     <Compile Include="Objects\UserDto.cs" />
@@ -137,6 +137,7 @@
       <LastGenOutput>Messages.fr.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
